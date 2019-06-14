@@ -11,17 +11,11 @@
         <module>core-commons</module>
 		<module>register-center</module>
 		<module>config-center</module>
-		<module>gateway-zuul</module>
 		<!--<module>oauth-center-2</module>-->
 		<module>oauth-center</module>
 		<module>monitor-center</module>
 		<module>user-center</module>
-		<module>manage-backend</module>
-		<module>log-center</module>
-		<module>log-starter</module>
-		<module>file-center</module>
 		<module>notification-center</module>
-        <module>app-center</module>
 	</modules>
 
 	<parent>

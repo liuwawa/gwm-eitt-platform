@@ -59,11 +59,6 @@
 			<artifactId>spring-cloud-starter-oauth2</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.cloud</groupId>
-			<artifactId>log-starter</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
 			<version>${swagger.version}</version>
@@ -91,6 +86,12 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-zipkin</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.cloud</groupId>
+			<artifactId>commons</artifactId>
+			<version>2.0</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
