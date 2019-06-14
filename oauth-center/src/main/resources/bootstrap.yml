@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: oauth-center
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        serviceId: config-center
+      profile: dev
+      fail-fast: true
+      label: master
+      name: oauth-center
+  #消息总线配置
+  bus:
+    enabled: true
+    trace:
+      enabled: true
+    refresh:
+      enabled: true  #开启总线消息更新功能
+  # 模板引擎配置
+  thymeleaf:
+    prefix: classpath:/views/
+    suffix: .html
+    cache: false
+  mvc:
+    throw-exception-if-no-handler-found: true
+server:
+  port: 8383
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.int}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

@@ -1,0 +1,61 @@
+spring:
+  redis:
+    host: @ipAddress@
+    port: @redis-port@
+    password: @redis-password@
+    timeout: 10s
+    lettuce:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-active: 8
+        max-wait: -1ms
+  datasource:
+      driver-class-name: @jdbcDriverClassName@
+      url: @cloudOauthUrl@
+      username: @jdbcUsername@
+      password: @jdbcPassword@
+      hikari:
+        minimum-idle: @hikari-minimum-idle@
+        maximum-pool-size: @hikari-maximum-pool-size@
+        connection-test-query: @hikari-connection-test-query@
+  mvc:
+    servlet:
+      load-on-startup: 1
+  zipkin:
+    base-url: @zipkin-base-url@
+    enabled: @zipkin-enabled@
+    sender:
+      type: web
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: @eureka-url-test@
+    registry-fetch-interval-seconds: 5
+  instance:
+    lease-expiration-duration-in-seconds: 15
+    lease-renewal-interval-in-seconds: 5
+    prefer-ip-address: true
+access_token:
+  store-jwt: @store-jwt@
+  jwt-signing-key: @jwt-signing-key@
+  add-userinfo: @add-userinfo@
+logging:
+  level:
+    root: info
+    com.cloud: debug
+  file: logs/${spring.application.name}.log
+ribbon:
+  eager-load:
+    enabled: true
+    clients: user-center
+  ReadTimeout: @ribbon-read-timeout@
+  ConnectTimeout: @ribbon-connect-timeout@
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: @hystrix-timeout@
+testFlag: @testFlag@

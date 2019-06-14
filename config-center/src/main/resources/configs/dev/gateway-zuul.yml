@@ -1,0 +1,71 @@
+spring:
+  mvc:
+    servlet:
+      load-on-startup: 1
+  zipkin:
+    base-url: @zipkin-base-url@
+    enabled: @zipkin-enabled@
+    sender:
+      type: web
+logging:
+  level:
+    root: info
+    com.cloud: debug
+  file: logs/${spring.application.name}.log
+zuul:
+  ignored-services: '*'
+  sensitiveHeaders: 
+  routes:
+    oauth:
+      path: /api-oauth/**
+      serviceId: oauth-center
+    api-user:
+      path: /api-user/**
+      serviceId: user-center
+    backend:
+      path: /api-backend/**
+      serviceId: manage-backend
+    log:
+      path: /api-log/**
+      serviceId: log-center
+    file:
+      path: /api-file/**
+      serviceId: file-center
+    sms:
+      path: /api-notify/**
+      serviceId: notification-center
+    app:
+      path: /api-app/**
+      serviceId: app-center
+  host:
+    connect-timeout-millis: 10000
+    socket-timeout-millis: 60000
+  add-proxy-headers: true
+  ribbon:
+    eager-load:
+      enabled: true
+#  SendErrorFilter:
+#    error:
+#      disable: true
+ribbon:
+  ReadTimeout: @ribbon-read-timeout@
+  ConnectTimeout: @ribbon-connect-timeout@
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: @hystrix-timeout@
+cron:
+  black-ip: @cron-time@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: @eureka-url-test@
+    registry-fetch-interval-seconds: 5
+  instance:
+    lease-expiration-duration-in-seconds: 15
+    lease-renewal-interval-in-seconds: 5
+    prefer-ip-address: true
+testFlag: @testFlag@

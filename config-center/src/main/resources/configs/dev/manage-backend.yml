@@ -1,0 +1,60 @@
+logging:
+  level:
+    root: info
+    com.cloud: debug
+  file: logs/${spring.application.name}.log
+spring:
+  datasource:
+      driver-class-name: @jdbcDriverClassName@
+      url: @cloudBackendUrl@
+      username: @jdbcUsername@
+      password: @jdbcPassword@
+      hikari:
+        minimum-idle: @hikari-minimum-idle@
+        maximum-pool-size: @hikari-maximum-pool-size@
+        connection-test-query: @hikari-connection-test-query@
+  rabbitmq:
+      host: @ipAddress@
+      port: @mq-port@
+      username: @mq-username@
+      password: @mq-password@
+      virtual-host: @mq-virtual-host@
+  mail:
+    default-encoding: @mail-default-encoding@
+    host: @mail-host@
+    username: @mail-username@
+    password: @mail-password@
+    protocol: @mail-protocol@
+    test-connection: @mail-test-connection@
+#    properties:
+#      mail.smtp.auth: true
+  mvc:
+    servlet:
+      load-on-startup: 1
+  aop:
+    proxy-target-class: true
+  zipkin:
+    base-url: @zipkin-base-url@
+    enabled: @zipkin-enabled@
+    sender:
+      type: web
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: @eureka-url-test@
+    registry-fetch-interval-seconds: 5
+  instance:
+    lease-expiration-duration-in-seconds: 15
+    lease-renewal-interval-in-seconds: 5
+    prefer-ip-address: true
+mybatis:
+  type-aliases-package: com.cloud.backend.model
+  mapper-locations: classpath:/mybatis-mappers/*
+  configuration:
+    mapUnderscoreToCamelCase: true
+security:
+  oauth2:
+    resource:
+      user-info-uri: @oauth2-user-info-uri@
+      prefer-token-info: @oauth2-prefer-token-info@
+testFlag: @testFlag@

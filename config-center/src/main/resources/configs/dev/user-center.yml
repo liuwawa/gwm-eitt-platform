@@ -1,0 +1,81 @@
+logging:
+  level:
+    root: info
+    com.cloud: debug
+  file: logs/${spring.application.name}.log
+spring:
+  datasource:
+    driver-class-name: @jdbcDriverClassName@
+    url: @cloudUserUrl@
+    username: @jdbcUsername@
+    password: @jdbcPassword@
+    hikari:
+      minimum-idle: @hikari-minimum-idle@
+      maximum-pool-size: @hikari-maximum-pool-size@
+      connection-test-query: @hikari-connection-test-query@
+  rabbitmq:
+    host: @ipAddress@
+    port: @mq-port@
+    username: @mq-username@
+    password: @mq-password@
+    virtual-host: @mq-virtual-host@
+  redis:
+    host: @ipAddress@
+    port: @redis-port@
+    password: @redis-password@
+    timeout: 10s
+    lettuce:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-active: 8
+        max-wait: -1ms
+  mvc:
+    servlet:
+      load-on-startup: 1
+  aop:
+    proxy-target-class: true
+  zipkin:
+    base-url: @zipkin-base-url@
+    enabled: @zipkin-enabled@
+    sender:
+      type: web
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: @eureka-url-test@
+    registry-fetch-interval-seconds: 5
+  instance:
+    lease-expiration-duration-in-seconds: 15
+    lease-renewal-interval-in-seconds: 5
+    prefer-ip-address: true
+mybatis:
+  type-aliases-package: com.cloud.model.user
+  mapper-locations: classpath:/mybatis-mappers/*
+  configuration:
+    mapUnderscoreToCamelCase: true
+security:
+  oauth2:
+    resource:
+      user-info-uri: @oauth2-user-info-uri@
+      prefer-token-info: @oauth2-prefer-token-info@
+wechat:
+  domain: @wx-domain@
+  infos:
+    app1:
+      appid: @wx-infos-app1-appid@
+      secret: @wx-infos-app1-secret@
+    app2:
+      appid: @wx-infos-app2-appid@
+      secret: @wx-infos-app2-secret@
+ribbon:
+  ReadTimeout: @ribbon-read-timeout@
+  ConnectTimeout: @ribbon-connect-timeout@
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: @hystrix-timeout@
+testFlag: @testFlag@

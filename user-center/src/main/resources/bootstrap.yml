@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: user-center
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        serviceId: config-center
+#      profile: test
+      profile: dev
+      fail-fast: true
+      label: master
+      name: user-center
+  #消息总线配置
+  bus:
+    enabled: true
+    trace:
+      enabled: true
+    refresh:
+      enabled: true  #开启总线消息更新功能
+server:
+  port: 18083
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.int}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
