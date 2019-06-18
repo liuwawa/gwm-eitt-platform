@@ -28,6 +28,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 备用
+ */
 @Slf4j
 @Service
 public class WechatServiceImpl implements WechatService {

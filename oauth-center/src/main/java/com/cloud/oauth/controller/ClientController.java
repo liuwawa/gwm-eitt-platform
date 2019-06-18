@@ -22,7 +22,6 @@ import java.util.Map;
 
 /**
  * client管理功能
- * 2018.07.10 添加
  * @author liangzheng
  */
 @Slf4j

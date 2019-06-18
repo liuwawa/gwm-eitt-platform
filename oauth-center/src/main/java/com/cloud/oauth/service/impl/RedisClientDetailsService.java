@@ -17,10 +17,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 /**
- * 将oauth_client_details表数据缓存到redis，毕竟该表改动非常小，而且数据很少，这里做个缓存优化<br>
- * 如果有通过界面修改client的需求的话，不要用JdbcClientDetailsService了，请用该类，否则redis里有缓存<br>
- * 如果手动修改了该表的数据，请注意清除redis缓存，是hash结构，key是client_details
- *
+ * 将oauth_client_details表数据缓存到redis
  * @author lz
  */
 @Slf4j

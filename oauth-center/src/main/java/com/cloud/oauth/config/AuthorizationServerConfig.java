@@ -97,7 +97,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         if (storeWithJwt) {
             endpoints.accessTokenConverter(accessTokenConverter());
         } else {
-            // 2018.07.13 将当前用户信息追加到登陆后返回数据里
+            //将当前用户信息追加到登陆后返回数据里
             endpoints.tokenEnhancer((accessToken, authentication) -> {
                 addLoginUserInfo(accessToken, authentication);
                 return accessToken;
@@ -112,7 +112,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     /**
      * 将当前用户信息追加到登陆后返回的json数据里<br>
      * 通过参数access_token.add-userinfo控制<br>
-     * 2018.07.13
      *
      * @param accessToken
      * @param authentication
@@ -168,7 +167,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
             @Override
             public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
                 OAuth2AccessToken oAuth2AccessToken = super.enhance(accessToken, authentication);
-                addLoginUserInfo(oAuth2AccessToken, authentication); // 2018.07.13 将当前用户信息追加到登陆后返回数据里
+                addLoginUserInfo(oAuth2AccessToken, authentication); //将当前用户信息追加到登陆后返回数据里
                 return oAuth2AccessToken;
             }
         };
@@ -178,7 +177,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         userAuthenticationConverter.setUserDetailsService(userDetailsService);
 
         defaultAccessTokenConverter.setUserTokenConverter(userAuthenticationConverter);
-        // 2018.06.29 这里务必设置一个，否则多台认证中心的话，一旦使用jwt方式，access_token将解析错误
         jwtAccessTokenConverter.setSigningKey(signingKey);
 
         return jwtAccessTokenConverter;
