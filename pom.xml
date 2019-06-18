@@ -17,6 +17,8 @@
 		<module>user-center</module>
 		<module>notification-center</module>
 		<module>manage-backend</module>
+        <module>log-center</module>
+        <module>log-starter</module>
 	</modules>
 
 	<parent>
