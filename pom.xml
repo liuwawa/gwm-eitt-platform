@@ -16,6 +16,7 @@
 		<module>monitor-center</module>
 		<module>user-center</module>
 		<module>notification-center</module>
+		<module>manage-backend</module>
 	</modules>
 
 	<parent>

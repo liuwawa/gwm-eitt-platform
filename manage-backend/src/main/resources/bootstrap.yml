@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: manage-backend
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        serviceId: config-center
+      profile: dev
+      fail-fast: true
+      label: master
+      name: manage-backend
+  #消息总线配置
+  bus:
+    enabled: true
+    trace:
+      enabled: true
+    refresh:
+      enabled: true  #开启总线消息更新功能
+server:
+  port: 7777
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+    registry-fetch-interval-seconds: 5
+  instance:
+    lease-expiration-duration-in-seconds: 15
+    lease-renewal-interval-in-seconds: 5
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
