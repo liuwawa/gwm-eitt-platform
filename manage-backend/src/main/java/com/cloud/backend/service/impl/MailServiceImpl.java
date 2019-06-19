@@ -8,7 +8,7 @@ import com.cloud.common.utils.PageUtil;
 import com.cloud.model.common.Page;
 import com.cloud.model.mail.Mail;
 import com.cloud.model.mail.constants.MailStatus;
-import com.cloud.model.user.AppUser;
+import com.cloud.model.user.SysUser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class MailServiceImpl implements MailService {
     @Override
     public void saveMail(Mail mail) {
         if (mail.getUserId() == null || StringUtils.isBlank(mail.getUsername())) {
-            AppUser appUser = AppUserUtil.getLoginAppUser();
+            SysUser appUser = AppUserUtil.getLoginAppUser();
             if (appUser != null) {
                 mail.setUserId(appUser.getId());
                 mail.setUsername(appUser.getUsername());

@@ -4,27 +4,27 @@ import java.util.Map;
 import java.util.Set;
 
 import com.cloud.model.common.Page;
-import com.cloud.model.user.AppUser;
+import com.cloud.model.user.SysUser;
 import com.cloud.model.user.LoginAppUser;
 import com.cloud.model.user.SysRole;
 
-public interface AppUserService {
+public interface SysUserService {
 
-	void addAppUser(AppUser appUser);
+	void addAppUser(SysUser appUser);
 
-	void updateAppUser(AppUser appUser);
+	void updateAppUser(SysUser appUser);
 
 	LoginAppUser findByUsername(String username);
 
-	AppUser findByPhone(String phone);
+	SysUser findByPhone(String phone);
 
-	AppUser findById(Long id);
+	SysUser findById(Long id);
 
 	void setRoleToUser(Long id, Set<Long> roleIds);
 
 	void updatePassword(Long id, String oldPassword, String newPassword);
 
-	Page<AppUser> findUsers(Map<String, Object> params);
+	Page<SysUser> findUsers(Map<String, Object> params);
 
 	Set<SysRole> findRolesByUserId(Long userId);
 

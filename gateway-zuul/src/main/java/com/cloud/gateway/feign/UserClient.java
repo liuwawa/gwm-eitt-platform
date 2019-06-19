@@ -1,6 +1,6 @@
 package com.cloud.gateway.feign;
 
-import com.cloud.model.user.AppUser;
+import com.cloud.model.user.SysUser;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,5 +19,5 @@ public interface UserClient {
      * @return
      */
     @GetMapping(value = "/phone-anon/internal")
-    AppUser findByPhone(@RequestParam("phone") String phone);
+    SysUser findByPhone(@RequestParam("phone") String phone);
 }

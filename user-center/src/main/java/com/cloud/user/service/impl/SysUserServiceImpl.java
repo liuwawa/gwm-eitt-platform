@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import com.cloud.enums.ResponseStatus;
 import com.cloud.common.utils.PhoneUtil;
+import com.cloud.model.user.*;
 import com.cloud.model.user.constants.UserType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -20,26 +21,22 @@ import org.springframework.util.CollectionUtils;
 
 import com.cloud.common.utils.PageUtil;
 import com.cloud.model.common.Page;
-import com.cloud.model.user.AppUser;
-import com.cloud.model.user.LoginAppUser;
-import com.cloud.model.user.SysPermission;
-import com.cloud.model.user.SysRole;
-import com.cloud.model.user.UserCredential;
+import com.cloud.model.user.SysUser;
 import com.cloud.model.user.constants.CredentialType;
-import com.cloud.user.dao.AppUserDao;
+import com.cloud.user.dao.SysUserDao;
 import com.cloud.user.dao.UserRoleDao;
 import com.cloud.user.dao.UserCredentialsDao;
-import com.cloud.user.service.AppUserService;
+import com.cloud.user.service.SysUserService;
 import com.cloud.user.service.SysPermissionService;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class AppUserServiceImpl implements AppUserService {
+public class SysUserServiceImpl implements SysUserService {
 
     @Autowired
-    private AppUserDao appUserDao;
+    private SysUserDao appUserDao;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
     @Autowired
@@ -51,7 +48,7 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Transactional
     @Override
-    public void addAppUser(AppUser appUser) {
+    public void addAppUser(SysUser appUser) {
         String username = appUser.getUsername();
         if (StringUtils.isBlank(username)) {
             throw new IllegalArgumentException("用户名不能为空");
@@ -99,7 +96,7 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Transactional
     @Override
-    public void updateAppUser(AppUser appUser) {
+    public void updateAppUser(SysUser appUser) {
         appUser.setUpdateTime(new Date());
 
         appUserDao.update(appUser);
@@ -109,7 +106,7 @@ public class AppUserServiceImpl implements AppUserService {
     @Transactional
     @Override
     public LoginAppUser findByUsername(String username) {
-        AppUser appUser = userCredentialsDao.findUserByUsername(username);
+        SysUser appUser = userCredentialsDao.findUserByUsername(username);
         if (appUser != null) {
             LoginAppUser loginAppUser = new LoginAppUser();
             BeanUtils.copyProperties(appUser, loginAppUser);
@@ -136,12 +133,12 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public AppUser findByPhone(String phone) {
+    public SysUser findByPhone(String phone) {
         return appUserDao.findByPhone(phone);
     }
 
     @Override
-    public AppUser findById(Long id) {
+    public SysUser findById(Long id) {
         return appUserDao.findById(id);
     }
 
@@ -152,7 +149,7 @@ public class AppUserServiceImpl implements AppUserService {
     @Transactional
     @Override
     public void setRoleToUser(Long id, Set<Long> roleIds) {
-        AppUser appUser = appUserDao.findById(id);
+        SysUser appUser = appUserDao.findById(id);
         if (appUser == null) {
             throw new IllegalArgumentException(ResponseStatus.RESPONSE_ACCOUNT_ERROR.message);
         }
@@ -177,14 +174,14 @@ public class AppUserServiceImpl implements AppUserService {
     @Transactional
     @Override
     public void updatePassword(Long id, String oldPassword, String newPassword) {
-        AppUser appUser = appUserDao.findById(id);
+        SysUser appUser = appUserDao.findById(id);
         if (StringUtils.isNoneBlank(oldPassword)) {
             if (!passwordEncoder.matches(oldPassword, appUser.getPassword())) { // 旧密码校验
                 throw new IllegalArgumentException("旧密码错误");
             }
         }
 
-        AppUser user = new AppUser();
+        SysUser user = new SysUser();
         user.setId(id);
         user.setPassword(passwordEncoder.encode(newPassword)); // 加密密码
 
@@ -193,9 +190,9 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public Page<AppUser> findUsers(Map<String, Object> params) {
+    public Page<SysUser> findUsers(Map<String, Object> params) {
         int total = appUserDao.count(params);
-        List<AppUser> list = Collections.emptyList();
+        List<SysUser> list = Collections.emptyList();
         if (total > 0) {
             PageUtil.pageParamConver(params, true);
 
@@ -220,7 +217,7 @@ public class AppUserServiceImpl implements AppUserService {
             throw new IllegalArgumentException("手机号已被绑定");
         }
 
-        AppUser appUser = appUserDao.findById(userId);
+        SysUser appUser = appUserDao.findById(userId);
         appUser.setPhone(phone);
 
         updateAppUser(appUser);

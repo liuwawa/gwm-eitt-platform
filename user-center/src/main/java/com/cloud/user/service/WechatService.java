@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.cloud.model.user.AppUser;
+import com.cloud.model.user.SysUser;
 import com.cloud.model.user.WechatUserInfo;
 
 public interface WechatService {
@@ -33,7 +33,7 @@ public interface WechatService {
 
     String getToUrl(String toUrl, WechatUserInfo wechatUserInfo);
 
-    void bindingUser(AppUser appUser, String tempCode, String openid);
+    void bindingUser(SysUser appUser, String tempCode, String openid);
 
     WechatUserInfo checkAndGetWechatUserInfo(String tempCode, String openid);
 }

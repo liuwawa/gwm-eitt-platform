@@ -5,11 +5,11 @@ import com.cloud.common.utils.AppUserUtil;
 import com.cloud.model.common.Page;
 import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
-import com.cloud.model.user.AppUser;
+import com.cloud.model.user.SysUser;
 import com.cloud.model.user.LoginAppUser;
 import com.cloud.model.user.SysRole;
 import com.cloud.user.feign.SmsClient;
-import com.cloud.user.service.AppUserService;
+import com.cloud.user.service.SysUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.Set;
 public class UserController {
 
     @Autowired
-    private AppUserService appUserService;
+    private SysUserService appUserService;
 
     /**
      * 当前登录用户 LoginAppUser
@@ -40,7 +40,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/phone-anon/internal", params = "phone")
-    public AppUser findByPhone(String phone){
+    public SysUser findByPhone(String phone){
         return appUserService.findByPhone(phone);
     }
     /**
@@ -50,13 +50,13 @@ public class UserController {
      */
     @PreAuthorize("hasAuthority('back:user:query')")
     @GetMapping("/users")
-    public Page<AppUser> findUsers(@RequestParam Map<String, Object> params) {
+    public Page<SysUser> findUsers(@RequestParam Map<String, Object> params) {
         return appUserService.findUsers(params);
     }
 
     @PreAuthorize("hasAuthority('back:user:query')")
     @GetMapping("/users/{id}")
-    public AppUser findUserById(@PathVariable Long id) {
+    public SysUser findUserById(@PathVariable Long id) {
         return appUserService.findById(id);
     }
 
@@ -66,7 +66,7 @@ public class UserController {
      * @param appUser
      */
     @PostMapping("/users-anon/register")
-    public AppUser register(@RequestBody AppUser appUser) {
+    public SysUser register(@RequestBody SysUser appUser) {
         // 用户名等信息的判断逻辑挪到service了
         appUserService.addAppUser(appUser);
 
@@ -80,8 +80,8 @@ public class UserController {
      */
     @LogAnnotation(module = LogModule.UPDATE_ME)
     @PutMapping("/users/me")
-    public AppUser updateMe(@RequestBody AppUser appUser) {
-        AppUser user = AppUserUtil.getLoginAppUser();
+    public SysUser updateMe(@RequestBody SysUser appUser) {
+        SysUser user = AppUserUtil.getLoginAppUser();
         appUser.setId(user.getId());
 
         appUserService.updateAppUser(appUser);
@@ -105,7 +105,7 @@ public class UserController {
             throw new IllegalArgumentException("新密码不能为空");
         }
 
-        AppUser user = AppUserUtil.getLoginAppUser();
+        SysUser user = AppUserUtil.getLoginAppUser();
         appUserService.updatePassword(user.getId(), oldPassword, newPassword);
     }
 
@@ -130,7 +130,7 @@ public class UserController {
     @LogAnnotation(module = LogModule.UPDATE_USER)
     @PreAuthorize("hasAuthority('back:user:update')")
     @PutMapping("/users")
-    public void updateAppUser(@RequestBody AppUser appUser) {
+    public void updateAppUser(@RequestBody SysUser appUser) {
         appUserService.updateAppUser(appUser);
     }
 

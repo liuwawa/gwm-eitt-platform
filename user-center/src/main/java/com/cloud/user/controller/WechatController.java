@@ -1,7 +1,7 @@
 package com.cloud.user.controller;
 
 import com.cloud.common.utils.AppUserUtil;
-import com.cloud.model.user.AppUser;
+import com.cloud.model.user.SysUser;
 import com.cloud.model.user.WechatUserInfo;
 import com.cloud.user.service.WechatService;
 import lombok.extern.slf4j.Slf4j;
@@ -68,7 +68,7 @@ public class WechatController {
      */
     @PostMapping(value = "/binding-user", params = {"tempCode", "openid"})
     public void bindingUser(String tempCode, String openid) {
-        AppUser appUser = AppUserUtil.getLoginAppUser();
+        SysUser appUser = AppUserUtil.getLoginAppUser();
         if (appUser == null) {
             throw new IllegalArgumentException("非法请求");
         }

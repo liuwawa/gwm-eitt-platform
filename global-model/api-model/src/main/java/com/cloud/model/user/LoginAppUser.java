@@ -19,7 +19,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class LoginAppUser extends AppUser implements UserDetails {
+public class LoginAppUser extends SysUser implements UserDetails {
 
 	private static final long serialVersionUID = 1753977564987556640L;
 

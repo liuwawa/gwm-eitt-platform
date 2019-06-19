@@ -7,7 +7,7 @@ import com.cloud.gateway.feign.UserClient;
 import com.cloud.model.log.Log;
 import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.oauth.SystemClientInfo;
-import com.cloud.model.user.AppUser;
+import com.cloud.model.user.SysUser;
 import com.cloud.model.user.constants.CredentialType;
 import com.cloud.utils.ZuulUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -93,7 +93,7 @@ public class TokenController {
         parameters.put("client_secret", SystemClientInfo.CLIENT_SECRET);
         parameters.put(OAuth2Utils.SCOPE, SystemClientInfo.CLIENT_SCOPE);
 
-        AppUser appUser = userClient.findByPhone(phone);
+        SysUser appUser = userClient.findByPhone(phone);
        /* if (appUser != null && StringUtils.isAllBlank(appUser.getPassword(),appUser.getUsername())){
             parameters.put("username", appUser.getUsername() + "|" + CredentialType.USERNAME.name());
             parameters.put("password", appUser.getPassword());

@@ -6,7 +6,7 @@ import com.cloud.model.user.constants.CredentialType;
 import com.cloud.user.config.WechatConfig;
 import com.cloud.user.dao.UserCredentialsDao;
 import com.cloud.user.dao.WechatDao;
-import com.cloud.user.service.AppUserService;
+import com.cloud.user.service.SysUserService;
 import com.cloud.user.service.WechatService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -250,11 +250,11 @@ public class WechatServiceImpl implements WechatService {
     }
 
     @Autowired
-    private AppUserService appUserService;
+    private SysUserService appUserService;
 
     @Transactional
     @Override
-    public void bindingUser(AppUser appUser, String tempCode, String openid) {
+    public void bindingUser(SysUser appUser, String tempCode, String openid) {
         WechatUserInfo wechatUserInfo = checkAndGetWechatUserInfo(tempCode, openid);
 
         UserCredential userCredential = new UserCredential(openid, CredentialType.WECHAT_OPENID.name(), appUser.getId());
