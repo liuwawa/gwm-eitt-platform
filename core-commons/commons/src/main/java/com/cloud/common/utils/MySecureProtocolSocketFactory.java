@@ -1,4 +1,4 @@
-package com.cloud.notification.utils;
+package com.cloud.common.utils;
 
 import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.apache.commons.httpclient.HttpClientError;

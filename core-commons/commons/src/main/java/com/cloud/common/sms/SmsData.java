@@ -1,4 +1,4 @@
-package com.cloud.notification.model;
+package com.cloud.common.sms;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

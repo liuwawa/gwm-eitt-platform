@@ -1,4 +1,4 @@
-package com.cloud.notification.utils;
+package com.cloud.common.utils;
 
 import javax.net.ssl.X509TrustManager;
 import java.security.cert.CertificateException;
