@@ -3,7 +3,7 @@ package com.cloud.oauth.response;
 import lombok.Data;
 
 /**
- * @author yuit
+ * @author lz
  * @create time  2018/3/30 20:37
  * @description 基础通用返回体
  * @modify
