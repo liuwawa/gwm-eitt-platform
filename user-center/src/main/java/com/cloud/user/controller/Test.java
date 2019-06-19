@@ -1,6 +1,6 @@
 package com.cloud.user.controller;
 
-import com.cloud.common.utils.RedisUtil;
+import com.cloud.common.utils.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -14,9 +14,11 @@ public class Test {
     @Value("${spring.datasource.username}")
     private String name;
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
     @GetMapping("/users-anon/test")
     public String test() {
-        return name;
+        redisUtils.set("333", "3333");
+        String value = (String) redisUtils.get("333");
+        return value;
     }
 }
