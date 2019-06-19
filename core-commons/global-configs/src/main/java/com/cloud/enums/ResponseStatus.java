@@ -172,8 +172,10 @@ public enum ResponseStatus {
     //==================================PC=============================================
     RESPONSE_USERCODE_EXIST(20001, "usercode已存在"),
     //==================================fx=============================================
-    RESPONSE_MAX_KEY_ERROR(30000, "获取最大key失败");
-
+    RESPONSE_MAX_KEY_ERROR(30000, "获取最大key失败"),
+    //==================================手机验证码======================================
+    RESPONSE_PHONE_MESSAGE_SUCCESS(17777,"短信验证码发送成功"),
+    RESPONSE_PHONE_MESSAGE_ERROR(17778,"短信验证码发送失败");
     public final int code;
     public final String message;
 
