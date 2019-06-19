@@ -1,6 +1,7 @@
 package com.cloud.notification.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.cloud.common.utils.PhoneUtil;
 import com.cloud.notification.model.Sms;
 import com.cloud.notification.model.VerificationCode;
 import com.cloud.notification.service.SmsService;
@@ -50,7 +51,10 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
         stringRedisTemplate.opsForValue().set(smsRedisKey(uuid), JSONObject.toJSONString(map), expireMinute,
                 TimeUnit.MINUTES);
         log.info("缓存验证码：{}", map);
-
+        //发送验证码
+        String content = "您正在进行短信验证登录操作，验证码为:" + code + ".";
+        PhoneUtil.sendCode(phone, content);
+        //保存发送记录
         saveSmsAndSendCode(phone, code);
 
         VerificationCode verificationCode = new VerificationCode();
