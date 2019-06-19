@@ -4,7 +4,7 @@ package com.cloud.oauth.response;
 import static com.cloud.oauth.response.HttpStatusAndMsg.exs;
 
 /**
- * @author yuit
+ * @author lz
  * @create time  2018/3/30 20:37
  * @description
  * @modify
