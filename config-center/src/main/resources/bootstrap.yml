@@ -21,7 +21,7 @@ spring:
         refresh:
           enabled: true
   rabbitmq:
-      host: localhost
+      host: 10.255.30.142
       port: 5672
       username: lz
       password: 123456

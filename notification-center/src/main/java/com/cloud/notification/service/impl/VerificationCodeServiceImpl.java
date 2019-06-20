@@ -33,7 +33,7 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
     private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private SmsService smsService;
-    @Value("${sms.day-count:30}")
+    @Value("${sms.day-count:1}")
     private Integer dayCount;
     @Value("${testFlag}")
     private Boolean testFlag;
@@ -53,6 +53,7 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
         log.info("缓存验证码：{}", map);
         //发送验证码
         String content = "您正在进行短信验证登录操作，验证码为:" + code + ".";
+        checkTodaySendCount(phone);
         PhoneUtil.sendCode(phone, content);
         //保存发送记录
         saveSmsAndSendCode(phone, code);
