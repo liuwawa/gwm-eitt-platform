@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class SysPermissionServiceImpl implements SysPermissionService {
+public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionDao,SysPermission> implements SysPermissionService {
 
 	@Autowired
 	private SysPermissionDao sysPermissionDao;
@@ -35,7 +36,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
 
 	@Transactional
 	@Override
-	public void save(SysPermission sysPermission) {
+	public void saveSysPermission(SysPermission sysPermission) {
 		SysPermission permission = sysPermissionDao.findByPermission(sysPermission.getPermission());
 		if (permission != null) {
 			throw new IllegalArgumentException("权限标识已存在");

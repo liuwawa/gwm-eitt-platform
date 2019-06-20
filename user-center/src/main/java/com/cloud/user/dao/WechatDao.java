@@ -1,5 +1,6 @@
 package com.cloud.user.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cloud.model.user.WechatUserInfo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -9,7 +10,7 @@ import org.apache.ibatis.annotations.Select;
 import java.util.Set;
 
 @Mapper
-public interface WechatDao {
+public interface WechatDao extends BaseMapper<WechatUserInfo> {
 
     @Options(useGeneratedKeys = true, keyProperty = "id")
     @Insert("insert into t_wechat(openid, unionid, userId, app, nickname, sex, province, city, country, headimgurl, createTime, updateTime) " +

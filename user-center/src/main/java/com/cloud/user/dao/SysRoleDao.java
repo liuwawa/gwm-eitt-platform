@@ -3,6 +3,7 @@ package com.cloud.user.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,7 +14,7 @@ import org.apache.ibatis.annotations.Update;
 import com.cloud.model.user.SysRole;
 
 @Mapper
-public interface SysRoleDao {
+public interface SysRoleDao extends BaseMapper<SysRole> {
 
 	@Options(useGeneratedKeys = true, keyProperty = "id")
 	@Insert("insert into sys_role(code, name, createTime, updateTime) values(#{code}, #{name}, #{createTime}, #{createTime})")

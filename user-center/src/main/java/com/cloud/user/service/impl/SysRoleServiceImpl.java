@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class SysRoleServiceImpl implements SysRoleService {
+public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao,SysRole> implements SysRoleService {
 
 	@Autowired
 	private SysRoleDao sysRoleDao;
@@ -42,7 +43,7 @@ public class SysRoleServiceImpl implements SysRoleService {
 
 	@Transactional
 	@Override
-	public void save(SysRole sysRole) {
+	public void saveSysRole(SysRole sysRole) {
 		SysRole role = sysRoleDao.findByCode(sysRole.getCode());
 		if (role != null) {
 			throw new IllegalArgumentException("角色code已存在");

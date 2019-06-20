@@ -1,5 +1,6 @@
 package com.cloud.user.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cloud.model.user.SysUser;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -8,7 +9,7 @@ import org.apache.ibatis.annotations.Select;
 import com.cloud.model.user.UserCredential;
 
 @Mapper
-public interface UserCredentialsDao {
+public interface UserCredentialsDao extends BaseMapper<UserCredential> {
 
 	@Insert("insert into user_credentials(username, type, userId) values(#{username}, #{type}, #{userId})")
 	int save(UserCredential userCredential);
