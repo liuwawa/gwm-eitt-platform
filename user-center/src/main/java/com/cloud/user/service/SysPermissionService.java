@@ -3,10 +3,11 @@ package com.cloud.user.service;
 import java.util.Map;
 import java.util.Set;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.cloud.model.common.Page;
 import com.cloud.model.user.SysPermission;
 
-public interface SysPermissionService {
+public interface SysPermissionService extends IService<SysPermission> {
 
 	/**
 	 * 根绝角色ids获取权限集合
@@ -16,7 +17,7 @@ public interface SysPermissionService {
 	 */
 	Set<SysPermission> findByRoleIds(Set<Long> roleIds);
 
-	void save(SysPermission sysPermission);
+	void saveSysPermission(SysPermission sysPermission);
 
 	void update(SysPermission sysPermission);
 

@@ -1,5 +1,6 @@
 package com.cloud.user.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cloud.model.user.SysDept;
 import com.cloud.user.dao.SysDeptDao;
 import com.cloud.user.service.SysDeptService;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class SysDeptServiceimpl implements SysDeptService {
+public class SysDeptServiceimpl extends ServiceImpl<SysDeptDao,SysDept> implements SysDeptService {
 
     @Autowired
     SysDeptDao sysDeptDao;
