@@ -1,5 +1,8 @@
 package com.cloud.model.user;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -10,11 +13,13 @@ import java.util.Date;
 * 2019.6.19
 * */
 @Data
+@TableName(value = "sys_dept")
 public class SysDept implements Serializable {
 
     private static final long serialVersionUID = 64325354314321432L;
 
     //部门id
+    @TableId(type = IdType.AUTO)
     private Long deptId;
 
     //父部门
