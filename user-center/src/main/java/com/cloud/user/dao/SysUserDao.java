@@ -3,6 +3,7 @@ package com.cloud.user.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cloud.model.user.SysUser;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -10,7 +11,7 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 
 @Mapper
-public interface SysUserDao {
+public interface SysUserDao extends BaseMapper<SysUser> {
 
 	@Options(useGeneratedKeys = true, keyProperty = "id")
 	@Insert("insert into sys_user(username, password, nickname, headImgUrl, phone, sex, enabled, type, createTime, updateTime) "

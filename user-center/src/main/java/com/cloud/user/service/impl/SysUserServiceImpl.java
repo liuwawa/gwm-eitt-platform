@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.common.utils.PhoneUtil;
 import com.cloud.model.user.*;
@@ -33,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class SysUserServiceImpl implements SysUserService {
+public class SysUserServiceImpl extends ServiceImpl<SysUserDao,SysUser> implements SysUserService {
 
     @Autowired
     private SysUserDao appUserDao;
