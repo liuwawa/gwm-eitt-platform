@@ -9,23 +9,32 @@ import java.util.List;
 public interface SysDeptDao {
 
     @Options(useGeneratedKeys = true, keyProperty = "deptId")
-    @Insert("INSERT INTO  sys_dept(parent_id,dept_name,leader,phone,email,create_time) VALUES"+
-           "(#{parentId},#{deptName},#{leader},#{phone},#{email},#{createTime})")
+    @Insert("INSERT INTO  sys_dept(parent_id,dept_name,leader,phone,email,create_time) VALUES" +
+            "(#{parentId},#{deptName},#{leader},#{phone},#{email},#{createTime})")
     int saveDept(SysDept sysDept);
 
 
-    /**查询子级部门*/
+    /**
+     * 查询子级部门
+     */
     @Select("SELECT * FROM sys_dept t WHERE t.parent_id =#{parentId}")
     List<SysDept> selectByParentId(Long parentId);
 
-    /** 多条件查询*/
+    /**
+     * 多条件查询
+     */
     List<SysDept> findData(SysDept sysDept);
 
-    /**动态增加*/
+    /**
+     * 动态增加
+     */
     void insertDept(SysDept sysDept);
 
     @Delete("delete from sys_dept where dept_id = #{id}")
     int deletById(Long id);
 
+    /**
+     * 修改
+     */
     void updateSysDept(SysDept sysDept);
 }
