@@ -1,12 +1,13 @@
 package com.cloud.user.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cloud.model.user.SysDept;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
 @Mapper
-public interface SysDeptDao {
+public interface SysDeptDao extends BaseMapper<SysDept> {
 
     @Options(useGeneratedKeys = true, keyProperty = "deptId")
     @Insert("INSERT INTO  sys_dept(parent_id,dept_name,leader,phone,email,create_time) VALUES" +
