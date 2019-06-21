@@ -22,8 +22,12 @@ public class Log implements Serializable {
 	private Long id;
 	/** 用户名 */
 	private String username;
+	/**用户id*/
+	private Integer userid;
 	/** 模块 */
 	private String module;
+	/**用户ip*/
+	private String ip;
 	/** 参数值 */
 	private String params;
 	private String remark;
