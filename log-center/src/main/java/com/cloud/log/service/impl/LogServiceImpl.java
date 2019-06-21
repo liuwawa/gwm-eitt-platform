@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import com.cloud.model.log.Log;
 
 //@Primary
 @Service
-public class LogServiceImpl implements LogService {
+public class LogServiceImpl extends ServiceImpl<LogDao,Log> implements LogService {
 
 	@Autowired
 	private LogDao logDao;
@@ -30,7 +31,7 @@ public class LogServiceImpl implements LogService {
 	 */
 	@Async
 	@Override
-	public void save(Log log) {
+	public void saveLog(Log log) {
 		if (log.getCreateTime() == null) {
 			log.setCreateTime(new Date());
 		}

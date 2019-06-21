@@ -10,6 +10,8 @@ import java.util.concurrent.ExecutionException;
 
 import javax.annotation.PostConstruct;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cloud.log.dao.LogDao;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
@@ -41,7 +43,7 @@ import com.cloud.model.common.Page;
 import com.cloud.model.log.Log;
 
 //@Service
-public class EsLogServiceImpl implements LogService, ApplicationContextAware {
+public class EsLogServiceImpl extends ServiceImpl<LogDao,Log> implements LogService, ApplicationContextAware {
 
 	private static final Logger logger = LoggerFactory.getLogger(EsLogServiceImpl.class);
 
@@ -59,7 +61,7 @@ public class EsLogServiceImpl implements LogService, ApplicationContextAware {
 	 */
 	@Async
 	@Override
-	public void save(Log log) {
+	public void saveLog(Log log) {
 		if (log.getCreateTime() == null) {
 			log.setCreateTime(new Date());
 		}
