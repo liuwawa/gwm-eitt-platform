@@ -4,6 +4,7 @@ import com.cloud.enums.ResponseStatus;
 import com.cloud.gateway.feign.LogClient;
 import com.cloud.gateway.feign.Oauth2Client;
 import com.cloud.gateway.feign.UserClient;
+import com.cloud.gateway.utils.IPUtil;
 import com.cloud.model.log.Log;
 import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.oauth.SystemClientInfo;
@@ -19,6 +20,7 @@ import org.springframework.security.oauth2.common.util.OAuth2Utils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +61,7 @@ public class TokenController {
      * @return
      */
     @PostMapping("/sys/login")
-    public Map<String, Object> login(String username, String password) {
+    public Map<String, Object> login(String username, String password, HttpServletRequest request) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(OAuth2Utils.GRANT_TYPE, "password");
         parameters.put(OAuth2Utils.CLIENT_ID, SystemClientInfo.CLIENT_ID);
@@ -69,9 +71,11 @@ public class TokenController {
         // 为了支持多类型登录，这里在username后拼装上登录类型
         parameters.put("username", username + "|" + CredentialType.USERNAME.name());
         parameters.put("password", password);
-
         Map<String, Object> tokenInfo = oauth2Client.postAccessToken(parameters);
-        saveLoginLog(username, "用户名密码登陆");
+
+        //获取登录真实ip
+        String ipAddress = IPUtil.getIpAddress(request);
+        saveLoginLog(username, "用户名密码登陆",ipAddress);
         //加入errorCode和message
         ZuulUtils.initZuulResponseForCode(tokenInfo, ResponseStatus.RESPONSE_SUCCESS);
         return tokenInfo;
@@ -86,7 +90,7 @@ public class TokenController {
      * @return
      */
     @PostMapping("/sys/login-sms")
-    public Map<String, Object> smsLogin(String phone, String key, String code) {
+    public Map<String, Object> smsLogin(String phone, String key, String code,HttpServletRequest request) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(OAuth2Utils.GRANT_TYPE, "password");
         parameters.put(OAuth2Utils.CLIENT_ID, SystemClientInfo.CLIENT_ID);
@@ -104,7 +108,11 @@ public class TokenController {
         // 短信登录无需密码，但security底层有密码校验，我们这里将手机号作为密码，认证中心采用同样规则即可
         parameters.put("password", phone);
         Map<String, Object> tokenInfo = oauth2Client.postAccessToken(parameters);
-        saveLoginLog(phone, "手机号短信登陆");
+
+
+        //获取登录真实ip
+        String ipAddress = IPUtil.getIpAddress(request);
+        saveLoginLog(phone, "手机号短信登陆",ipAddress);
 
         return tokenInfo;
     }
@@ -115,7 +123,7 @@ public class TokenController {
      * @return
      */
     @PostMapping("/sys/login-wechat")
-    public Map<String, Object> smsLogin(String openid, String tempCode) {
+    public Map<String, Object> smsLogin(String openid, String tempCode,HttpServletRequest request) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(OAuth2Utils.GRANT_TYPE, "password");
         parameters.put(OAuth2Utils.CLIENT_ID, SystemClientInfo.CLIENT_ID);
@@ -127,7 +135,10 @@ public class TokenController {
         parameters.put("password", tempCode);
 
         Map<String, Object> tokenInfo = oauth2Client.postAccessToken(parameters);
-        saveLoginLog(openid, "微信登陆");
+
+        //获取登录真实ip
+        String ipAddress = IPUtil.getIpAddress(request);
+        saveLoginLog(openid, "微信登陆",ipAddress);
 
         return tokenInfo;
     }
@@ -137,12 +148,12 @@ public class TokenController {
      *
      * @param username
      */
-    private void saveLoginLog(String username, String remark) {
+    private void saveLoginLog(String username, String remark,String ipAddress) {
         log.info("{}登陆", username);
         // 异步
         CompletableFuture.runAsync(() -> {
             try {
-                Log log = Log.builder().username(username).module(LogModule.LOGIN).remark(remark).createTime(new Date())
+                Log log = Log.builder().username(username).module(LogModule.LOGIN).remark(remark).ip(ipAddress).createTime(new Date())
                         .build();
                 logClient.save(log);
             } catch (Exception e) {

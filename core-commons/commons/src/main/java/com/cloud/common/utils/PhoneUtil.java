@@ -27,7 +27,12 @@ public class PhoneUtil {
 		return m.matches();
 	}
 
-	public static void sendCode(String phone, String code){
+	/**
+	 * 发送短信
+	 * @param phone 手机号
+	 * @param content 短信内容
+	 */
+	public static void sendCode(String phone, String content){
 		if (!PhoneUtil.checkPhone(phone)) {
 			throw new IllegalArgumentException("手机号格式不正确");
 		}
@@ -42,7 +47,7 @@ public class PhoneUtil {
 			JSONHttpClient jsonHttpClient = new JSONHttpClient("http://www.dh3t.com");
 			jsonHttpClient.setRetryCount(1);
 			// 调用sendSms方法
-			String sendhRes = jsonHttpClient.sendSms(account, password, phone, code, sign, subcode);
+			String sendhRes = jsonHttpClient.sendSms(account, password, phone, content, sign, subcode);
 			log.info("提交单条普通短信响应：" + sendhRes);
 		} catch (Exception e) {
 			log.error("短信服务异常", e);

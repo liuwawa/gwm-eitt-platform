@@ -37,6 +37,9 @@ public class LogServiceImpl implements LogService {
 		if (log.getFlag() == null) {
 			log.setFlag(Boolean.TRUE);
 		}
+		if (log.getUserid() == null){
+			log.setUserid(0);
+		}
 
 		logDao.save(log);
 	}

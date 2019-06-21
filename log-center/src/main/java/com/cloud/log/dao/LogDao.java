@@ -11,7 +11,7 @@ import com.cloud.model.log.Log;
 @Mapper
 public interface LogDao {
 
-	@Insert("insert into t_log(username, module, params, remark, flag, createTime) values(#{username}, #{module}, #{params}, #{remark}, #{flag}, #{createTime})")
+	@Insert("insert into t_log(userid, ip, username, module, params, remark, flag, createTime) values(#{userid}, #{ip}, #{username}, #{module}, #{params}, #{remark}, #{flag}, #{createTime})")
 	int save(Log log);
 
 	int count(Map<String, Object> params);
