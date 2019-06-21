@@ -11,6 +11,15 @@
 	</parent>
 
 	<dependencies>
+		<!--mybatis plus-->
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.cloud</groupId>
 			<artifactId>global-configs</artifactId>

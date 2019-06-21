@@ -51,7 +51,7 @@ public class CodeGeneration {
         dsc.setDriverName("com.mysql.jdbc.Driver"); //只有更换数据库时才需要修改
         dsc.setUsername("root");    //数据库账号
         dsc.setPassword("123@456.Com");    // 数据库密码
-        dsc.setUrl("jdbc:mysql://10.255.30.142:3306/cloud_user");  //数据库链接地址
+        dsc.setUrl("jdbc:mysql://10.255.30.142:3306/cloud_user?useSSL=false");  //数据库链接地址
         mpg.setDataSource(dsc);
 
         // 策略配置

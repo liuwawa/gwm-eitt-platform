@@ -3,34 +3,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cloud.user.dao.SysUserDao">
 
-	<update id="update">
-		update sys_user
-		<set>
-			<if test="password != null and password != ''">
-				password = #{password,jdbcType=VARCHAR},
-			</if>
-			<if test="nickname != null and nickname != ''">
-				nickname = #{nickname,jdbcType=VARCHAR},
-			</if>
-			<if test="headImgUrl != null and headImgUrl != ''">
-				headImgUrl = #{headImgUrl,jdbcType=VARCHAR},
-			</if>
-			<if test="phone != null and phone != ''">
-				phone = #{phone,jdbcType=VARCHAR},
-			</if>
-			<if test="sex != null">
-				sex = #{sex,jdbcType=BIT},
-			</if>
-			<if test="enabled != null">
-				enabled = #{enabled,jdbcType=BIT},
-			</if>
-			<if test="updateTime != null">
-				updateTime = #{updateTime,jdbcType=TIMESTAMP},
-			</if>
-		</set>
-		where id = #{id,jdbcType=INTEGER}
-	</update>
-
 	<sql id="where">
 		<where>
 			<if test="username != null and username != ''">
