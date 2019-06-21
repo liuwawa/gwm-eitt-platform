@@ -35,7 +35,7 @@ public class CodeGeneration {
         gc.setEnableCache(false);// XML 二级缓存
         gc.setBaseResultMap(true);// XML ResultMap
         gc.setBaseColumnList(false);// XML columList
-        gc.setAuthor("wp");// 作者
+        gc.setAuthor("liuek");// 作者
 
         // 自定义文件命名，注意 %s 会自动填充表实体属性！
         gc.setControllerName("%sController");
@@ -58,7 +58,7 @@ public class CodeGeneration {
         StrategyConfig strategy = new StrategyConfig();
         strategy.setTablePrefix(new String[]{"sys_"});// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-        strategy.setInclude(new String[]{"sys_user"}); // 需要生成的表
+        strategy.setInclude(new String[]{"sys_group_expand"}); // 需要生成的表
 
         strategy.setSuperServiceClass(null);
         strategy.setSuperServiceImplClass(null);
@@ -68,7 +68,7 @@ public class CodeGeneration {
 
         // 包配置
         PackageConfig pc = new PackageConfig();
-        pc.setParent("com.cloud.model.user"); //包名生成配置 这里只有指定目录才需要更改
+        pc.setParent("com.cloud.model.group"); //包名生成配置 这里只有指定目录才需要更改
         pc.setController("controller");
         pc.setService("service");
         pc.setServiceImpl("service.impl");

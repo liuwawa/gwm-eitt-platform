@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.user.dao.SysGroupingDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.cloud.model.user.SysGrouping">
+        <id column="groupingId" property="groupingId" />
+        <result column="groupingName" property="groupingName" />
+        <result column="groupingRemark" property="groupingRemark" />
+        <result column="isDel" property="isDel" />
+        <result column="groupingNumber" property="groupingNumber" />
+        <result column="createTime" property="createTime" />
+        <result column="createBy" property="createBy" />
+        <result column="updateTime" property="updateTime" />
+        <result column="updateBy" property="updateBy" />
+        <result column="deleteTime" property="deleteTime" />
+        <result column="groupingShowOrder" property="groupingShowOrder" />
+    </resultMap>
+
+</mapper>
