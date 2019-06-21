@@ -19,6 +19,7 @@
 		<module>manage-backend</module>
         <module>log-center</module>
         <module>log-starter</module>
+		<module>file-center</module>
         <module>gateway-zuul</module>
 	</modules>
 
