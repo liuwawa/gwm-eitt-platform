@@ -10,5 +10,5 @@ import com.cloud.model.log.Log;
 public interface LogClient {
 
 	@PostMapping("/logs-anon/internal")
-	void save(@RequestBody Log log);
+	void saveLog(@RequestBody Log log);
 }
