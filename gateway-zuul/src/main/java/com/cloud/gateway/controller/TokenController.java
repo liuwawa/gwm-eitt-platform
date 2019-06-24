@@ -155,7 +155,7 @@ public class TokenController {
             try {
                 Log log = Log.builder().username(username).module(LogModule.LOGIN).remark(remark).ip(ipAddress).createTime(new Date())
                         .build();
-                logClient.save(log);
+                logClient.saveLog(log);
             } catch (Exception e) {
                 // do nothing
             }

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
@@ -38,5 +39,6 @@ public class Log implements Serializable {
 	private String remark;
 	/** 是否执行成功 */
 	private Boolean flag;
+	@TableField("createTime")
 	private Date createTime;
 }

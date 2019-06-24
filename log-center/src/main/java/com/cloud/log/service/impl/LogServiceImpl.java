@@ -42,7 +42,7 @@ public class LogServiceImpl extends ServiceImpl<LogDao,Log> implements LogServic
 			log.setUserid(0);
 		}
 
-		logDao.save(log);
+		logDao.saveLog(log);
 	}
 
 	@Override

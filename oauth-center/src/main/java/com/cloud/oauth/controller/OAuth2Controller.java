@@ -60,7 +60,7 @@ public class OAuth2Controller {
         CompletableFuture.runAsync(() -> {
             try {
                 Log log = Log.builder().username(username).module(LogModule.LOGOUT).createTime(new Date()).build();
-                logClient.save(log);
+                logClient.saveLog(log);
             } catch (Exception e) {
                 // do nothing
             }

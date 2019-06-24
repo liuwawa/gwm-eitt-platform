@@ -17,8 +17,8 @@ public class LogController {
     private LogService logService;
 
     @PostMapping("/logs-anon/internal")
-    public void save(@RequestBody Log log) {
-        logService.save(log);
+    public void saveLog(@RequestBody Log log) {
+        logService.saveLog(log);
     }
 
     /**
