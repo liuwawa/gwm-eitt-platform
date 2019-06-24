@@ -3,14 +3,18 @@ package com.cloud.model.user;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.time.LocalDateTime;
+
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -25,9 +29,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SysGroup implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class SysGroup extends Model<SysGroup> {
 
     /**
      * 组id
@@ -42,7 +44,7 @@ public class SysGroup implements Serializable {
     private String groupName;
 
     /**
-     *  组的父组id(0为没有父级，默认为0)
+     * 组的父组id(0为没有父级，默认为0)
      */
     @TableField("groupParentId")
     private Integer groupParentId;
@@ -51,7 +53,7 @@ public class SysGroup implements Serializable {
      * 定义展示顺序标识
      */
     @TableField("groupShowOrder")
-    private String groupShowOrder;
+    private Integer groupShowOrder;
 
     /**
      * 组的级别(默认为一级组织)
@@ -87,7 +89,7 @@ public class SysGroup implements Serializable {
      * 启用时间
      */
     @TableField("enableTime")
-    private LocalDateTime enableTime;
+    private Date enableTime;
 
     /**
      * 是否更新
@@ -111,7 +113,7 @@ public class SysGroup implements Serializable {
      * 删除时间
      */
     @TableField("deleteTime")
-    private LocalDateTime deleteTime;
+    private Date deleteTime;
 
     /**
      * 创建人
@@ -123,7 +125,7 @@ public class SysGroup implements Serializable {
      * 创建时间
      */
     @TableField("createTime")
-    private LocalDateTime createTime;
+    private Date createTime;
 
     /**
      * 修改人
@@ -135,18 +137,14 @@ public class SysGroup implements Serializable {
      * 修改时间
      */
     @TableField("updateTime")
-    private LocalDateTime updateTime;
+    private Date updateTime;
+
 
     /**
-     * 拓展表id
+     * 指定主键
      */
-    @TableField("expandId")
-    private Integer expandId;
-
-    /**
-     * 分组表id
-     */
-    @TableField("groupingId")
-    private Integer groupingId;
-
+    @Override
+    protected Serializable pkVal() {
+        return groupId;
+    }
 }

@@ -2,14 +2,15 @@ package com.cloud.model.user;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -24,9 +25,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SysGrouping implements Serializable {
+public class SysGrouping extends Model<SysGrouping> {
 
-    private static final long serialVersionUID = 1L;
 
     /**
      * 分组表id主键
@@ -62,7 +62,7 @@ public class SysGrouping implements Serializable {
      * 分组创建时间
      */
     @TableField("createTime")
-    private LocalDateTime createTime;
+    private Date createTime;
 
     /**
      * 分组创建人
@@ -74,7 +74,7 @@ public class SysGrouping implements Serializable {
      * 分组修改时间
      */
     @TableField("updateTime")
-    private LocalDateTime updateTime;
+    private Date updateTime;
 
     /**
      * 分组修改人
@@ -86,7 +86,7 @@ public class SysGrouping implements Serializable {
      * 分组删除时间
      */
     @TableField("deleteTime")
-    private LocalDateTime deleteTime;
+    private Date deleteTime;
 
     /**
      * 分组展示顺序
@@ -94,6 +94,13 @@ public class SysGrouping implements Serializable {
     @TableField("groupingShowOrder")
     private Integer groupingShowOrder;
 
-
+    /**
+     *
+     * 指定主键
+     */
+    @Override
+    protected Serializable pkVal() {
+        return groupingId;
+    }
 
 }

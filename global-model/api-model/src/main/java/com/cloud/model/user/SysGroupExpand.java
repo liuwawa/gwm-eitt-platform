@@ -3,6 +3,7 @@ package com.cloud.model.user;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,9 +24,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SysGroupExpand implements Serializable {
+public class SysGroupExpand extends Model<SysGroupExpand> {
 
-    private static final long serialVersionUID = 1L;
 
     /**
      * 组织表拓展表id
@@ -111,4 +111,18 @@ public class SysGroupExpand implements Serializable {
     @TableField("isDel")
     private String isDel;
 
+    /**
+     * 关联group主表的标识
+     */
+    @TableField("groupId")
+    private Integer groupId;
+
+    /**
+     *
+     * 指定主键
+     */
+    @Override
+    protected Serializable pkVal() {
+        return gExpandId;
+    }
 }
