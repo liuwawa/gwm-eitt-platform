@@ -2,6 +2,7 @@ package com.cloud.user.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cloud.model.user.SysGroup;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import com.cloud.model.user.SysGroup;
  * @author liuek
  * @since 2019-06-21
  */
+@Mapper
 public interface SysGroupDao extends BaseMapper<SysGroup> {
 
 }
