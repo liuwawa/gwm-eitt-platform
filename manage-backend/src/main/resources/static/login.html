@@ -45,11 +45,9 @@
 			type : 'get',
 			url : domainName + '/api-user/users/current?access_token=' + access_token,
 			success : function(data) {
-			    debugger
 				location.href = 'index.html';
 			},
 			error : function(xhr, textStatus, errorThrown) {
-			    debugger
 				if (xhr.status == 401) {
 					localStorage.removeItem("access_token");
 				}
