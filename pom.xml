@@ -104,6 +104,11 @@
 				<artifactId>mybatis-plus</artifactId>
 				<version>3.0.7.1</version>
 			</dependency>
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-core</artifactId>
+				<version>3.0.7.1</version>
+			</dependency>
 			<!-- 集成mybatis-plus 结束 -->
             <dependency>
                 <groupId>org.apache.velocity</groupId>
@@ -165,28 +170,28 @@
 				<artifactId>commons-beanutils-core</artifactId>
 				<version>1.8.3</version>
 			</dependency>
-			<dependency>
-				<groupId>com.baomidou</groupId>
-				<artifactId>mybatis-plus-core</artifactId>
-				<version>3.1.2.4-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>com.baomidou</groupId>
-				<artifactId>mybatis-plus-dts</artifactId>
-				<version>3.1.2.4-SNAPSHOT</version>
-			</dependency>
+			<!--<dependency>-->
+				<!--<groupId>com.baomidou</groupId>-->
+				<!--<artifactId>mybatis-plus-core</artifactId>-->
+				<!--<version>3.1.2.4-SNAPSHOT</version>-->
+			<!--</dependency>-->
+			<!--<dependency>-->
+				<!--<groupId>com.baomidou</groupId>-->
+				<!--<artifactId>mybatis-plus-dts</artifactId>-->
+				<!--<version>3.1.2.4-SNAPSHOT</version>-->
+			<!--</dependency>-->
 		</dependencies>
 	</dependencyManagement>
-	<repositories>
-		<repository>
-			<id>snapshot</id>
-			<name>mp-snapshot</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
+	<!--<repositories>-->
+		<!--<repository>-->
+			<!--<id>snapshot</id>-->
+			<!--<name>mp-snapshot</name>-->
+			<!--<url>https://oss.sonatype.org/content/repositories/snapshots/</url>-->
+			<!--<snapshots>-->
+				<!--<enabled>true</enabled>-->
+			<!--</snapshots>-->
+		<!--</repository>-->
+	<!--</repositories>-->
 	<!--<build>
 		<plugins>
 			<plugin>
