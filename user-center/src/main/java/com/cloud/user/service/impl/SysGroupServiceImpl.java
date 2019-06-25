@@ -5,6 +5,7 @@ import com.cloud.model.user.SysGroup;
 import com.cloud.user.dao.SysGroupDao;
 import com.cloud.user.service.SysGroupService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>
@@ -16,5 +17,4 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> implements SysGroupService {
-
 }

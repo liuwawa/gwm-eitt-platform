@@ -83,7 +83,7 @@ public class SysGroup extends Model<SysGroup> {
      * 组的联系电话
      */
     @TableField("groupTel")
-    private Integer groupTel;
+    private String groupTel;
 
     /**
      * 启用时间

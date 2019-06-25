@@ -175,7 +175,11 @@ public enum ResponseStatus {
     RESPONSE_MAX_KEY_ERROR(30000, "获取最大key失败"),
     //==================================手机验证码======================================
     RESPONSE_PHONE_MESSAGE_SUCCESS(17777,"短信验证码发送成功"),
-    RESPONSE_PHONE_MESSAGE_ERROR(17778,"短信验证码发送失败");
+    RESPONSE_PHONE_MESSAGE_ERROR(17778,"短信验证码发送失败"),
+    //==================================组织和分组相关======================================
+    RESPONSE_GROUPING_HANDLE_SUCCESS(200,"操作成功"),
+    RESPONSE_GROUPING_HANDLE_FAILED(500,"操作失败"),
+    RESPONSE_GROUPING_HANDLE_ERROR(110,"操作出现异常，请联系管理员");
     public final int code;
     public final String message;
 

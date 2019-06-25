@@ -25,8 +25,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SysGrouping extends Model<SysGrouping> {
-
+public class SysGrouping extends SysRequestVo<SysGrouping> {
 
     /**
      * 分组表id主键
@@ -56,7 +55,7 @@ public class SysGrouping extends Model<SysGrouping> {
      * 该分组共组织数
      */
     @TableField("groupingNumber")
-    private Boolean groupingNumber;
+    private Integer groupingNumber;
 
     /**
      * 分组创建时间

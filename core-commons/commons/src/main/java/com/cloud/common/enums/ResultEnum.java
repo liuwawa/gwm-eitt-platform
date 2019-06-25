@@ -49,7 +49,14 @@ public enum ResultEnum {
     /*
     * 健康积分操作
     * */
-    CREDIT_NULL(401, "健康积分值为空");
+    CREDIT_NULL(401, "健康积分值为空"),
+
+
+    /*******************************************************/
+    /**
+     * 分组相关操作
+     */
+    GROUPINGNAME_NULL(401,"添加的分组名字为空");
 
     private Integer code;
 

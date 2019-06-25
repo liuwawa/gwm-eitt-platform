@@ -1,5 +1,7 @@
 package com.cloud.user.test;
 
+import com.cloud.model.common.Response;
+import com.cloud.model.user.SysGroup;
 import com.cloud.user.UserCenterApplication;
 import com.cloud.user.controller.SysGroupController;
 import com.cloud.user.dao.SysGroupDao;
@@ -27,39 +29,42 @@ import static org.springframework.http.ResponseEntity.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = UserCenterApplication.class)
-@SpringBootApplication
-@EnableAutoConfiguration
-@WebAppConfiguration
 public class TestGroupController {
     private MockMvc mockMvc;
 
     @Autowired
     SysGroupDao groupDao;
 
-    @MockBean
+ /*   @MockBean
     SysGroupService sysGroupService;
-
+*/
 
     @Autowired
     SysGroupController groupController;
 
-    @Before
+/*    @Before
     public void before() {
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(groupController).build();
-    }
+    }*/
 
     @Test
     public void saveGroup() throws Exception {
         String contentAsString = mockMvc.perform(MockMvcRequestBuilders.post("/group/saveGroup")
-                .accept(MediaType.MULTIPART_FORM_DATA).param("groupName","wmy").param("groupParentId","4")).
-                andExpect(MockMvcResultMatchers.status().isOk())
+                .accept(MediaType.MULTIPART_FORM_DATA).param("groupName","wmy").param("groupParentId","4"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().
                         getResponse().
                         getContentAsString();
 
         System.out.println(contentAsString);
+    }
+    @Test
+    public void save(){
+        SysGroup sysGroup = SysGroup.builder().groupName("12131").build();
+        Response response = groupController.saveGroup(sysGroup);
+        System.out.println(response);
     }
 
 

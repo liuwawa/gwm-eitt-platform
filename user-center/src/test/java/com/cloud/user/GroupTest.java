@@ -1,14 +1,16 @@
 package com.cloud.user;
 
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cloud.common.vo.ResultVo;
+import com.cloud.model.common.Response;
 import com.cloud.model.user.SysGroup;
-import com.cloud.user.UserCenterApplication;
+import com.cloud.model.user.SysGrouping;
+import com.cloud.user.controller.SysGroupController;
+import com.cloud.user.controller.SysGroupingController;
 import com.cloud.user.dao.SysGroupDao;
+import com.cloud.user.service.SysGroupService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +22,21 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = UserCenterApplication.class)
-public class GroupServiceTest {
+public class GroupTest {
+
+    @Autowired
+    private SysGroupService sysGroupService;
+    @Autowired
+    private SysGroupDao sysGroupDao;
+    @Autowired
+    private SysGroupController controller;
 
     @Test
     public void testSave() {
         SysGroup sysGroup = SysGroup.builder().groupAddress("工程楼四楼")
                 .groupChildCount(3).groupLevel(0).groupName("测试组织")
                 .groupParentId(0).groupRemark("这是一个测试用的组织")
-                .groupShowOrder(0).groupTel(1333333333).createBy("liu")
+                .groupShowOrder(0).groupTel("1333333333").createBy("liu")
                 .createTime(new Date()).build();
         for (int i = 0; i < 30; i++) {
             boolean insert = sysGroup.insert();
@@ -58,7 +67,8 @@ public class GroupServiceTest {
     @Test
     public void testSelectByPage() {
         SysGroup sysGroup = new SysGroup();
-        List<SysGroup> sysGroups = sysGroup.selectPage(new Page<SysGroup>(1, 10), null).getRecords();
+        List<SysGroup> sysGroups =
+                sysGroup.selectPage(new Page<SysGroup>(1, 10), null).getRecords();
         for (SysGroup record : sysGroups) {
             System.out.println(record);
         }
@@ -84,4 +94,28 @@ public class GroupServiceTest {
         .like("groupRemark","测试"));
         System.out.println(result);
     }
+
+    @Test
+    public void testTransactional(){
+        SysGroup sysGroup = SysGroup.builder().groupAddress("工程楼顶楼")
+                .groupChildCount(100).groupLevel(0).groupName("测试的分组")
+                .groupParentId(0).groupRemark("这是一个测试事务用的组织")
+                .groupShowOrder(0).groupTel("13491111").createBy("liu")
+                .createTime(new Date()).build();
+        try{
+            boolean save = sysGroupService.save(sysGroup);
+            if(save){
+                System.out.println("没问题");
+            }
+        }catch (Exception e){
+            System.out.println("出现异常了");
+        }
+    }
+    @Test
+    public void test(){
+        SysGroup sysGroup = SysGroup.builder().groupName("1213154").build();
+        Response response = controller.saveGroup(sysGroup);
+        System.out.println(response);
+    }
+
 }
