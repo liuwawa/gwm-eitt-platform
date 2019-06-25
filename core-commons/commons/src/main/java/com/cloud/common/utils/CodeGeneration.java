@@ -63,6 +63,8 @@ public class CodeGeneration {
         strategy.setSuperServiceClass(null);
         strategy.setSuperServiceImplClass(null);
         strategy.setSuperMapperClass(null);
+        strategy.setEntityLombokModel(true);
+        strategy.setSuperEntityClass("com.baomidou.mybatisplus.extension.activerecord.Model");
 
         mpg.setStrategy(strategy);
 

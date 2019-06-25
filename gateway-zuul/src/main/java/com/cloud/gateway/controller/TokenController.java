@@ -74,7 +74,7 @@ public class TokenController {
         Map<String, Object> tokenInfo = oauth2Client.postAccessToken(parameters);
 
         //获取登录真实ip
-        String ipAddress = IPUtil.getIpAddress(request);
+        String ipAddress = IPUtil.getIpAddr(request);
         saveLoginLog(username, "用户名密码登陆",ipAddress);
         //加入errorCode和message
         ZuulUtils.initZuulResponseForCode(tokenInfo, ResponseStatus.RESPONSE_SUCCESS);
@@ -111,7 +111,7 @@ public class TokenController {
 
 
         //获取登录真实ip
-        String ipAddress = IPUtil.getIpAddress(request);
+        String ipAddress = IPUtil.getIpAddr(request);
         saveLoginLog(phone, "手机号短信登陆",ipAddress);
 
         return tokenInfo;
@@ -137,7 +137,7 @@ public class TokenController {
         Map<String, Object> tokenInfo = oauth2Client.postAccessToken(parameters);
 
         //获取登录真实ip
-        String ipAddress = IPUtil.getIpAddress(request);
+        String ipAddress = IPUtil.getIpAddr(request);
         saveLoginLog(openid, "微信登陆",ipAddress);
 
         return tokenInfo;
