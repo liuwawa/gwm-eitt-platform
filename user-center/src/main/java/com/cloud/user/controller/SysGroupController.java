@@ -1,6 +1,7 @@
 package com.cloud.user.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.common.Response;
 import com.cloud.model.user.SysGroup;
@@ -10,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -33,7 +35,7 @@ public class SysGroupController {
      */
 //    @PreAuthorize("hasAnyAuthority()")
     @PostMapping("/saveGroup")
-    public Response saveGroup( SysGroup sysGroup) {
+    public Response saveGroup(SysGroup sysGroup) {
         Response response = new Response();
         try {
             boolean save = sysGroupService.save(sysGroup);
@@ -58,11 +60,24 @@ public class SysGroupController {
      * 修改组织表
      */
     //    @PreAuthorize("hasAnyAuthority()")
-    @PostMapping("updateGroup")
+    @PostMapping("/updateGroup")
     public Response updateById(SysGroup sysGroup) {
-        sysGroup.setUpdateTime(new Date());
-        boolean b = sysGroup.updateById();
-        return null;
+        Response response = new Response();
+
+        try {
+            sysGroup.setUpdateTime(new Date());
+            boolean update = sysGroupService.updateById(sysGroup);
+            if (!update) {
+                response.setErrorCode(ResponseStatus.RESPONSE_OPERATION_ERROR.code);
+                response.setMessage(ResponseStatus.RESPONSE_OPERATION_ERROR.message);
+                return response;
+            }
+        } catch (Exception e) {
+            response.setErrorCode(ResponseStatus.RESPONSE_OPERATION_ERROR.code);
+            response.setMessage(ResponseStatus.RESPONSE_OPERATION_ERROR.message);
+            return response;
+        }
+        return response;
     }
 
     /**
@@ -70,16 +85,38 @@ public class SysGroupController {
      * @return 删除结果
      */
     //    @PreAuthorize("hasAnyAuthority()")
-    @PostMapping("deleteGroup")
-    public Response deleteById(SysGroup sysGroup) {
-        boolean b = sysGroup.deleteById();
-        return null;
+    @PostMapping("/deleteGroup")
+    public Response deleteById(Integer groupId) {
+        Response response = new Response();
+        try {
+           delGroupBatch(groupId);
+        } catch (Exception e) {
+            response.setErrorCode(ResponseStatus.RESPONSE_OPERATION_ERROR.code);
+            response.setMessage(ResponseStatus.RESPONSE_OPERATION_ERROR.message);
+            return response;
+        }
+        return response;
     }
 
-//    @PostMapping("selectAll")
-//    public Response findAll() {
-//
-//    }
+    /**批量删除部门子级*/
+    public void delGroupBatch(Integer groupId) {
+        //删除该部门
+        sysGroupService.removeById(groupId);
+        //查询下级
+        QueryWrapper<SysGroup> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("groupParentId",groupId);
+        List<SysGroup> list = sysGroupService.list(queryWrapper);
 
+        if(list!=null||list.size()!=0){
+            //递归删除
+            for (SysGroup sysGroup: list) {
+                delGroupBatch(sysGroup.getGroupId());
+            }
+
+        }else{
+            return;
+        }
+
+    }
 }
 
