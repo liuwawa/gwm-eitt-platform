@@ -179,7 +179,7 @@ public enum ResponseStatus {
     //==================================组织和分组相关======================================
     RESPONSE_GROUPING_HANDLE_SUCCESS(200,"操作成功"),
     RESPONSE_GROUPING_HANDLE_FAILED(500,"操作失败"),
-    RESPONSE_GROUPING_HANDLE_ERROR(110,"操作出现异常，请联系管理员");
+    RESPONSE_GROUPING_HANDLE_ERROR(110,"操作出现异常!");
     public final int code;
     public final String message;
 

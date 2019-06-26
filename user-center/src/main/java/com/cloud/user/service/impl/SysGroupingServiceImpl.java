@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -23,12 +24,12 @@ import java.util.Date;
 @Service
 @Slf4j
 public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGrouping> implements SysGroupingService {
-   /* @Override
+    @Override
     @Transactional
     public boolean save(SysGrouping sysGrouping) {
         // 非空验证
         if (null == sysGrouping.getGroupingName()) {
-            log.info("添加分组时传入了空的分组名字");
+            log.error("添加分组,获取到的分组名为空值");
             throw new ResultException(ResultEnum.GROUPINGNAME_NULL.getCode(),
                     ResultEnum.GROUPINGNAME_NULL.getMessage());
         }
@@ -36,5 +37,41 @@ public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGroup
         sysGrouping.setCreateTime(new Date());
         sysGrouping.setCreateBy(sysGrouping.getLoginAdminName());
         return sysGrouping.insert();
-    }*/
+    }
+
+    @Override
+    @Transactional
+    public boolean updateById(SysGrouping sysGrouping) {
+        // 非空验证
+        if (null == sysGrouping.getGroupingId()) {
+            log.error("编辑分组,获取到的分组id为空值");
+            throw new ResultException(ResultEnum.GROUPINGID_NULL.getCode(),
+                    ResultEnum.GROUPINGID_NULL.getMessage());
+        }
+        return sysGrouping.updateById();
+    }
+
+    @Override
+    @Transactional
+    public boolean updateByIds(List<Integer> groupingIds, String loginAdminName) {
+        // 非空验证
+        if (null == groupingIds && groupingIds.size() == 0) {
+            log.error("逻辑批量删除分组,获取到的分组id都为空值");
+            throw new ResultException(ResultEnum.GROUPINGID_NULL.getCode(),
+                    ResultEnum.GROUPINGID_NULL.getMessage());
+        }
+        // 构建对象
+        SysGrouping sysGrouping = SysGrouping.builder().isDel("1")
+                .deleteBy(loginAdminName).deleteTime(new Date()).build();
+        // 进行修改操作
+        for (Integer groupingId : groupingIds) {
+            sysGrouping.setGroupingId(groupingId);
+            log.info("删除的分组id:{}", groupingId);
+            if (!sysGrouping.updateById()) {
+                throw new ResultException(ResultEnum.GROUPINGID_NULL.getCode(),
+                        ResultEnum.GROUPINGID_NULL.getMessage());
+            }
+        }
+        return true;
+    }
 }

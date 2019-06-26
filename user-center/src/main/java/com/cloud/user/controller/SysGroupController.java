@@ -81,7 +81,7 @@ public class SysGroupController {
     }
 
     /**
-     * @param sysGroup 需要删除的sysGroup
+     * @param groupId 需要删除的sysGroup
      * @return 删除结果
      */
     //    @PreAuthorize("hasAnyAuthority()")

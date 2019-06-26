@@ -3,6 +3,8 @@ package com.cloud.user.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cloud.model.user.SysGrouping;
 
+import java.util.List;
+
 
 /**
  * <p>
@@ -13,5 +15,5 @@ import com.cloud.model.user.SysGrouping;
  * @since 2019-06-21
  */
 public interface SysGroupingService extends IService<SysGrouping> {
-
+    public boolean updateByIds(List<Integer> groupingIds, String loginAdminName);
 }

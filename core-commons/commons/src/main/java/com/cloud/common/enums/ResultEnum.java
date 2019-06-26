@@ -56,7 +56,8 @@ public enum ResultEnum {
     /**
      * 分组相关操作
      */
-    GROUPINGNAME_NULL(401,"添加的分组名字为空");
+    GROUPINGNAME_NULL(401,"分组名为空值"),
+    GROUPINGID_NULL(402,"分组的id为空值");
 
     private Integer code;
 

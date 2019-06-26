@@ -2,6 +2,7 @@ package com.cloud.user;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.model.common.Response;
@@ -67,8 +68,13 @@ public class GroupTest {
     @Test
     public void testSelectByPage() {
         SysGroup sysGroup = new SysGroup();
-        List<SysGroup> sysGroups =
-                sysGroup.selectPage(new Page<SysGroup>(1, 10), null).getRecords();
+        IPage<SysGroup> sysGroupIPage = sysGroup.selectPage(new Page<SysGroup>(5, 2), new QueryWrapper<SysGroup>().eq("isDel",0));
+        System.out.println(sysGroupIPage.getSize());
+        System.out.println(sysGroupIPage.getTotal());
+        System.out.println(sysGroupIPage.getCurrent());
+        System.out.println(sysGroupIPage.getPages());
+
+        List<SysGroup> sysGroups = sysGroupIPage.getRecords();
         for (SysGroup record : sysGroups) {
             System.out.println(record);
         }

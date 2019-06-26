@@ -88,13 +88,17 @@ public class SysGrouping extends SysRequestVo<SysGrouping> {
     private Date deleteTime;
 
     /**
+     * 分组删除人
+     */
+    @TableField("deleteBy")
+    private String deleteBy;
+    /**
      * 分组展示顺序
      */
     @TableField("groupingShowOrder")
     private Integer groupingShowOrder;
 
     /**
-     *
      * 指定主键
      */
     @Override
