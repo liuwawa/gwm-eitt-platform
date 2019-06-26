@@ -18,7 +18,7 @@ import java.util.List;
  * 组织表 前端控制器
  * </p>
  *
- * @author liuek
+ * @author wmy
  * @since 2019-06-21
  */
 @RestController
@@ -112,11 +112,17 @@ public class SysGroupController {
             for (SysGroup sysGroup: list) {
                 delGroupBatch(sysGroup.getGroupId());
             }
-
         }else{
             return;
         }
-
     }
+
+    @PostMapping("/select")
+    public Response findAll(){
+
+        return  null;
+    }
+
+
 }
 
