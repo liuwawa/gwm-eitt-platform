@@ -37,28 +37,26 @@
 										</div>
 									</form>
 	                   			</td>
-	                   			<td align="right">
-	                   				<button class="layui-btn layui-btn-sm" onclick="location.href='addUser.html'">
-                                      <i class="layui-icon">&#xe608;</i> 添加
-                                    </button>
+	                   			<td align="right" id="globalAdd">
+
 	                   			</td>
-	                   		</tr> 
+	                   		</tr>
 	                    </table>
 					</div>
                 </header>
-                
+
                 <div>
                     <div class="widget-body no-padding">
                         <table id="dt-table" class="table table-striped table-bordered table-hover" style="width:100%">
                             <thead>
                                 <tr>
-                                </tr>                       
+                                </tr>
                                 <tr>
                                     <th>username</th>
                                     <th>昵称</th>
                                     <th>手机号</th>
                                     <th>类型</th>
-									<th>状态</th>     
+									<th>状态</th>
 									<th>操作</th>
                                 </tr>
                             </thead>
@@ -86,9 +84,9 @@ var example;
 layui.use(['layer','util'], function(){
     var layer = layui.layer;
     var util = layui.util;
-    
+
     function init(){
-    	example = 
+    	example =
         	$('#dt-table').DataTable({
             	"searching": false,
             	"processing": false,
@@ -131,12 +129,12 @@ layui.use(['layer','util'], function(){
         				}
         			}
             	},
-            	"dom": "<'dt-toolbar'r>t<'dt-toolbar-footer'<'col-sm-10 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-10' p v>>",	
+            	"dom": "<'dt-toolbar'r>t<'dt-toolbar-footer'<'col-sm-10 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-10' p v>>",
                 "columns": [
                 	{ "data": "username", "defaultContent": ""},
                     { "data": "nickname", "defaultContent": ""},
                     { "data": "phone", "defaultContent": ""},
-                    { 
+                    {
                     	"data": "type",
                     	"defaultContent": "",
                     	"render": function (data, type, row) {
@@ -146,7 +144,7 @@ layui.use(['layer','util'], function(){
                     		return "前端app用户";
                     	}
                     },
-                    { 
+                    {
                     	"data": "enabled",
                     	"defaultContent": "",
                     	"render": function (data, type, row) {
@@ -156,14 +154,14 @@ layui.use(['layer','util'], function(){
                     		return "禁用";
                     	}
                     },
-                    { 
-                    	"data": "", 
+                    {
+                    	"data": "",
                     	"defaultContent": "",
                     	"render": function (data, type, row) {
                     		var id = row['id'];
                     		var href = "updateUser.html?id=" + id;
                             var edit = buttonEdit(href, "back:user:update", pers);
-                            
+
                             //重置密码
                             var resetPassword = "";
                             if($.inArray("back:user:password", pers) >= 0){
@@ -171,7 +169,7 @@ layui.use(['layer','util'], function(){
                             	btn.attr("onclick", 'resetPassword(' +id+')');
                             	resetPassword = btn.prop("outerHTML");
                             }
-                            
+
                             //分配角色
                             var setRoles = "";
                             if($.inArray("back:user:role:set", pers) >= 0){
@@ -184,6 +182,12 @@ layui.use(['layer','util'], function(){
                     },
                 ],
             } );
+	debugger;
+		if($.inArray("back:add:all", pers) >= 0){
+			$("globalAdd").html("<button class=\"layui-btn layui-btn-sm\" onclick=\"location.href='addUser.html'\">\n" +
+					"                                      <i class=\"layui-icon\">&#xe608;</i> 添加\n" +
+					"                                    </button>");
+		}
     }
 
     init();
@@ -204,7 +208,7 @@ function resetPassword(id){
 		                });
 					}
 				});
-				
+
 			}
 		});
 }
@@ -217,7 +221,7 @@ function setRoles(id){
 		maxmin: true,
 		shadeClose: true,
 		content: ['setRoles.html?userId='+id]
-			
+
 	});
 }
 
