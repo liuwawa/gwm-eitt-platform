@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.model.common.Response;
 import com.cloud.model.user.SysGroup;
+import com.cloud.model.user.SysGroupExpand;
 import com.cloud.model.user.SysGrouping;
 import com.cloud.user.controller.SysGroupController;
 import com.cloud.user.controller.SysGroupingController;
@@ -120,8 +121,22 @@ public class GroupTest {
     @Test
     public void test(){
         SysGroup sysGroup = SysGroup.builder().groupName("1213154").build();
-        Response response = controller.saveGroup(sysGroup);
-        System.out.println(response);
+    }
+    @Test
+    public void testSaveSysGroup(){
+        ResultVo resultVo = controller.saveGroup(SysGroup.builder().groupTel("122345678").groupId(260).build(), null);
+
     }
 
+    @Test
+    public void testSave2(){
+        SysGroup sysGroup = SysGroup.builder().groupTel("5555558").groupName("最新的group测试").build();
+
+        sysGroupService.saveGroupAndGroupExpand(sysGroup,new SysGroupExpand());
+
+    }
+    @Test
+    public void testFindSysGroupById(){
+        controller.findGroupById(340);
+    }
 }

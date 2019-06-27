@@ -98,7 +98,7 @@ public class SysGroup extends Model<SysGroup> {
     private String isUpdate;
 
     /**
-     * 删除标识（0代表存在，2代表已删除）
+     * 删除标识（0代表存在，1代表已删除）
      */
     @TableField("isDel")
     private String isDel;
@@ -138,7 +138,11 @@ public class SysGroup extends Model<SysGroup> {
      */
     @TableField("updateTime")
     private Date updateTime;
-
+    /**
+     * 当前操作人
+     */
+    @TableField(exist = false)
+    private String loginAdminName;
 
     /**
      * 指定主键

@@ -25,7 +25,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SysGrouping extends SysRequestVo<SysGrouping> {
+public class SysGrouping extends Model<SysGrouping> {
 
     /**
      * 分组表id主键
@@ -97,6 +97,11 @@ public class SysGrouping extends SysRequestVo<SysGrouping> {
      */
     @TableField("groupingShowOrder")
     private Integer groupingShowOrder;
+    /**
+     * 当前操作人
+     */
+    @TableField(exist = false)
+    private String loginAdminName;
 
     /**
      * 指定主键

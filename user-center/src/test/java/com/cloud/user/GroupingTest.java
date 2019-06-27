@@ -101,4 +101,10 @@ public class GroupingTest {
         ResultVo admin = sysGroupingController.deleteGroupings(groupingIds, "admin");
         System.out.println(admin);
     }
+
+    @Test
+    public void testDelete(){
+        SysGrouping sysGrouping = SysGrouping.builder().groupingId(4564).groupingRemark("123").build();
+        System.out.println(sysGrouping.updateById());
+    }
 }

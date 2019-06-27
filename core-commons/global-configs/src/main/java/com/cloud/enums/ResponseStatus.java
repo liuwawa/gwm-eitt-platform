@@ -103,9 +103,9 @@ public enum ResponseStatus {
     RESPONSE_NO_YEARMEETING_ERROR(10106, "您还没有年会券"),
     RESPONSE_MONEY_TO_HUGE_ERROR(10107, "支付金额过大,请您选择线下支付"),
     RESPONSE_DATA_GET_ERROR(10454, "数据获取超时!"),
-    RESPONSE_ID_GET_NULL(10456,"ID不能为空!"),
-    RESPONSE_CLIENT_ID_ERROR(10457,"clientId或是clientSecret输入有误!"),
-    RESPONSE_ACCESS_DENIED_ERROR(10458,"不允许访问"),
+    RESPONSE_ID_GET_NULL(10456, "ID不能为空!"),
+    RESPONSE_CLIENT_ID_ERROR(10457, "clientId或是clientSecret输入有误!"),
+    RESPONSE_ACCESS_DENIED_ERROR(10458, "不允许访问"),
     RESPONSE_UPDATA_DATA_ERROR(10111, "修改数据失败"),
     RESPONSE_PHP_ERROR(8899, "未知错误!"),
     RESPONSE_INTERNAL_ERROR(9999, "服务器超时"),
@@ -127,7 +127,7 @@ public enum ResponseStatus {
     //=======================================提现记录查询==========================================
     RESPONSE_WITHDRAW_RECORD_ERROR(10662, "提现记录查询超时!"),
     RESPONSE_WITHDRAW_RECORD_SUCCEED(10000, "提现记录查询成功!"),
-    RESPONSE_WITHDRAW_RECORD_ZERO(10449,"申请提现金额不能为0元"),
+    RESPONSE_WITHDRAW_RECORD_ZERO(10449, "申请提现金额不能为0元"),
     //======================================收益明细查询=============================================
     RESPONSE_RETURNS_DETAILED_ERROR(10663, "收益明细查询超时!"),
     RESPONSE_RETURNS_DETAILED_SUCCEED(10000, "收益明细查询成功!"),
@@ -174,26 +174,32 @@ public enum ResponseStatus {
     //==================================fx=============================================
     RESPONSE_MAX_KEY_ERROR(30000, "获取最大key失败"),
     //==================================手机验证码======================================
-    RESPONSE_PHONE_MESSAGE_SUCCESS(17777,"短信验证码发送成功"),
-    RESPONSE_PHONE_MESSAGE_ERROR(17778,"短信验证码发送失败"),
+    RESPONSE_PHONE_MESSAGE_SUCCESS(17777, "短信验证码发送成功"),
+    RESPONSE_PHONE_MESSAGE_ERROR(17778, "短信验证码发送失败"),
     //==================================组织和分组相关======================================
-    RESPONSE_GROUPING_HANDLE_SUCCESS(200,"操作成功"),
-    RESPONSE_GROUPING_HANDLE_FAILED(500,"操作失败"),
-    RESPONSE_GROUPING_HANDLE_ERROR(110,"操作出现异常!");
+    RESPONSE_GROUPING_HANDLE_SUCCESS(200, "操作成功"),
+    RESPONSE_GROUPING_HANDLE_FAILED(500, "操作失败"),
+    RESPONSE_GROUPING_HANDLE_ERROR(110, "操作出现异常!"),
+
+    RESPONSE_GROUP_HANDLE_SUCCESS(200, "操作成功"),
+    RESPONSE_GROUP_HANDLE_FAILED(500, "操作失败"),
+    RESPONSE_GROUP_HANDLE_ERROR(110, "操作出现异常!");
+
     public final int code;
     public final String message;
 
-   ResponseStatus(int code, String message) {
+    ResponseStatus(int code, String message) {
         this.code = code;
         this.message = message;
     }
 
     /**
      * 根据错误信息来获取code
+     *
      * @param value
      * @return
      */
-    public static Integer getKeyForValue(String value){
+    public static Integer getKeyForValue(String value) {
         int code = Optional.of(
                 Arrays.stream(ResponseStatus.values())
                         .filter(r -> r.message.equals(value)))

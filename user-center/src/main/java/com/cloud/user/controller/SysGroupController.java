@@ -1,17 +1,16 @@
 package com.cloud.user.controller;
 
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
-import com.cloud.model.common.Response;
+import com.cloud.model.user.GroupWithExpand;
 import com.cloud.model.user.SysGroup;
+import com.cloud.model.user.SysGroupExpand;
+import com.cloud.user.service.SysGroupExpandService;
 import com.cloud.user.service.SysGroupService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * <p>
@@ -23,106 +22,55 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/group")
+@Slf4j
 public class SysGroupController {
     @Autowired
     private SysGroupService sysGroupService;
 
+    @Autowired
+    private SysGroupExpandService sysGroupExpandService;
 
     /**
-     * @param sysGroup 前台传来参数
-     * @return 新增结果
-     * 新增一个组织(主表)
+     * @param groupWithExpand 主表和拓展表的数据
+     * @return 保存结果
+     * 保存完整的一个组织
      */
-//    @PreAuthorize("hasAnyAuthority()")
     @PostMapping("/saveGroup")
-    public Response saveGroup(SysGroup sysGroup) {
-        Response response = new Response();
+    public ResultVo saveGroup(@RequestBody GroupWithExpand groupWithExpand) {
+        SysGroup sysGroup = groupWithExpand.getSysGroup();
+        SysGroupExpand sysGroupExpand = groupWithExpand.getSysGroupExpand();
         try {
-            boolean save = sysGroupService.save(sysGroup);
-            if (!save) {
-                response.setErrorCode(ResponseStatus.RESPONSE_OPERATION_ERROR.code);
-                response.setMessage(ResponseStatus.RESPONSE_OPERATION_ERROR.message);
-                return response;
+            if (!sysGroupService.saveGroupAndGroupExpand(sysGroup, sysGroupExpand)) {
+                log.info("操作失败，添加的组织名称:{}", sysGroup.getGroupName());
+                return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.code, ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.message, null);
             }
         } catch (Exception e) {
-            response.setErrorCode(ResponseStatus.RESPONSE_OPERATION_ERROR.code);
-            response.setMessage(ResponseStatus.RESPONSE_OPERATION_ERROR.message);
-            return response;
+            log.error("添加组织，出现异常！");
+            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.message, null);
         }
-        response.setErrorCode(ResponseStatus.RESPONSE_SUCCESS.code);
-        response.setMessage(ResponseStatus.RESPONSE_SUCCESS.message);
-        return response;
+        log.info("操作成功，添加的组织名称:{}", sysGroup.getGroupName());
+        return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
     }
 
     /**
-     * @param sysGroup 需要修改的组织
-     * @return 修改结果
-     * 修改组织表
+     * @param groupId 组织id
+     * @return 查询结果
+     * 根据组织id查询详细数据
      */
-    //    @PreAuthorize("hasAnyAuthority()")
-    @PostMapping("/updateGroup")
-    public Response updateById(SysGroup sysGroup) {
-        Response response = new Response();
-
+    @GetMapping("/findGroup/{groupId}")
+    public ResultVo<GroupWithExpand> findGroupById(@PathVariable Integer groupId) {
         try {
-            sysGroup.setUpdateTime(new Date());
-            boolean update = sysGroupService.updateById(sysGroup);
-            if (!update) {
-                response.setErrorCode(ResponseStatus.RESPONSE_OPERATION_ERROR.code);
-                response.setMessage(ResponseStatus.RESPONSE_OPERATION_ERROR.message);
-                return response;
-            }
+            GroupWithExpand groupWithExpand = sysGroupService.selectByGroupId(groupId);
+            return new ResultVo<GroupWithExpand>(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, groupWithExpand);
         } catch (Exception e) {
-            response.setErrorCode(ResponseStatus.RESPONSE_OPERATION_ERROR.code);
-            response.setMessage(ResponseStatus.RESPONSE_OPERATION_ERROR.message);
-            return response;
-        }
-        return response;
-    }
-
-    /**
-     * @param groupId 需要删除的sysGroup
-     * @return 删除结果
-     */
-    //    @PreAuthorize("hasAnyAuthority()")
-    @PostMapping("/deleteGroup")
-    public Response deleteById(Integer groupId) {
-        Response response = new Response();
-        try {
-           delGroupBatch(groupId);
-        } catch (Exception e) {
-            response.setErrorCode(ResponseStatus.RESPONSE_OPERATION_ERROR.code);
-            response.setMessage(ResponseStatus.RESPONSE_OPERATION_ERROR.message);
-            return response;
-        }
-        return response;
-    }
-
-    /**批量删除部门子级*/
-    public void delGroupBatch(Integer groupId) {
-        //删除该部门
-        sysGroupService.removeById(groupId);
-        //查询下级
-        QueryWrapper<SysGroup> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("groupParentId",groupId);
-        List<SysGroup> list = sysGroupService.list(queryWrapper);
-
-        if(list!=null||list.size()!=0){
-            //递归删除
-            for (SysGroup sysGroup: list) {
-                delGroupBatch(sysGroup.getGroupId());
-            }
-        }else{
-            return;
+            log.error("根据id查询组织，出现异常！");
+            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.message, null);
         }
     }
 
-    @PostMapping("/select")
-    public Response findAll(){
-
-        return  null;
+    @PutMapping
+    public ResultVo updateGroup() {
+        return null;
     }
-
-
 }
 

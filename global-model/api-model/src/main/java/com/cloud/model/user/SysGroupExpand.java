@@ -106,19 +106,12 @@ public class SysGroupExpand extends Model<SysGroupExpand> {
     private String gUnittopLeader;
 
     /**
-     * 是否删除(0存在，1删除)
-     */
-    @TableField("isDel")
-    private String isDel;
-
-    /**
      * 关联group主表的标识
      */
     @TableField("groupId")
     private Integer groupId;
 
     /**
-     *
      * 指定主键
      */
     @Override

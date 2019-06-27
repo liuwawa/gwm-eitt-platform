@@ -54,10 +54,18 @@ public enum ResultEnum {
 
     /*******************************************************/
     /**
-     * 分组相关操作
+     * 分组相关
      */
     GROUPINGNAME_NULL(401,"分组名为空值"),
-    GROUPINGID_NULL(402,"分组的id为空值");
+    GROUPINGID_NULL(402,"分组的id为空值"),
+
+    /**
+     * 组织相关
+     */
+    GROUPID_NULL(401,"组织id为空值"),
+    GROUPNAME_NULL(402,"组织名为空值"),
+
+    GROUP_NOT_EXIST(403,"该组织不存在");
 
     private Integer code;
 

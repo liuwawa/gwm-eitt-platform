@@ -39,12 +39,11 @@ public class SysGroupingController {
     public ResultVo saveGrouping(@RequestBody SysGrouping sysGrouping) {
         try {
             if (!sysGroupingService.save(sysGrouping)) {
-                log.info("添加分组操作成功，添加的分组名称:{}", sysGrouping.getGroupingName());
+                log.info("添加分组操作失败，添加的分组名称:{}", sysGrouping.getGroupingName());
                 return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_FAILED.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_FAILED.message, null);
             }
             log.info("添加分组操作成功，添加的分组名称:{}", sysGrouping.getGroupingName());
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message, null);
-
         } catch (Exception e) {
             log.error("添加分组，出现异常！");
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.message, null);
@@ -107,7 +106,7 @@ public class SysGroupingController {
 
     /**
      * @return 个数和结果
-     * 查询所有的grouping数据
+     * 查询所有的分组数据
      */
     @RequestMapping("/allGrouping")
     public Page<SysGrouping> selectAllGrouping() {

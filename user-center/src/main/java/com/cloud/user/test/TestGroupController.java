@@ -60,12 +60,7 @@ public class TestGroupController {
 
         System.out.println(contentAsString);
     }
-    @Test
-    public void save(){
-        SysGroup sysGroup = SysGroup.builder().groupName("12131").build();
-        Response response = groupController.saveGroup(sysGroup);
-        System.out.println(response);
-    }
+
 
 
 }
