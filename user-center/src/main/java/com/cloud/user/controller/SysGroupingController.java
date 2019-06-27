@@ -92,7 +92,7 @@ public class SysGroupingController {
      * @return 分页查询结果
      * 分组的分页查询
      */
-    @RequestMapping(value = "/groupingByPage", params = {"pageIndex", "pageSize"})
+    @GetMapping(value = "/groupingByPage", params = {"pageIndex", "pageSize"})
     public Page<SysGrouping> selectGroupingByPage(Integer pageIndex, Integer pageSize) {
         pageSize = (null == pageSize) ? pageSize = 15 : pageSize;
         // 分页查isDel为0的数据
@@ -108,7 +108,7 @@ public class SysGroupingController {
      * @return 个数和结果
      * 查询所有的分组数据
      */
-    @RequestMapping("/allGrouping")
+    @GetMapping(value = "/allGrouping")
     public Page<SysGrouping> selectAllGrouping() {
         int count = sysGroupingService.count();
         log.info("总条数:{}", count);
@@ -147,7 +147,7 @@ public class SysGroupingController {
      * 批量删除分组
      */
     @PutMapping(value = "/deleteGroupings", params = {"groupingIds", "loginAdminName"})
-    public ResultVo deleteGroupings(List<Integer> groupingIds, String loginAdminName) {
+    public ResultVo deleteGroupings(@RequestBody List<Integer> groupingIds, String loginAdminName) {
         try {
             sysGroupingService.updateByIds(groupingIds, loginAdminName);
             log.info("删除分组操作成功，删除的分组Id:{}", groupingIds);

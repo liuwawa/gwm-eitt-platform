@@ -1,12 +1,10 @@
 package com.cloud.user.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.user.GroupWithExpand;
 import com.cloud.model.user.SysGroup;
 import com.cloud.model.user.SysGroupExpand;
-import com.cloud.user.service.SysGroupExpandService;
 import com.cloud.user.service.SysGroupService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +25,6 @@ public class SysGroupController {
     @Autowired
     private SysGroupService sysGroupService;
 
-    @Autowired
-    private SysGroupExpandService sysGroupExpandService;
 
     /**
      * @param groupWithExpand 主表和拓展表的数据
@@ -61,6 +57,7 @@ public class SysGroupController {
     public ResultVo<GroupWithExpand> findGroupById(@PathVariable Integer groupId) {
         try {
             GroupWithExpand groupWithExpand = sysGroupService.selectByGroupId(groupId);
+            log.info("根据id查找组织成功，查找id:{}", groupId);
             return new ResultVo<GroupWithExpand>(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, groupWithExpand);
         } catch (Exception e) {
             log.error("根据id查询组织，出现异常！");
@@ -68,9 +65,27 @@ public class SysGroupController {
         }
     }
 
-    @PutMapping
-    public ResultVo updateGroup() {
-        return null;
+    /**
+     * @param groupWithExpand 主表和拓展表的数据
+     * @return 修改结果
+     * 修改组织和其拓展信息
+     */
+    @PutMapping("/updateGroup")
+    public ResultVo updateGroup(@RequestBody GroupWithExpand groupWithExpand) {
+        SysGroup sysGroup = groupWithExpand.getSysGroup();
+        SysGroupExpand sysGroupExpand = groupWithExpand.getSysGroupExpand();
+        try {
+            if (!sysGroupService.updateGroupAndGroupExpand(sysGroup, sysGroupExpand)) {
+                log.info("操作失败，修改的组织名称:{}", sysGroup.getGroupName());
+                return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.code, ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.message, null);
+            }
+        } catch (Exception e) {
+            log.error("修改组织，出现异常！");
+            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.message, null);
+        }
+        log.info("操作成功，修改的组织名称:{}", sysGroup.getGroupName());
+        return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
     }
+
 }
 

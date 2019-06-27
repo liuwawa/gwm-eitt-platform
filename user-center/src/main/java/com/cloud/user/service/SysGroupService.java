@@ -28,4 +28,13 @@ public interface SysGroupService extends IService<SysGroup> {
      * 根据id查找出整个组织的详细信息
      */
     GroupWithExpand selectByGroupId(Integer groupId);
+
+    /**
+     *
+     * @param sysGroup 组织主表数据
+     * @param sysGroupExpand 组织拓展表数据
+     * @return 操作结果
+     * 编辑组织信息和其拓展信息
+     */
+    boolean updateGroupAndGroupExpand(SysGroup sysGroup, SysGroupExpand sysGroupExpand);
 }

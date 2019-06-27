@@ -58,7 +58,7 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         SysGroup group = sysGroup.selectById();
         // 判断是否存在该组织
         if (null == group) {
-            log.error("根据id查找组织时，组织主表中不存在，id:{}", groupId);
+            log.error("根据id查找组织时，组织主表中不存在该id的组织，id:{}", groupId);
             throw new ResultException(ResultEnum.GROUP_NOT_EXIST.getCode(),
                     ResultEnum.GROUP_NOT_EXIST.getMessage());
         }
@@ -69,6 +69,23 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
 
         // 构建组织对象，并返回
         return new GroupWithExpand(group, groupExpand);
+    }
+
+    @Override
+    @Transactional
+    public boolean updateGroupAndGroupExpand(SysGroup sysGroup, SysGroupExpand sysGroupExpand) {
+        // 非空验证
+        if (null == sysGroup.getGroupName()) {
+            log.error("修改组织的id为空值!");
+            throw new ResultException(ResultEnum.GROUPID_NULL.getCode(),
+                    ResultEnum.GROUPID_NULL.getMessage());
+        }
+        // 先修改group主表
+        boolean groupSave = sysGroup.updateById();
+        // 修改groupExpand拓展表
+        boolean groupExpandSave = sysGroupExpand.update(new QueryWrapper<SysGroupExpand>().eq("groupId",sysGroup.getGroupId()));
+
+        return groupSave && groupExpandSave;
     }
 
 }
