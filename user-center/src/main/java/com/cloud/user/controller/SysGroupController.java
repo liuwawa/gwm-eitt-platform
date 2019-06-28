@@ -79,6 +79,7 @@ public class SysGroupController {
      */
     @PutMapping("/updateGroup")
     public ResultVo updateGroup(@RequestBody BaseEntity baseEntity) {
+        
         SysGroup sysGroup = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroup.class);
         SysGroupExpand sysGroupExpand = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroupExpand.class);
         sysGroup.setUpdateTime(new Date());
