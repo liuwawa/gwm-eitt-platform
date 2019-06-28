@@ -7,6 +7,7 @@ import com.cloud.model.user.SysGrouping;
 import com.cloud.user.dao.SysGroupingDao;
 import com.cloud.user.service.SysGroupingService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +29,7 @@ public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGroup
     @Transactional
     public boolean save(SysGrouping sysGrouping) {
         // 非空验证
-        if (null == sysGrouping.getGroupingName()) {
+        if (StringUtils.isBlank(sysGrouping.getGroupingName())) {
             log.error("添加分组,获取到的分组名为空值");
             throw new ResultException(ResultEnum.GROUPINGNAME_NULL.getCode(),
                     ResultEnum.GROUPINGNAME_NULL.getMessage());

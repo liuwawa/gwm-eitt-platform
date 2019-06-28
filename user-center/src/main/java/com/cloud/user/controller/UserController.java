@@ -10,6 +10,7 @@ import com.cloud.model.user.LoginAppUser;
 import com.cloud.model.user.SysRole;
 import com.cloud.user.feign.SmsClient;
 import com.cloud.user.service.SysUserService;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import java.util.Set;
 
 @Slf4j
 @RestController
+@Api(value = "用户操作",tags = {"userController"})
 public class UserController {
 
     @Autowired
