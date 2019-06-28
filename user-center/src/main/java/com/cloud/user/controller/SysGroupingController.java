@@ -7,6 +7,8 @@ import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.common.Page;
 import com.cloud.model.user.SysGrouping;
+import com.cloud.response.BaseEntity;
+import com.cloud.response.ObjectConversionEntityUtil;
 import com.cloud.user.service.SysGroupingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,13 +145,13 @@ public class SysGroupingController {
 
 
     /**
-     * @param groupingIds    需要删除的分组id
-     * @param loginAdminName 当前操作人
      * @return 删除结果
      * 批量删除分组
      */
-    @PutMapping(value = "/deleteGroupings", params = {"groupingIds", "loginAdminName"})
-    public ResultVo deleteGroupings(@RequestBody List<Integer> groupingIds, String loginAdminName) {
+    @PutMapping(value = "/deleteGroupings")
+    public ResultVo deleteGroupings(@RequestBody BaseEntity baseEntity/*@RequestParam List<Integer> groupingIds,@RequestParam String loginAdminName*/) {
+        List groupingIds = ObjectConversionEntityUtil.getBaseData(baseEntity, List.class);
+        String loginAdminName = ObjectConversionEntityUtil.getBaseData(baseEntity, String.class);
         try {
             sysGroupingService.updateByIds(groupingIds, loginAdminName);
             log.info("删除分组操作成功，删除的分组Id:{}", groupingIds);
