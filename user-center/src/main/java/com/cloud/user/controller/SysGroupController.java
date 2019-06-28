@@ -144,6 +144,7 @@ public class SysGroupController {
      */
     @GetMapping("/getAllGroup")
     public ResultVo<SysGroup> getAllGroup() {
+        
         List<SysGroup> list = sysGroupService.list(new QueryWrapper<SysGroup>().lambda()
                 .eq(SysGroup::getIsDel, "0")
                 .in(SysGroup::getGroupParentId, 0, 1)
