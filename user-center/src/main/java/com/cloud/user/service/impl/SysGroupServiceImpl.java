@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -85,14 +86,52 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
                     ResultEnum.GROUPID_NULL.getMessage());
         }
 
-        sysGroup.setUpdateBy(sysGroup.getLoginAdminName());
-        sysGroup.setUpdateTime(new Date());
         // 先修改group主表
         boolean groupSave = sysGroup.updateById();
-        // 修改groupExpand拓展表
+        // 再修改groupExpand拓展表
         boolean groupExpandSave = sysGroupExpand.update(new QueryWrapper<SysGroupExpand>().eq("groupId", sysGroup.getGroupId()));
 
         return groupSave && groupExpandSave;
     }
 
+
+    @Override
+    @Transactional
+    public boolean updateByIds(List<Integer> groupIds, String loginAdminName) {
+        if (null == groupIds || groupIds.size() == 0) {
+            log.error("逻辑批量删除组织,获取到的组织id都为空值");
+            throw new ResultException(ResultEnum.GROUPID_NULL.getCode(),
+                    ResultEnum.GROUPID_NULL.getMessage());
+        }
+        // 构建对象
+        SysGroup sysGroup = SysGroup.builder().isDel("1")
+                .deleteBy(loginAdminName).deleteTime(new Date()).build();
+        // 进行修改操作
+        for (Integer groupingId : groupIds) {
+            sysGroup.setGroupId(groupingId);
+            log.info("删除的组织id:{}", groupingId);
+            if (!sysGroup.updateById()) {
+                throw new ResultException(ResultEnum.GROUPINGID_NULL.getCode(),
+                        ResultEnum.GROUPINGID_NULL.getMessage());
+            }
+        }
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean updateById(SysGroup sysGroup) {
+        // 非空验证
+        if (null == sysGroup.getGroupId()) {
+            log.error("删除分组,获取到的分组id为空值");
+            throw new ResultException(ResultEnum.GROUPINGID_NULL.getCode(),
+                    ResultEnum.GROUPINGID_NULL.getMessage());
+        }
+        // 赋值删除人，删除时间，删除标识
+        sysGroup.setDeleteTime(new Date());
+        sysGroup.setDeleteBy(sysGroup.getLoginAdminName());
+        sysGroup.setIsDel("1");
+
+        return sysGroup.updateById();
+    }
 }

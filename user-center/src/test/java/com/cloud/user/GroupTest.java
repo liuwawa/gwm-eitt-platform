@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.model.common.Response;
+import com.cloud.model.user.GroupWithExpand;
 import com.cloud.model.user.SysGroup;
 import com.cloud.model.user.SysGroupExpand;
 import com.cloud.model.user.SysGrouping;
@@ -137,6 +138,16 @@ public class GroupTest {
     }
     @Test
     public void testFindSysGroupById(){
-        controller.findGroupById(260);
+        ResultVo<GroupWithExpand> groupById = controller.findGroupById(260);
+        GroupWithExpand data = groupById.getData();
+        System.out.println(data);
+        System.out.println(groupById);
+    }
+
+    @Test
+    public void testDeleteGroup(){
+        SysGroup sysGroup = SysGroup.builder().groupId(260).build();
+//        ResultVo resultVo = controller.deleteGroup(sysGroup);
+//        System.out.println(resultVo);
     }
 }

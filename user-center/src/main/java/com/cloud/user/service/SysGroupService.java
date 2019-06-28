@@ -5,6 +5,8 @@ import com.cloud.model.user.GroupWithExpand;
 import com.cloud.model.user.SysGroup;
 import com.cloud.model.user.SysGroupExpand;
 
+import java.util.List;
+
 /**
  * <p>
  * 组织表 服务类
@@ -30,11 +32,19 @@ public interface SysGroupService extends IService<SysGroup> {
     GroupWithExpand selectByGroupId(Integer groupId);
 
     /**
-     *
-     * @param sysGroup 组织主表数据
+     * @param sysGroup       组织主表数据
      * @param sysGroupExpand 组织拓展表数据
      * @return 操作结果
      * 编辑组织信息和其拓展信息
      */
     boolean updateGroupAndGroupExpand(SysGroup sysGroup, SysGroupExpand sysGroupExpand);
+
+
+    /**
+     * @param groupIds       需要删除的组织id
+     * @param loginAdminName 当前操作人
+     * @return 操作结果
+     * 逻辑批量删除组织
+     */
+    boolean updateByIds(List<Integer> groupIds, String loginAdminName);
 }

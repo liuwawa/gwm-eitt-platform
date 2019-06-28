@@ -1,6 +1,7 @@
 package com.cloud.user.controller;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.vo.ResultVo;
@@ -14,8 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -47,7 +50,7 @@ public class SysGroupingController {
             log.info("添加分组操作成功，添加的分组名称:{}", sysGrouping.getGroupingName());
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
-            log.error("添加分组，出现异常！");
+            log.error("添加分组，出现异常！",e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.message, null);
         }
 
@@ -82,7 +85,7 @@ public class SysGroupingController {
             log.info("编辑分组操作成功，编辑的分组id:{}", sysGrouping.getGroupingId());
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
-            log.error("编辑分组，出现异常！");
+            log.error("编辑分组，出现异常！",e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.message, null);
         }
 
@@ -108,7 +111,7 @@ public class SysGroupingController {
     }
 
     /**
-     * @return 个数和结果
+     * @return 总个数和结果
      * 查询所有的分组数据
      */
     @GetMapping(value = "/allGrouping")
@@ -116,7 +119,7 @@ public class SysGroupingController {
         int count = sysGroupingService.count();
         log.info("总条数:{}", count);
         return new Page<SysGrouping>(count, sysGroupingService.list(new QueryWrapper<SysGrouping>()
-                .eq("isDel",0).orderByAsc("groupingShowOrder")));
+                .eq("isDel", 0).orderByAsc("groupingShowOrder")));
     }
 
     /**
@@ -138,26 +141,28 @@ public class SysGroupingController {
             log.info("删除分组操作成功，删除的分组Id:{}", sysGrouping.getGroupingId());
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
-            log.error("删除分组(单删)，出现异常！");
+            log.error("删除分组(单删)，出现异常！",e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.message, null);
         }
     }
 
 
     /**
-     * @return 删除结果
-     * 批量删除分组
+     * @param map 需要groupingIds（List），loginAdminName（String）
+     * @return 操作结果
+     * 批量删除(逻辑删除)
      */
     @PutMapping(value = "/deleteGroupings")
-    public ResultVo deleteGroupings(@RequestBody BaseEntity baseEntity/*@RequestParam List<Integer> groupingIds,@RequestParam String loginAdminName*/) {
-        List groupingIds = ObjectConversionEntityUtil.getBaseData(baseEntity, List.class);
-        String loginAdminName = ObjectConversionEntityUtil.getBaseData(baseEntity, String.class);
+    public ResultVo deleteGroupings(@RequestBody Map map) {
+        // 获取数据
+        List<Integer> groupingIds = (List<Integer>) map.get("groupingIds");
+        String loginAdminName = (String) map.get("loginAdminName");
         try {
             sysGroupingService.updateByIds(groupingIds, loginAdminName);
             log.info("删除分组操作成功，删除的分组Id:{}", groupingIds);
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
-            log.error("删除分组(批删)，出现异常！");
+            log.error("删除分组(批删)，出现异常！",e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.message, null);
         }
     }

@@ -31,7 +31,7 @@ public class GroupingTest {
     @Test
     public void testSave() {
 
-        SysGrouping sysGrouping = SysGrouping.builder().groupingName("122")
+        SysGrouping sysGrouping = SysGrouping.builder()
                 .groupingNumber(0).groupingRemark("这个是测试的").createBy("liuek")
                 .createTime(new Date()).build();
         sysGrouping.setLoginAdminName("刘恩科");
@@ -98,8 +98,8 @@ public class GroupingTest {
     @Test
     public void testDeleteGroupings(){
         List<Integer> groupingIds = Arrays.asList(2,3,4,5,6,7);
-        ResultVo admin = sysGroupingController.deleteGroupings(groupingIds, "admin");
-        System.out.println(admin);
+        //ResultVo admin = sysGroupingController.deleteGroupings(groupingIds, "admin");
+       // System.out.println(admin);
     }
 
     @Test

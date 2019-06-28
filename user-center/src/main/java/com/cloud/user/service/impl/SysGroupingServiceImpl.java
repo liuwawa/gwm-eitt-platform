@@ -55,7 +55,7 @@ public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGroup
     @Transactional
     public boolean updateByIds(List<Integer> groupingIds, String loginAdminName) {
         // 非空验证
-        if (null == groupingIds && groupingIds.size() == 0) {
+        if (null == groupingIds || groupingIds.size() == 0) {
             log.error("逻辑批量删除分组,获取到的分组id都为空值");
             throw new ResultException(ResultEnum.GROUPINGID_NULL.getCode(),
                     ResultEnum.GROUPINGID_NULL.getMessage());
