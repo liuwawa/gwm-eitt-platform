@@ -92,13 +92,14 @@ public class SysGroupingController {
      * @return 分页查询结果
      * 分组的分页查询
      */
-    @GetMapping(value = "/groupingByPage", params = {"pageIndex", "pageSize"})
-    public Page<SysGrouping> selectGroupingByPage(Integer pageIndex, Integer pageSize) {
+    @GetMapping(value = "/groupingByPage")
+    public Page<SysGrouping> selectGroupingByPage(@RequestParam(value = "pageIndex") Integer pageIndex,
+                                                  @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         pageSize = (null == pageSize) ? pageSize = 15 : pageSize;
         // 分页查isDel为0的数据
         IPage<SysGrouping> groupingIPage =
                 sysGroupingService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<SysGrouping>(pageIndex, pageSize),
-                        new QueryWrapper<SysGrouping>().eq("isDel", 0));
+                        new QueryWrapper<SysGrouping>().eq("isDel", 0).orderByAsc("groupingShowOrder"));
         log.info("当前页:{},总页数:{},总个数:{},每页数:{}",
                 groupingIPage.getCurrent(), groupingIPage.getPages(), groupingIPage.getTotal(), groupingIPage.getSize());
         return new Page<SysGrouping>((int) groupingIPage.getTotal(), groupingIPage.getRecords());
@@ -112,7 +113,8 @@ public class SysGroupingController {
     public Page<SysGrouping> selectAllGrouping() {
         int count = sysGroupingService.count();
         log.info("总条数:{}", count);
-        return new Page<SysGrouping>(count, sysGroupingService.list());
+        return new Page<SysGrouping>(count, sysGroupingService.list(new QueryWrapper<SysGrouping>()
+                .eq("isDel",0).orderByAsc("groupingShowOrder")));
     }
 
     /**
@@ -134,7 +136,7 @@ public class SysGroupingController {
             log.info("删除分组操作成功，删除的分组Id:{}", sysGrouping.getGroupingId());
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
-            log.error("删除分组，出现异常！");
+            log.error("删除分组(单删)，出现异常！");
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.message, null);
         }
     }
@@ -153,7 +155,7 @@ public class SysGroupingController {
             log.info("删除分组操作成功，删除的分组Id:{}", groupingIds);
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
-            log.error("删除分组，出现异常！");
+            log.error("删除分组(批删)，出现异常！");
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.message, null);
         }
     }

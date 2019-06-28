@@ -137,6 +137,6 @@ public class GroupTest {
     }
     @Test
     public void testFindSysGroupById(){
-        controller.findGroupById(340);
+        controller.findGroupById(260);
     }
 }

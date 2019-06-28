@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
 /**
  * <p>
  * 组织表 服务实现类
@@ -35,6 +37,8 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
             throw new ResultException(ResultEnum.GROUPNAME_NULL.getCode(),
                     ResultEnum.GROUPNAME_NULL.getMessage());
         }
+        sysGroup.setCreateBy(sysGroup.getLoginAdminName());
+        sysGroup.setCreateTime(new Date());
         // 先添加group主表
         boolean groupSave = sysGroup.insert();
         // 给expand拓展表添加外键groupId
@@ -54,11 +58,11 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
                     ResultEnum.GROUPID_NULL.getMessage());
         }
         // 构建组织主表对象，填充数据
-        SysGroup sysGroup = SysGroup.builder().groupId(groupId).build();
-        SysGroup group = sysGroup.selectById();
+        SysGroup sysGroup = SysGroup.builder().build();
+        SysGroup group = sysGroup.selectOne(new QueryWrapper<SysGroup>().eq("isDel", 0).eq("groupId", groupId));
         // 判断是否存在该组织
         if (null == group) {
-            log.error("根据id查找组织时，组织主表中不存在该id的组织，id:{}", groupId);
+            log.error("根据id查找组织时，组织主表中不存在该id的组织，或者已经删除，id:{}", groupId);
             throw new ResultException(ResultEnum.GROUP_NOT_EXIST.getCode(),
                     ResultEnum.GROUP_NOT_EXIST.getMessage());
         }
@@ -80,10 +84,13 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
             throw new ResultException(ResultEnum.GROUPID_NULL.getCode(),
                     ResultEnum.GROUPID_NULL.getMessage());
         }
+
+        sysGroup.setUpdateBy(sysGroup.getLoginAdminName());
+        sysGroup.setUpdateTime(new Date());
         // 先修改group主表
         boolean groupSave = sysGroup.updateById();
         // 修改groupExpand拓展表
-        boolean groupExpandSave = sysGroupExpand.update(new QueryWrapper<SysGroupExpand>().eq("groupId",sysGroup.getGroupId()));
+        boolean groupExpandSave = sysGroupExpand.update(new QueryWrapper<SysGroupExpand>().eq("groupId", sysGroup.getGroupId()));
 
         return groupSave && groupExpandSave;
     }
