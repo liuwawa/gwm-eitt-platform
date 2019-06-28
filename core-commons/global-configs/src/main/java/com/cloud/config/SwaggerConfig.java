@@ -53,7 +53,7 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title("认证中心swagger接口文档")
                 .contact(
-                        new Contact("lz", "", "bgtz@163.com"))
+                        new Contact("lz", "", "greatwall@163.com"))
                 .version("1.0")
                 .build();
     }
