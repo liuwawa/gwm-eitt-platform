@@ -8,6 +8,7 @@ import com.cloud.enums.ResponseStatus;
 import com.cloud.model.common.Page;
 import com.cloud.model.user.SysGrouping;
 import com.cloud.user.service.SysGroupingService;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/grouping")
 @Slf4j
+@Api(value = "组织分组",tags = {"groupingController"})
 public class SysGroupingController {
     @Autowired
     private SysGroupingService sysGroupingService;
