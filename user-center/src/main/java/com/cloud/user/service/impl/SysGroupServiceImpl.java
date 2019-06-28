@@ -80,7 +80,7 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
     @Transactional
     public boolean updateGroupAndGroupExpand(SysGroup sysGroup, SysGroupExpand sysGroupExpand) {
         // 非空验证
-        if (null == sysGroup.getGroupName()) {
+        if (null == sysGroup.getGroupId()) {
             log.error("修改组织的id为空值!");
             throw new ResultException(ResultEnum.GROUPID_NULL.getCode(),
                     ResultEnum.GROUPID_NULL.getMessage());
@@ -107,12 +107,12 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         SysGroup sysGroup = SysGroup.builder().isDel("1")
                 .deleteBy(loginAdminName).deleteTime(new Date()).build();
         // 进行修改操作
-        for (Integer groupingId : groupIds) {
-            sysGroup.setGroupId(groupingId);
-            log.info("删除的组织id:{}", groupingId);
+        for (Integer groupId : groupIds) {
+            sysGroup.setGroupId(groupId);
+            log.info("删除的组织id:{}", groupId);
             if (!sysGroup.updateById()) {
-                throw new ResultException(ResultEnum.GROUPINGID_NULL.getCode(),
-                        ResultEnum.GROUPINGID_NULL.getMessage());
+                throw new ResultException(ResultEnum.GROUP_NOT_EXIST.getCode(),
+                        ResultEnum.GROUP_NOT_EXIST.getMessage() + ",组织id:" + groupId);
             }
         }
         return true;

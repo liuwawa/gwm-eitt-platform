@@ -59,6 +59,7 @@ public enum ResultEnum {
     GROUPINGNAME_NULL(401,"分组名为空值"),
     GROUPINGID_NULL(402,"分组的id为空值"),
 
+    GROUPING_NOT_EXIST(403,"该分组不存在"),
     /**
      * 组织相关
      */

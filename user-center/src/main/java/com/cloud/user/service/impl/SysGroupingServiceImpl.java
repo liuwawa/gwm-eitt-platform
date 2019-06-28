@@ -68,8 +68,8 @@ public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGroup
             sysGrouping.setGroupingId(groupingId);
             log.info("删除的分组id:{}", groupingId);
             if (!sysGrouping.updateById()) {
-                throw new ResultException(ResultEnum.GROUPINGID_NULL.getCode(),
-                        ResultEnum.GROUPINGID_NULL.getMessage());
+                throw new ResultException(ResultEnum.GROUPING_NOT_EXIST.getCode(),
+                        ResultEnum.GROUPING_NOT_EXIST.getMessage() + ",分组id:" + groupingId);
             }
         }
         return true;

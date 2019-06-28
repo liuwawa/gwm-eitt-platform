@@ -49,7 +49,7 @@ public class SysGroupController {
             log.info("操作成功，添加的组织名称:{}", sysGroup.getGroupName());
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
-            log.error("添加组织，出现异常！",e);
+            log.error("添加组织，出现异常！", e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.message, null);
         }
 
@@ -67,7 +67,7 @@ public class SysGroupController {
             log.info("根据id查找组织成功，查找id:{}", groupId);
             return new ResultVo<GroupWithExpand>(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, groupWithExpand);
         } catch (Exception e) {
-            log.error("根据id查询组织，出现异常！",e);
+            log.error("根据id查询组织，出现异常！", e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.message, null);
         }
     }
@@ -89,7 +89,7 @@ public class SysGroupController {
                 return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.code, ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.message, null);
             }
         } catch (Exception e) {
-            log.error("修改组织，出现异常！",e);
+            log.error("修改组织，出现异常！", e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.message, null);
         }
         log.info("操作成功，修改的组织名称:{}", sysGroup.getGroupName());
@@ -110,7 +110,7 @@ public class SysGroupController {
                 return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.code, ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.message, null);
             }
         } catch (Exception e) {
-            log.error("删除组织，出现异常！",e);
+            log.error("删除组织，出现异常！", e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.message, null);
         }
         log.info("操作成功，删除的组织id:{}", sysGroup.getGroupId());
@@ -131,7 +131,7 @@ public class SysGroupController {
             log.info("删除分组操作成功，删除的分组Id:{}", groupIds);
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
-            log.error("删除分组(批删)，出现异常！",e);
+            log.error("删除分组(批删)，出现异常！", e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.message, null);
         }
     }

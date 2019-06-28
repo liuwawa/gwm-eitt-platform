@@ -50,7 +50,7 @@ public class SysGroupingController {
             log.info("添加分组操作成功，添加的分组名称:{}", sysGrouping.getGroupingName());
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
-            log.error("添加分组，出现异常！",e);
+            log.error("添加分组，出现异常！", e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.message, null);
         }
 
@@ -85,7 +85,7 @@ public class SysGroupingController {
             log.info("编辑分组操作成功，编辑的分组id:{}", sysGrouping.getGroupingId());
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
-            log.error("编辑分组，出现异常！",e);
+            log.error("编辑分组，出现异常！", e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.message, null);
         }
 
@@ -141,7 +141,7 @@ public class SysGroupingController {
             log.info("删除分组操作成功，删除的分组Id:{}", sysGrouping.getGroupingId());
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
-            log.error("删除分组(单删)，出现异常！",e);
+            log.error("删除分组(单删)，出现异常！", e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.message, null);
         }
     }
@@ -162,7 +162,7 @@ public class SysGroupingController {
             log.info("删除分组操作成功，删除的分组Id:{}", groupingIds);
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
-            log.error("删除分组(批删)，出现异常！",e);
+            log.error("删除分组(批删)，出现异常！", e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.message, null);
         }
     }
