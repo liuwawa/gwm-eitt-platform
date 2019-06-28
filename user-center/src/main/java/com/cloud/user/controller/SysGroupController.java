@@ -1,5 +1,6 @@
 package com.cloud.user.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.user.GroupWithExpand;
@@ -79,7 +80,7 @@ public class SysGroupController {
      */
     @PutMapping("/updateGroup")
     public ResultVo updateGroup(@RequestBody BaseEntity baseEntity) {
-        
+
         SysGroup sysGroup = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroup.class);
         SysGroupExpand sysGroupExpand = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroupExpand.class);
         sysGroup.setUpdateTime(new Date());
@@ -138,15 +139,31 @@ public class SysGroupController {
     }
 
 
+    /**
+     * @return 获取最高组织及其下属组织
+     */
+    @GetMapping("/getAllGroup")
+    public ResultVo<SysGroup> getAllGroup() {
+        List<SysGroup> list = sysGroupService.list(new QueryWrapper<SysGroup>().lambda()
+                .eq(SysGroup::getIsDel, "0")
+                .in(SysGroup::getGroupParentId, 0, 1)
+                .orderByAsc(SysGroup::getGroupShowOrder));
+        return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, list);
+    }
 
-   /* @GetMapping(value = "/allGroup")
-    public Page<SysGroup> selectAllGrouping() {
-        int count = sysGroupService.count();
-        log.info("总条数:{}", count);
-        return new Page<SysGroup>(count, sysGroupService.list(new QueryWrapper<SysGroup>()
-                .eq("isDel", 0).orderByAsc("groupingShowOrder")));
-    }*/
+    /**
+     * @param groupId 组织的id
+     * @return 查询结果
+     * 根据组织的id查询其下属组织
+     */
+    @GetMapping("/getGroupsByGroupId/{groupId}")
+    public ResultVo<SysGroup> getGroupsByGroupId(@PathVariable Integer groupId) {
+        List<SysGroup> list = sysGroupService.list(new QueryWrapper<SysGroup>().lambda()
+                .eq(SysGroup::getIsDel, "0")
+                .eq(SysGroup::getGroupParentId, groupId)
+                .orderByAsc(SysGroup::getGroupShowOrder));
+        return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, list);
 
-
+    }
 }
 

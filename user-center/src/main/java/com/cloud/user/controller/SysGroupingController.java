@@ -1,21 +1,17 @@
 package com.cloud.user.controller;
 
 
-import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.common.Page;
 import com.cloud.model.user.SysGrouping;
-import com.cloud.response.BaseEntity;
-import com.cloud.response.ObjectConversionEntityUtil;
 import com.cloud.user.service.SysGroupingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -104,7 +100,9 @@ public class SysGroupingController {
         // 分页查isDel为0的数据
         IPage<SysGrouping> groupingIPage =
                 sysGroupingService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<SysGrouping>(pageIndex, pageSize),
-                        new QueryWrapper<SysGrouping>().eq("isDel", 0).orderByAsc("groupingShowOrder"));
+                        new QueryWrapper<SysGrouping>().lambda()
+                                .eq(SysGrouping::getIsDel, 0)
+                                .orderByAsc(SysGrouping::getGroupingShowOrder));
         log.info("当前页:{},总页数:{},总个数:{},每页数:{}",
                 groupingIPage.getCurrent(), groupingIPage.getPages(), groupingIPage.getTotal(), groupingIPage.getSize());
         return new Page<SysGrouping>((int) groupingIPage.getTotal(), groupingIPage.getRecords());
@@ -118,8 +116,9 @@ public class SysGroupingController {
     public Page<SysGrouping> selectAllGrouping() {
         int count = sysGroupingService.count();
         log.info("总条数:{}", count);
-        return new Page<SysGrouping>(count, sysGroupingService.list(new QueryWrapper<SysGrouping>()
-                .eq("isDel", 0).orderByAsc("groupingShowOrder")));
+        return new Page<SysGrouping>(count, sysGroupingService.list(new QueryWrapper<SysGrouping>().lambda()
+                .eq(SysGrouping::getIsDel, 0)
+                .orderByAsc(SysGrouping::getGroupingShowOrder)));
     }
 
     /**
