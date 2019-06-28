@@ -10,7 +10,7 @@ import com.cloud.model.user.SysGroupExpand;
 import com.cloud.user.dao.SysGroupDao;
 import com.cloud.user.service.SysGroupService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +33,7 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
     @Transactional
     public boolean saveGroupAndGroupExpand(SysGroup sysGroup, SysGroupExpand sysGroupExpand) {
         // 非空验证
-        if (null == sysGroup.getGroupName()) {
+        if (StringUtils.isBlank(sysGroup.getGroupName())) {
             log.error("添加组织的名字为空值!");
             throw new ResultException(ResultEnum.GROUPNAME_NULL.getCode(),
                     ResultEnum.GROUPNAME_NULL.getMessage());
@@ -60,7 +60,9 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         }
         // 构建组织主表对象，填充数据
         SysGroup sysGroup = SysGroup.builder().build();
-        SysGroup group = sysGroup.selectOne(new QueryWrapper<SysGroup>().eq("isDel", 0).eq("groupId", groupId));
+        SysGroup group = sysGroup.selectOne(new QueryWrapper<SysGroup>().lambda()
+                .eq(SysGroup::getIsDel, 0)
+                .eq(SysGroup::getGroupId, groupId));
         // 判断是否存在该组织
         if (null == group) {
             log.error("根据id查找组织时，组织主表中不存在该id的组织，或者已经删除，id:{}", groupId);
@@ -89,7 +91,8 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         // 先修改group主表
         boolean groupSave = sysGroup.updateById();
         // 再修改groupExpand拓展表
-        boolean groupExpandSave = sysGroupExpand.update(new QueryWrapper<SysGroupExpand>().eq("groupId", sysGroup.getGroupId()));
+        boolean groupExpandSave = sysGroupExpand.update(new QueryWrapper<SysGroupExpand>().lambda()
+                .eq(SysGroupExpand::getGroupId, sysGroup.getGroupId()));
 
         return groupSave && groupExpandSave;
     }
