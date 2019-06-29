@@ -80,11 +80,11 @@ public class SysGroupController {
      */
     @PutMapping("/updateGroup")
     public ResultVo updateGroup(@RequestBody BaseEntity baseEntity) {
-
         SysGroup sysGroup = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroup.class);
         SysGroupExpand sysGroupExpand = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroupExpand.class);
         sysGroup.setUpdateTime(new Date());
         sysGroup.setUpdateBy(sysGroup.getLoginAdminName());
+        sysGroup.setIsUpdate("1");
         try {
             if (!sysGroupService.updateGroupAndGroupExpand(sysGroup, sysGroupExpand)) {
                 log.info("操作失败，修改的组织名称:{}", sysGroup.getGroupName());
@@ -159,7 +159,7 @@ public class SysGroupController {
     @GetMapping("/getGroupsByGroupId/{groupId}")
     public ResultVo<SysGroup> getGroupsByGroupId(@PathVariable Integer groupId) {
         List<SysGroup> list = sysGroupService.list(new QueryWrapper<SysGroup>().lambda()
-                .select(SysGroup::getGroupId,SysGroup::getGroupName)//TODO
+                .select(SysGroup::getGroupId, SysGroup::getGroupName)//TODO
                 .eq(SysGroup::getIsDel, "0")
                 .eq(SysGroup::getGroupParentId, groupId)
                 .orderByAsc(SysGroup::getGroupShowOrder));

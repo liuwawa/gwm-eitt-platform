@@ -157,8 +157,4 @@ public class GroupTest {
         System.out.println(groupsByGroupId);
     }
 
-    /*@Test
-    public void test0(){
-        String
-    }*/
 }

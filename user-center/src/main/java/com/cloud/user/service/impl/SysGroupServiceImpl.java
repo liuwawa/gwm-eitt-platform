@@ -44,6 +44,9 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         boolean groupSave = sysGroup.insert();
         // 给expand拓展表添加外键groupId
         sysGroupExpand.setGroupId(sysGroup.getGroupId());
+        // 设置全称(路径)
+        sysGroupExpand.setGFullname(sysGroupExpand.getUnitName() + sysGroupExpand.getDeptName() + sysGroupExpand.getTeamName());
+
         // 再添加groupExpand拓展表
         boolean groupExpandSave = sysGroupExpand.insert();
 
@@ -51,6 +54,7 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
     }
 
     @Override
+    @Transactional
     public GroupWithExpand selectByGroupId(Integer groupId) {
         // 非空验证
         if (null == groupId) {
@@ -69,7 +73,13 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
             throw new ResultException(ResultEnum.GROUP_NOT_EXIST.getCode(),
                     ResultEnum.GROUP_NOT_EXIST.getMessage());
         }
-
+        // 计算子节点
+        Integer childCount = sysGroup.selectCount(new QueryWrapper<SysGroup>().lambda().
+                eq(SysGroup::getIsDel, "0")
+                .eq(SysGroup::getGroupParentId, group.getGroupId()));
+        group.setGroupChildCount(childCount);
+        // 每次查询对子节点数量进行更新
+        group.updateById();
         // 构建组织拓展对象，填充数据
         SysGroupExpand sysGroupExpand = SysGroupExpand.builder().build();
         SysGroupExpand groupExpand = sysGroupExpand.selectOne(new QueryWrapper<SysGroupExpand>().eq("groupId", groupId));
@@ -90,6 +100,12 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
 
         // 先修改group主表
         boolean groupSave = sysGroup.updateById();
+        // 查找该对象
+        SysGroupExpand groupExpandBySelect = sysGroupExpand.selectOne(new QueryWrapper<SysGroupExpand>().lambda()
+                .eq(SysGroupExpand::getGroupId, sysGroup.getGroupId()));
+        // 设置全称
+        String gFullname = getGFullname(sysGroupExpand, groupExpandBySelect);
+        sysGroupExpand.setGFullname(gFullname);
         // 再修改groupExpand拓展表
         boolean groupExpandSave = sysGroupExpand.update(new QueryWrapper<SysGroupExpand>().lambda()
                 .eq(SysGroupExpand::getGroupId, sysGroup.getGroupId()));
@@ -97,6 +113,36 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         return groupSave && groupExpandSave;
     }
 
+    // 设置全称
+    private static String getGFullname(SysGroupExpand sysGroupExpand, SysGroupExpand sysGroupExpand2) {
+        String unitName = sysGroupExpand.getUnitName();
+        String deptName = sysGroupExpand.getDeptName();
+        String teamName = sysGroupExpand.getTeamName();
+
+        String unitName1 = sysGroupExpand2.getUnitName();
+        String deptName1 = sysGroupExpand2.getDeptName();
+        String teamName1 = sysGroupExpand2.getTeamName();
+
+        if (null == unitName && null != deptName && null != teamName) {
+            return new StringBuilder().append(unitName1).append(deptName).append(teamName).toString();
+        }
+        if (null == deptName && null != unitName && null != teamName) {
+            return new StringBuilder().append(unitName).append(deptName1).append(teamName).toString();
+        }
+        if (null == teamName && null != unitName && null != deptName) {
+            return new StringBuilder().append(unitName).append(deptName).append(teamName1).toString();
+        }
+        if (null == unitName && null == deptName && null != teamName) {
+            return new StringBuilder().append(unitName1).append(deptName1).append(teamName).toString();
+        }
+        if (null == deptName && null != unitName && null == teamName) {
+            return new StringBuilder().append(unitName).append(deptName1).append(teamName1).toString();
+        }
+        if (null == teamName && null == unitName && null != deptName) {
+            return new StringBuilder().append(unitName1).append(deptName).append(teamName1).toString();
+        }
+        return new StringBuilder().append(unitName1).append(deptName1).append(teamName1).toString();
+    }
 
     @Override
     @Transactional
