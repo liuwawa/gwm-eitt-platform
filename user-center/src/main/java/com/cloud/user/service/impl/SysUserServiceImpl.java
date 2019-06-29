@@ -100,7 +100,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao,SysUser> implemen
     public void updateAppUser(SysUser appUser) {
         appUser.setUpdateTime(new Date());
 
-        appUserDao.update(appUser);
+        appUserDao.updateById(appUser);
         log.info("修改用户：{}", appUser);
     }
 

@@ -72,19 +72,19 @@ public class LogAop {
         }
 
         try {
+            // 执行时长(毫秒)
+            long time = System.currentTimeMillis() - beginTime;
             Object object = joinPoint.proceed();// 执行原方法
             log.setFlag(Boolean.TRUE);
-
+            // 执行时长(毫秒)
+            log.setTime(time);
+            getMethod(joinPoint, log);
             return object;
         } catch (Exception e) { // 方法执行失败
             log.setFlag(Boolean.FALSE);
             log.setRemark(e.getMessage()); // 备注记录失败原因
             throw e;
         } finally {
-            // 执行时长(毫秒)
-            long time = System.currentTimeMillis() - beginTime;
-            // 执行时长(毫秒)
-            log.setTime(time);
             // 异步将Log对象发送到队列
             CompletableFuture.runAsync(() -> {
                 try {
@@ -105,6 +105,6 @@ public class LogAop {
         String className = joinPoint.getTarget().getClass().getName();
         String methodName = signature.getName();
         log.setMethod(className + "." + methodName + "()");
-
+        logger.info("---------------- " + log);
     }
 }

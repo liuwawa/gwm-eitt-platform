@@ -32,7 +32,7 @@ public class LogConsumer {
     @RabbitHandler
     public void logHandler(Log log) {
         try {
-            logService.save(log);
+            logService.saveLog(log);
         } catch (Exception e) {
             logger.error("保存日志失败，日志：{}，异常：{}", log, e);
         }

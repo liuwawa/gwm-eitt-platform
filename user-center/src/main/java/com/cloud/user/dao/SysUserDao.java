@@ -18,8 +18,6 @@ public interface SysUserDao extends BaseMapper<SysUser> {
 			+ "values(#{username}, #{password}, #{nickname}, #{headImgUrl}, #{phone}, #{sex}, #{enabled}, #{type}, #{createTime}, #{updateTime})")
 	int save(SysUser appUser);
 
-	int update(SysUser appUser);
-
 	/**
 	 * @param username
 	 * @return
