@@ -144,7 +144,6 @@ public class SysGroupController {
      */
     @GetMapping("/getAllGroup")
     public ResultVo<SysGroup> getAllGroup() {
-        
         List<SysGroup> list = sysGroupService.list(new QueryWrapper<SysGroup>().lambda()
                 .eq(SysGroup::getIsDel, "0")
                 .in(SysGroup::getGroupParentId, 0, 1)
@@ -160,6 +159,7 @@ public class SysGroupController {
     @GetMapping("/getGroupsByGroupId/{groupId}")
     public ResultVo<SysGroup> getGroupsByGroupId(@PathVariable Integer groupId) {
         List<SysGroup> list = sysGroupService.list(new QueryWrapper<SysGroup>().lambda()
+                .select(SysGroup::getGroupId,SysGroup::getGroupName)//TODO
                 .eq(SysGroup::getIsDel, "0")
                 .eq(SysGroup::getGroupParentId, groupId)
                 .orderByAsc(SysGroup::getGroupShowOrder));

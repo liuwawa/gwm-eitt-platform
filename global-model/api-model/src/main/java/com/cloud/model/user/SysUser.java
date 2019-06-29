@@ -34,5 +34,5 @@ public class SysUser implements Serializable {
     private Date createTime;
     @TableField("updateTime")
     private Date updateTime;
-
+    private String captcha;
 }

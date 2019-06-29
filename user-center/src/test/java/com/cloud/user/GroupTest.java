@@ -150,4 +150,10 @@ public class GroupTest {
 //        ResultVo resultVo = controller.deleteGroup(sysGroup);
 //        System.out.println(resultVo);
     }
+
+    @Test
+    public void testFindGroupsByGroupId(){
+        ResultVo<SysGroup> groupsByGroupId = controller.getGroupsByGroupId(337);
+        System.out.println(groupsByGroupId);
+    }
 }
