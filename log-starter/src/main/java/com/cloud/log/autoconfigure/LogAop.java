@@ -2,6 +2,7 @@ package com.cloud.log.autoconfigure;
 
 import com.alibaba.fastjson.JSONObject;
 import com.cloud.common.utils.AppUserUtil;
+import com.cloud.common.utils.IPUtil;
 import com.cloud.model.log.Log;
 import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogQueue;
@@ -14,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -78,6 +81,7 @@ public class LogAop {
             log.setFlag(Boolean.TRUE);
             // 执行时长(毫秒)
             log.setTime(time);
+            log.setIp(IPUtil.getIpAddr(((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest()));
             getMethod(joinPoint, log);
             return object;
         } catch (Exception e) { // 方法执行失败
