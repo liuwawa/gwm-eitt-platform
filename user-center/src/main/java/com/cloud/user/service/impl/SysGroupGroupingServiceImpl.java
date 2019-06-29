@@ -79,7 +79,8 @@ public class SysGroupGroupingServiceImpl extends ServiceImpl<SysGroupGroupingDao
         // 根据groupId查找出所有的group
         for (SysGroupGrouping groupGrouping : sysGroupGroupings) {
             SysGroup sysGroup = SysGroup.builder().groupId(groupGrouping.getGroupId()).build();
-            list.add(sysGroup);
+            SysGroup group = sysGroup.selectById();
+            list.add(group);
         }
         return list;
     }
