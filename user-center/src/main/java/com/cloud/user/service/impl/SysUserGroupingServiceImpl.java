@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cloud.common.enums.ResultEnum;
 import com.cloud.common.exception.ResultException;
 import com.cloud.model.user.SysGrouping;
-import com.cloud.model.user.SysUser;
 import com.cloud.model.user.SysUserGrouping;
 import com.cloud.user.dao.SysUserGroupingDao;
 import com.cloud.user.service.SysUserGroupingService;
@@ -72,7 +71,8 @@ public class SysUserGroupingServiceImpl extends ServiceImpl<SysUserGroupingDao, 
         // 根据groupingId查找出所有的grouping
         for (SysUserGrouping userGrouping : sysUserGroupings) {
             SysGrouping sysGrouping = SysGrouping.builder().groupingId(userGrouping.getGroupingId()).build();
-            list.add(sysGrouping);
+            SysGrouping grouping = sysGrouping.selectById();
+            list.add(grouping);
         }
         return list;
     }

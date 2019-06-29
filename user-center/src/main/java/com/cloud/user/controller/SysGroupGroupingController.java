@@ -1,11 +1,9 @@
 package com.cloud.user.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.user.SysGroup;
-import com.cloud.model.user.SysGroupGrouping;
 import com.cloud.user.service.SysGroupGroupingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
