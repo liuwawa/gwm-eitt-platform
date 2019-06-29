@@ -41,4 +41,11 @@ public class Log implements Serializable {
 	private Boolean flag;
 	@TableField("createTime")
 	private Date createTime;
+
+	/**方法运行时间*/
+	private Long time;
+
+	/**调用方法名*/
+	private String method;
+
 }
