@@ -39,6 +39,7 @@ public class LogAop {
      */
     @Around(value = "@annotation(com.cloud.model.log.LogAnnotation)")
     public Object logSave(ProceedingJoinPoint joinPoint) throws Throwable {
+        long beginTime = System.currentTimeMillis();
         Log log = new Log();
         log.setCreateTime(new Date());
         LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
@@ -50,7 +51,7 @@ public class LogAop {
         LogAnnotation logAnnotation = methodSignature.getMethod().getDeclaredAnnotation(LogAnnotation.class);
         log.setModule(logAnnotation.module());
 
-        if (logAnnotation.recordParam()) { // 是否要记录方法的参数数据
+        if (logAnnotation.recordParam() || true) { // 是否要记录方法的参数数据
             String[] paramNames = methodSignature.getParameterNames();// 参数名
             if (paramNames != null && paramNames.length > 0) {
                 Object[] args = joinPoint.getArgs();// 参数值
@@ -62,7 +63,6 @@ public class LogAop {
                         params.put(paramNames[i], value);
                     }
                 }
-
                 try {
                     log.setParams(JSONObject.toJSONString(params)); // 以json的形式记录参数
                 } catch (Exception e) {
@@ -81,6 +81,10 @@ public class LogAop {
             log.setRemark(e.getMessage()); // 备注记录失败原因
             throw e;
         } finally {
+            // 执行时长(毫秒)
+            long time = System.currentTimeMillis() - beginTime;
+            // 执行时长(毫秒)
+            log.setTime(time);
             // 异步将Log对象发送到队列
             CompletableFuture.runAsync(() -> {
                 try {
@@ -92,6 +96,15 @@ public class LogAop {
             });
 
         }
+
+    }
+
+    private void getMethod(ProceedingJoinPoint joinPoint, Log log) {
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        // 请求的方法名
+        String className = joinPoint.getTarget().getClass().getName();
+        String methodName = signature.getName();
+        log.setMethod(className + "." + methodName + "()");
 
     }
 }
