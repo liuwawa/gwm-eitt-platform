@@ -5,9 +5,7 @@ import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.util.PatternMatchUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,7 +31,7 @@ public class TestFilter extends ZuulFilter {
 			HttpServletRequest request = requestContext.getRequest();
 			String authentication = request.getHeader("Authorization");
 			log.info(String.format("(%s) ip为 %s 收到 %s 请求 %s  %s ", authentication,
-                    IPUtil.getIpAddress(request), request.getMethod(),
+                    IPUtil.getIpAddr(request), request.getMethod(),
                     request.getRequestURL().toString(),
                     request.getSession().getId()));
 		} catch (Exception e) {

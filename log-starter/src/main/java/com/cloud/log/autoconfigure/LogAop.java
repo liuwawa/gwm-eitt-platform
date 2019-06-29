@@ -2,6 +2,7 @@ package com.cloud.log.autoconfigure;
 
 import com.alibaba.fastjson.JSONObject;
 import com.cloud.common.utils.AppUserUtil;
+import com.cloud.common.utils.IPUtil;
 import com.cloud.model.log.Log;
 import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogQueue;
@@ -14,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -72,19 +75,20 @@ public class LogAop {
         }
 
         try {
+            // 执行时长(毫秒)
+            long time = System.currentTimeMillis() - beginTime;
             Object object = joinPoint.proceed();// 执行原方法
             log.setFlag(Boolean.TRUE);
-
+            // 执行时长(毫秒)
+            log.setTime(time);
+            log.setIp(IPUtil.getIpAddr(((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest()));
+            getMethod(joinPoint, log);
             return object;
         } catch (Exception e) { // 方法执行失败
             log.setFlag(Boolean.FALSE);
             log.setRemark(e.getMessage()); // 备注记录失败原因
             throw e;
         } finally {
-            // 执行时长(毫秒)
-            long time = System.currentTimeMillis() - beginTime;
-            // 执行时长(毫秒)
-            log.setTime(time);
             // 异步将Log对象发送到队列
             CompletableFuture.runAsync(() -> {
                 try {
@@ -105,6 +109,6 @@ public class LogAop {
         String className = joinPoint.getTarget().getClass().getName();
         String methodName = signature.getName();
         log.setMethod(className + "." + methodName + "()");
-
+        logger.info("---------------- " + log);
     }
 }

@@ -12,8 +12,8 @@ import com.cloud.backend.model.Menu;
 @Mapper
 public interface MenuDao {
 
-	@Insert("insert into menu(parentId, name, url, css, sort, createTime, updateTime) "
-			+ "values (#{parentId}, #{name}, #{url}, #{css}, #{sort}, #{createTime}, #{updateTime})")
+	@Insert("insert into menu(parentId, name, url, css, sort, createTime,type, updateTime) "
+			+ "values (#{parentId}, #{name}, #{url}, #{css}, #{sort}, #{createTime},#{type}, #{updateTime})")
 	int save(Menu menu);
 
 	int update(Menu menu);

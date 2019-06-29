@@ -3,7 +3,7 @@ package com.cloud.dto.base;
 import lombok.Data;
 
 /**
- * Created by 王贺鹏 on 2018/6/26.
+ * Created by lz on 2018/6/26.
  */
 @Data
 public class BaseDto extends HistoryBase {
