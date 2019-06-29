@@ -20,5 +20,9 @@ public class Menu implements Serializable {
 	private Date createTime;
 	private Date updateTime;
 
+	private Integer type;
+
+	private Integer delFlag;
+
 	private List<Menu> child;
 }
