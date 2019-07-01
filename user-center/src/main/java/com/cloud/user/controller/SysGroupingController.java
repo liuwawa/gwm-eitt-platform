@@ -28,7 +28,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/grouping")
 @Slf4j
-@Api(value = "组织分组",tags = {"groupingController"})
+@Api(value = "组织分组", tags = {"groupingController"})
 public class SysGroupingController {
     @Autowired
     private SysGroupingService sysGroupingService;

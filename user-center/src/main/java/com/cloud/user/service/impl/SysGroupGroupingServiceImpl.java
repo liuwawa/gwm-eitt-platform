@@ -75,13 +75,13 @@ public class SysGroupGroupingServiceImpl extends ServiceImpl<SysGroupGroupingDao
         // 根据groupingId查找所有的groupgrouping对象
         List<SysGroupGrouping> sysGroupGroupings = sysGroupGrouping.selectList(new QueryWrapper<SysGroupGrouping>().lambda()
                 .eq(SysGroupGrouping::getGroupingId, groupingId));
-        List<SysGroup> list = new ArrayList<>();
         // 根据groupId查找出所有的group
+        List<Integer> groupIds = new ArrayList<>();
         for (SysGroupGrouping groupGrouping : sysGroupGroupings) {
-            SysGroup sysGroup = SysGroup.builder().groupId(groupGrouping.getGroupId()).build();
-            SysGroup group = sysGroup.selectById();
-            list.add(group);
+            groupIds.add(groupGrouping.getGroupId());
         }
-        return list;
+        SysGroup sysGroup = SysGroup.builder().build();
+        List<SysGroup> groupList = sysGroup.selectList(new QueryWrapper<SysGroup>().lambda().in(SysGroup::getGroupId, groupIds));
+        return groupList;
     }
 }

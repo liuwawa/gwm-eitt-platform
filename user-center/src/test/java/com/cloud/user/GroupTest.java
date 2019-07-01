@@ -5,13 +5,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cloud.common.vo.ResultVo;
-import com.cloud.model.common.Response;
 import com.cloud.model.user.GroupWithExpand;
 import com.cloud.model.user.SysGroup;
 import com.cloud.model.user.SysGroupExpand;
 import com.cloud.model.user.SysGrouping;
 import com.cloud.user.controller.SysGroupController;
-import com.cloud.user.controller.SysGroupingController;
+import com.cloud.user.controller.SysGroupGroupingController;
+import com.cloud.user.controller.SysUserGroupingController;
 import com.cloud.user.dao.SysGroupDao;
 import com.cloud.user.service.SysGroupService;
 import org.junit.Test;
@@ -33,7 +33,10 @@ public class GroupTest {
     private SysGroupDao sysGroupDao;
     @Autowired
     private SysGroupController controller;
-
+    @Autowired
+    private SysUserGroupingController userGroupingController;
+    @Autowired
+    private SysGroupGroupingController groupGroupingController;
     @Test
     public void testSave() {
         SysGroup sysGroup = SysGroup.builder().groupAddress("工程楼四楼")
@@ -157,4 +160,23 @@ public class GroupTest {
         System.out.println(groupsByGroupId);
     }
 
+    @Test
+    public void testSelectUserGrouping(){
+        ResultVo<List<SysGrouping>> groupingsByUserId = userGroupingController.getGroupingsByUserId(1);
+        List<SysGrouping> data = groupingsByUserId.getData();
+        System.out.println(groupingsByUserId);
+        for (SysGrouping datum : data) {
+            System.out.println(datum);
+        }
+    }
+
+    @Test
+    public void testSelectGroupGrouping(){
+        ResultVo<List<SysGroup>> groupsByGroupingId = groupGroupingController.getGroupsByGroupingId(10);
+        System.out.println(groupsByGroupingId);
+        List<SysGroup> data = groupsByGroupingId.getData();
+        for (SysGroup datum : data) {
+            System.out.println(datum);
+        }
+    }
 }
