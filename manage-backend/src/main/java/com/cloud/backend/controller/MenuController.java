@@ -1,11 +1,9 @@
 package com.cloud.backend.controller;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import com.cloud.common.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
@@ -57,12 +55,42 @@ public class MenuController {
 
 		return firstLevelMenus;
 	}
+	/**
+	 * 当前登录用户的菜单
+	 *
+	 * @return
+	 */
+	@GetMapping("/me2")
+	public Map findMyMenu2() {
+		LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+		Set<SysRole> roles = loginAppUser.getSysRoles();
+		if (CollectionUtils.isEmpty(roles)) {
+			return null;
+		}
+
+		List<Menu> menus = menuService
+				.findByRoles(roles.parallelStream().map(SysRole::getId).collect(Collectors.toSet()));
+
+		List<Menu> firstLevelMenus = menus.stream().filter(m -> m.getParentId().equals(0L))
+				.collect(Collectors.toList());
+		firstLevelMenus.forEach(m -> {
+			setChild(m, menus);
+		});
+
+		HashMap<Object, Object> reslut = new HashMap<>();
+		reslut.put("code",200);
+		reslut.put("msg",null);
+		reslut.put("data",firstLevelMenus);
+		return reslut;
+
+	}
 
 	private void setChild(Menu menu, List<Menu> menus) {
 		List<Menu> child = menus.stream().filter(m -> m.getParentId().equals(menu.getId()))
 				.collect(Collectors.toList());
 		if (!CollectionUtils.isEmpty(child)) {
-			menu.setChild(child);
+//			menu.setChild(child);
+			menu.setChildren(child);
 			//递归设置子元素，多级菜单支持
 			child.parallelStream().forEach(c -> {
 				setChild(c, menus);
@@ -108,7 +136,8 @@ public class MenuController {
 				list.add(menu);
 
 				List<Menu> child = new ArrayList<>();
-				menu.setChild(child);
+//				menu.setChild(child);
+				menu.setChildren(child);
 				setMenuTree(menu.getId(), all, child);
 			}
 		});
