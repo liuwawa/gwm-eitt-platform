@@ -74,7 +74,7 @@ public class MenuController {
 		List<Menu> firstLevelMenus = menus.stream().filter(m -> m.getParentId().equals(0L))
 				.collect(Collectors.toList());
 		firstLevelMenus.forEach(m -> {
-			setChild(m, menus);
+			setChildren(m, menus);
 		});
 
 		HashMap<Object, Object> reslut = new HashMap<>();
@@ -85,15 +85,37 @@ public class MenuController {
 
 	}
 
+	/**
+	 * lay ui 数据
+	 * @param menu
+	 * @param menus
+	 */
 	private void setChild(Menu menu, List<Menu> menus) {
 		List<Menu> child = menus.stream().filter(m -> m.getParentId().equals(menu.getId()))
 				.collect(Collectors.toList());
 		if (!CollectionUtils.isEmpty(child)) {
-//			menu.setChild(child);
-			menu.setChildren(child);
+			menu.setChild(child);
+//			menu.setChildren(child);
 			//递归设置子元素，多级菜单支持
 			child.parallelStream().forEach(c -> {
 				setChild(c, menus);
+			});
+		}
+	}
+
+	/**
+	 * element  ui  数据
+	 * @param menu
+	 * @param menus
+	 */
+	private void setChildren(Menu menu, List<Menu> menus) {
+		List<Menu> child = menus.stream().filter(m -> m.getParentId().equals(menu.getId()))
+				.collect(Collectors.toList());
+		if (!CollectionUtils.isEmpty(child)) {
+			menu.setChildren(child);
+			//递归设置子元素，多级菜单支持
+			child.parallelStream().forEach(c -> {
+				setChildren(c, menus);
 			});
 		}
 	}
@@ -112,7 +134,7 @@ public class MenuController {
 	}
 
 	/**
-	 * 菜单树ztree
+	 * 菜单树ztree (lay ui)
 	 */
 	@PreAuthorize("hasAnyAuthority('back:menu:set2role','back:menu:query')")
 	@GetMapping("/tree")
@@ -124,13 +146,44 @@ public class MenuController {
 	}
 
 	/**
-	 * 菜单树
+	 * 菜单树ztree (element ui)
+	 */
+	@PreAuthorize("hasAnyAuthority('back:menu:set2role','back:menu:query')")
+	@GetMapping("/tree2")
+	public List<Menu> findMenuTree2() {
+		List<Menu> all = menuService.findAll();
+		List<Menu> list = new ArrayList<>();
+		setMenuTree2(0L, all, list);
+		return list;
+	}
+
+	/**
+	 * 菜单树 （lay ui）
 	 * 
 	 * @param parentId
 	 * @param all
 	 * @param list
 	 */
 	private void setMenuTree(Long parentId, List<Menu> all, List<Menu> list) {
+		all.forEach(menu -> {
+			if (parentId.equals(menu.getParentId())) {
+				list.add(menu);
+
+				List<Menu> child = new ArrayList<>();
+				menu.setChild(child);
+//				menu.setChildren(child);
+				setMenuTree(menu.getId(), all, child);
+			}
+		});
+	}
+
+	/**
+	 * 菜单树 （element ui）
+	 * @param parentId
+	 * @param all
+	 * @param list
+	 */
+	private void setMenuTree2(Long parentId, List<Menu> all, List<Menu> list) {
 		all.forEach(menu -> {
 			if (parentId.equals(menu.getParentId())) {
 				list.add(menu);

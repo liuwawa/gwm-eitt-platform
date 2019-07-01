@@ -25,4 +25,6 @@ public class Menu implements Serializable {
 	private Integer delFlag;
 
 	private List<Menu> children;
+
+	private List<Menu> child;
 }
