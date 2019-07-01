@@ -39,7 +39,9 @@ public class UserController {
      */
     @GetMapping("/users/current")
     public LoginAppUser getLoginAppUser() {
-        return AppUserUtil.getLoginAppUser();
+        LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+        loginAppUser.setPassword(null);
+        return loginAppUser;
     }
 
     @GetMapping(value = "/users-anon/internal", params = "username")
