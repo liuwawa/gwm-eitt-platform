@@ -30,7 +30,6 @@ public class MenuServiceImpl implements MenuService {
 	public void save(Menu menu) {
 		menu.setCreateTime(new Date());
 		menu.setUpdateTime(menu.getCreateTime());
-
 		menuDao.save(menu);
 		log.info("新增菜单：{}", menu);
 	}

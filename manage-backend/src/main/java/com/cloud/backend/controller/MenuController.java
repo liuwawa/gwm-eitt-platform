@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.cloud.common.vo.Response;
+import com.cloud.common.vo.ResultVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
@@ -56,13 +57,18 @@ public class MenuController {
 		return firstLevelMenus;
 	}
 	/**
-	 * 当前登录用户的菜单
+	 * 当前登录用户的菜单(element ui)
 	 *
 	 * @return
 	 */
 	@GetMapping("/me2")
 	public Map findMyMenu2() {
 		LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+		assert loginAppUser != null;
+		if (loginAppUser.getId().equals(2L)){ //超级管理员拥有所有菜单权限
+			List<Menu> menus = menuService.findAll();
+			return buildLevelMenus(menus);
+		}
 		Set<SysRole> roles = loginAppUser.getSysRoles();
 		if (CollectionUtils.isEmpty(roles)) {
 			return null;
@@ -70,19 +76,24 @@ public class MenuController {
 
 		List<Menu> menus = menuService
 				.findByRoles(roles.parallelStream().map(SysRole::getId).collect(Collectors.toSet()));
+		return buildLevelMenus(menus);
+	}
 
-		List<Menu> firstLevelMenus = menus.stream().filter(m -> m.getParentId().equals(0L))
-				.collect(Collectors.toList());
-		firstLevelMenus.forEach(m -> {
-			setChildren(m, menus);
-		});
-
+	/**
+	 * 递归构造菜单树，封装响应结果
+	 * @param menus
+	 * @return
+	 */
+	private Map buildLevelMenus(List<Menu> menus){
+		List<Menu> firstLevelMenus = null;
 		HashMap<Object, Object> reslut = new HashMap<>();
+		firstLevelMenus = menus.stream().filter(m -> m.getParentId().equals(0L))
+				.collect(Collectors.toList());
+		firstLevelMenus.forEach(m -> setChildren(m, menus));
 		reslut.put("code",200);
 		reslut.put("msg",null);
 		reslut.put("data",firstLevelMenus);
 		return reslut;
-
 	}
 
 	/**
@@ -208,8 +219,25 @@ public class MenuController {
 	}
 
 	/**
-	 * 添加菜单
+	 * 添加/修改菜单 (element ui 添加菜单)
 	 * 
+	 * @param menu
+	 */
+	@LogAnnotation(module = LogModule.ADD_MENU)
+	@PreAuthorize("hasAuthority('back:menu:save')")
+	@PostMapping("/saveOrUpdate")
+	public ResultVo saveOrUpdate(@RequestBody Menu menu) {
+		if (menu.getId()!= null && menu.getId() != 0){
+			menuService.update(menu);
+			return ResultVo.builder().code(200).msg("更新成功!").data(menu).build();
+		}
+		menuService.save(menu);
+		return ResultVo.builder().code(200).msg("添加成功!").data(menu).build();
+	}
+
+	/**
+	 * 添加菜单 （ lay ui 添加菜单）
+	 *
 	 * @param menu
 	 */
 	@LogAnnotation(module = LogModule.ADD_MENU)
@@ -245,6 +273,24 @@ public class MenuController {
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable Long id) {
 		menuService.delete(id);
+	}
+
+	/**
+	 * 删除菜单 (element ui)
+	 *
+	 * @param ids
+	 */
+	@LogAnnotation(module = LogModule.DELETE_MENU)
+	@PreAuthorize("hasAuthority('back:menu:delete')")
+	@PostMapping("/delete2")
+	public void delete2(@RequestBody List<Map<String,Long>> ids) {
+		for (Map<String, Long> id : ids) {
+			menuService.delete(id.get("id"));
+		}
+//		for (Map id : ids) {
+//			Long.valueOf(id.get("id").toString());
+//
+//		}
 	}
 
 	/**
