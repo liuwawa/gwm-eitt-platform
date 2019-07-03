@@ -5,17 +5,11 @@ import java.util.stream.Collectors;
 
 import com.cloud.common.vo.Response;
 import com.cloud.common.vo.ResultVo;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.cloud.backend.model.Menu;
 import com.cloud.backend.service.MenuService;
@@ -61,8 +55,8 @@ public class MenuController {
 	 *
 	 * @return
 	 */
-	@GetMapping("/me2")
-	public Map findMyMenu2() {
+	@PostMapping("/me2")
+	public Map findMyMenu2(@RequestParam("userId") Long userId) {
 		LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
 		assert loginAppUser != null;
 		if (loginAppUser.getId().equals(2L)){ //超级管理员拥有所有菜单权限

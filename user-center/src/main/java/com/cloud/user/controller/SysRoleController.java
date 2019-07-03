@@ -3,6 +3,10 @@ package com.cloud.user.controller;
 import java.util.Map;
 import java.util.Set;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.cloud.model.common.PageResult;
+import com.cloud.model.user.SysGrouping;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -118,6 +122,26 @@ public class SysRoleController {
 	@GetMapping("/roles")
 	public Page<SysRole> findRoles(@RequestParam Map<String, Object> params) {
 		return sysRoleService.findRoles(params);
+	}
+
+	/**
+	 * 分页查询
+	 *
+	 * @param params
+	 */
+	@PreAuthorize("hasAuthority('back:role:query')")
+	@PostMapping("/findPage")
+	public PageResult findPage(@RequestBody Map<String, Object> params) {
+		Long pageIndex = Long.valueOf(params.get("pageNum").toString());
+		Long pageSize = Long.valueOf(params.get("pageSize").toString());
+		pageSize = null == pageSize ? 15 : pageSize;
+
+		IPage<SysRole> roleIPage = sysRoleService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<SysRole>(pageIndex, pageSize));
+		return PageResult.builder().content(roleIPage.getRecords()).
+				pageNum(roleIPage.getCurrent()).
+				pageSize(roleIPage.getSize()).
+				totalPages(roleIPage.getPages()).
+				totalSize(roleIPage.getTotal()).build();
 	}
 
 }

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -20,6 +21,10 @@ public class SysRole implements Serializable {
 	private Long id;
 	private String code;
 	private String name;
+	@TableField("createBy")
+	private String createBy;
+	@TableField("createTime")
 	private Date createTime;
+	@TableField("updateTime")
 	private Date updateTime;
 }
