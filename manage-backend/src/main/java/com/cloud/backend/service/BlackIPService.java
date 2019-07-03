@@ -1,16 +1,17 @@
 package com.cloud.backend.service;
 
-import java.util.Map;
-
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.cloud.backend.model.BlackIP;
 import com.cloud.model.common.Page;
 
-public interface BlackIPService {
+import java.util.Map;
 
-	void save(BlackIP blackIP);
+public interface BlackIPService extends IService<BlackIP> {
 
-	void delete(String ip);
+    void saveBlackIp(BlackIP blackIP);
 
-	Page<BlackIP> findBlackIPs(Map<String, Object> params);
+    void delete(String ip);
+
+    Page<BlackIP> findBlackIPs(Map<String, Object> params);
 
 }

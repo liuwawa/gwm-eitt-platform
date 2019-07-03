@@ -1,10 +1,13 @@
 package com.cloud.backend.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.backend.model.BlackIP;
 import com.cloud.backend.service.BlackIPService;
 import com.cloud.model.common.Page;
+import com.cloud.model.common.PageResult;
 import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
+import com.cloud.model.user.SysRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -53,8 +56,16 @@ public class BlackIPController {
 	 */
 	@PreAuthorize("hasAuthority('ip:black:query')")
 	@GetMapping("/blackIPs")
-	public Page<BlackIP> findBlackIPs(@RequestParam Map<String, Object> params) {
-		return blackIPService.findBlackIPs(params);
+	public PageResult findBlackIPs(@RequestParam Map<String, Object> params) {
+		Long pageIndex = Long.valueOf(params.get("pageNum").toString());
+		Long pageSize = Long.valueOf(params.get("pageSize").toString());
+		pageSize = null == pageSize ? 15 : pageSize;
+		IPage<BlackIP> blackIPage = blackIPService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<BlackIP>(pageIndex, pageSize));
+		return PageResult.builder().content(blackIPage.getRecords()).
+				pageNum(blackIPage.getCurrent()).
+				pageSize(blackIPage.getSize()).
+				totalPages(blackIPage.getPages()).
+				totalSize(blackIPage.getTotal()).build();
 	}
 
 	/**
