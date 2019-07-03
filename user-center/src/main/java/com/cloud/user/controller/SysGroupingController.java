@@ -98,16 +98,16 @@ public class SysGroupingController {
     @GetMapping(value = "/groupingByPage")
     public Page<SysGrouping> selectGroupingByPage(@RequestParam(value = "pageIndex") Integer pageIndex,
                                                   @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        pageSize = (null == pageSize) ? pageSize = 15 : pageSize;
+        pageSize = pageSize == null ? 15 : pageSize;
         // 分页查isDel为0的数据
         IPage<SysGrouping> groupingIPage =
-                sysGroupingService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<SysGrouping>(pageIndex, pageSize),
+                sysGroupingService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
                         new QueryWrapper<SysGrouping>().lambda()
                                 .eq(SysGrouping::getIsDel, 0)
                                 .orderByAsc(SysGrouping::getGroupingShowOrder));
         log.info("当前页:{},总页数:{},总个数:{},每页数:{}",
                 groupingIPage.getCurrent(), groupingIPage.getPages(), groupingIPage.getTotal(), groupingIPage.getSize());
-        return new Page<SysGrouping>((int) groupingIPage.getTotal(), groupingIPage.getRecords());
+        return new Page<>((int) groupingIPage.getTotal(), groupingIPage.getRecords());
     }
 
     /**

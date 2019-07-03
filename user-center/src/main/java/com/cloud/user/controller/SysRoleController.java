@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.cloud.common.vo.ResultVo;
 import com.cloud.model.common.PageResult;
 import com.cloud.model.user.SysGrouping;
 import org.apache.commons.lang3.StringUtils;
@@ -54,6 +55,27 @@ public class SysRoleController {
 	}
 
 	/**
+	 * 管理后台添加角色(element ui)
+	 *
+	 * @param sysRole
+	 */
+	@LogAnnotation(module = LogModule.ADD_ROLE)
+	@PreAuthorize("hasAuthority('back:role:save')")
+	@PostMapping("/roles2")
+	public ResultVo save2(@RequestBody SysRole sysRole) {
+		if (StringUtils.isBlank(sysRole.getCode())) {
+			throw new IllegalArgumentException("角色code不能为空");
+		}
+		if (StringUtils.isBlank(sysRole.getName())) {
+			sysRole.setName(sysRole.getCode());
+		}
+
+		sysRoleService.save(sysRole);
+
+		return ResultVo.builder().data(sysRole).code(200).msg("添加成功!").build();
+	}
+
+	/**
 	 * 管理后台删除角色
 	 * 
 	 * @param id
@@ -63,6 +85,23 @@ public class SysRoleController {
 	@DeleteMapping("/roles/{id}")
 	public void deleteRole(@PathVariable Long id) {
 		sysRoleService.deleteRole(id);
+	}
+
+	/**
+	 * 管理后台删除角色(element ui)
+	 *
+	 * @param id
+	 */
+	@LogAnnotation(module = LogModule.DELETE_ROLE)
+	@PreAuthorize("hasAuthority('back:role:delete')")
+	@DeleteMapping("/roles2/{id}")
+	public ResultVo deleteRole2(@PathVariable Long id) {
+		try {
+			sysRoleService.deleteRole(id);
+			return ResultVo.builder().msg("删除成功").data(null).code(200).build();
+		}catch (Exception e){
+			return ResultVo.builder().msg("删除失败").data(null).code(200).build();
+		}
 	}
 
 	/**
@@ -134,9 +173,8 @@ public class SysRoleController {
 	public PageResult findPage(@RequestBody Map<String, Object> params) {
 		Long pageIndex = Long.valueOf(params.get("pageNum").toString());
 		Long pageSize = Long.valueOf(params.get("pageSize").toString());
-		pageSize = null == pageSize ? 15 : pageSize;
 
-		IPage<SysRole> roleIPage = sysRoleService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<SysRole>(pageIndex, pageSize));
+		IPage<SysRole> roleIPage = sysRoleService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize));
 		return PageResult.builder().content(roleIPage.getRecords()).
 				pageNum(roleIPage.getCurrent()).
 				pageSize(roleIPage.getSize()).

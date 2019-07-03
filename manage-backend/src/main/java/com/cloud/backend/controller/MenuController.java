@@ -59,7 +59,7 @@ public class MenuController {
 	public Map findMyMenu2(@RequestParam("userId") Long userId) {
 		LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
 		assert loginAppUser != null;
-		if (loginAppUser.getId().equals(2L)){ //超级管理员拥有所有菜单权限
+		if (loginAppUser.getId().equals(2L)){ //当前用户是超级管理员，拥有所有菜单权限
 			List<Menu> menus = menuService.findAll();
 			return buildLevelMenus(menus);
 		}
@@ -210,6 +210,17 @@ public class MenuController {
 	@GetMapping(params = "roleId")
 	public Set<Long> findMenuIdsByRoleId(Long roleId) {
 		return menuService.findMenuIdsByRoleId(roleId);
+	}
+
+	/**
+	 * 获取角色的菜单(element ui)
+	 *
+	 * @param roleId
+	 */
+	@PreAuthorize("hasAnyAuthority('back:menu:set2role','menu:byroleid')")
+	@PostMapping("findMenusByRoleId")
+	public List<Menu> findMenusByRoleId(@RequestParam("roleId")Long roleId) {
+		return menuService.findMenusByRoleId(roleId);
 	}
 
 	/**

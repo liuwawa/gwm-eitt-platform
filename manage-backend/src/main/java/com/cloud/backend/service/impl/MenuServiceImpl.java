@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.cloud.common.constants.SysConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,6 +93,20 @@ public class MenuServiceImpl implements MenuService {
 	@Override
 	public Set<Long> findMenuIdsByRoleId(Long roleId) {
 		return roleMenuDao.findMenuIdsByRoleId(roleId);
+	}
+
+	@Override
+	public List<Menu> findMenusByRoleId(Long roleId) {
+		if (SysConstants.ADMIN_ID.equals(roleId)){//超级管理员,拥有所有菜单
+			return menuDao.findAll();
+		}
+		return roleMenuDao.findMenusByRoleIds(roleMenuDao.findMenuIdsByRoleId(roleId));
+//		SysRole sysRole = sysRoleMapper.selectByPrimaryKey(roleId);
+//		if(SysConstants.ADMIN.equalsIgnoreCase(sysRole.getName())) {
+//			// 如果是超级管理员，返回全部
+//			return sysMenuMapper.findAll();
+//		}
+//		return sysMenuMapper.findRoleMenus(roleId);
 	}
 
 }
