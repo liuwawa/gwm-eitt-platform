@@ -3,6 +3,7 @@ package com.cloud.backend.controller;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.cloud.common.constants.SysConstants;
 import com.cloud.common.vo.Response;
 import com.cloud.common.vo.ResultVo;
 import org.apache.ibatis.annotations.Param;
@@ -56,10 +57,10 @@ public class MenuController {
 	 * @return
 	 */
 	@PostMapping("/me2")
-	public Map findMyMenu2(@RequestParam("userId") Long userId) {
+	public Map findMyMenu2(@RequestParam("condition") String condition) {
 		LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
 		assert loginAppUser != null;
-		if (loginAppUser.getId().equals(2L)){ //当前用户是超级管理员，拥有所有菜单权限
+		if (loginAppUser.getId().equals(SysConstants.ADMIN_USER_ID)){ //当前用户是超级管理员，拥有所有菜单权限
 			List<Menu> menus = menuService.findAll();
 			return buildLevelMenus(menus);
 		}
@@ -74,12 +75,12 @@ public class MenuController {
 	}
 
 	/**
-	 * 递归构造菜单树，封装响应结果
+	 * 构造菜单树，封装响应结果
 	 * @param menus
 	 * @return
 	 */
 	private Map buildLevelMenus(List<Menu> menus){
-		List<Menu> firstLevelMenus = null;
+		List<Menu> firstLevelMenus;
 		HashMap<Object, Object> reslut = new HashMap<>();
 		firstLevelMenus = menus.stream().filter(m -> m.getParentId().equals(0L))
 				.collect(Collectors.toList());

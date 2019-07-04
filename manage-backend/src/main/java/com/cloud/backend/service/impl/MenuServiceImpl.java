@@ -69,9 +69,7 @@ public class MenuServiceImpl implements MenuService {
 		roleMenuDao.delete(roleId, null);
 
 		if (!CollectionUtils.isEmpty(menuIds)) {
-			menuIds.forEach(menuId -> {
-				roleMenuDao.save(roleId, menuId);
-			});
+			menuIds.forEach(menuId -> roleMenuDao.save(roleId, menuId));
 		}
 	}
 
@@ -97,7 +95,7 @@ public class MenuServiceImpl implements MenuService {
 
 	@Override
 	public List<Menu> findMenusByRoleId(Long roleId) {
-		if (SysConstants.ADMIN_ID.equals(roleId)){//超级管理员,拥有所有菜单
+		if (SysConstants.ADMIN_ROLE_ID.equals(roleId)){//超级管理员,拥有所有菜单
 			return menuDao.findAll();
 		}
 		return roleMenuDao.findMenusByRoleIds(roleMenuDao.findMenuIdsByRoleId(roleId));

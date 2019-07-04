@@ -15,6 +15,14 @@ public class MybatisPlusConfig {
      * 分页插件
      */
     @Bean
+    public PaginationInterceptor paginationInterceptor() {
+        return new PaginationInterceptor();
+    }
+
+    /**
+     * SQL输出拦截器
+     */
+    @Bean
     public PerformanceInterceptor performanceInterceptor() {
         PerformanceInterceptor performanceInterceptor = new PerformanceInterceptor();
         //sql格式化

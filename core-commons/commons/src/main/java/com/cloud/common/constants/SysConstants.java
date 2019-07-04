@@ -10,6 +10,11 @@ public interface SysConstants {
 	/**
 	 * 系统管理员角色id
 	 */
-	Long ADMIN_ID = 1L;
+	Long ADMIN_ROLE_ID = 1L;
+
+	/**
+	 * 超级管理员用户id
+	 */
+	Long ADMIN_USER_ID = 2L;
 	
 }

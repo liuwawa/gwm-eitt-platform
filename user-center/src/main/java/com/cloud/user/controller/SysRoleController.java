@@ -42,15 +42,7 @@ public class SysRoleController {
 	@PreAuthorize("hasAuthority('back:role:save')")
 	@PostMapping("/roles")
 	public SysRole save(@RequestBody SysRole sysRole) {
-		if (StringUtils.isBlank(sysRole.getCode())) {
-			throw new IllegalArgumentException("角色code不能为空");
-		}
-		if (StringUtils.isBlank(sysRole.getName())) {
-			sysRole.setName(sysRole.getCode());
-		}
-
-		sysRoleService.save(sysRole);
-
+		saveRole(sysRole);
 		return sysRole;
 	}
 
@@ -63,16 +55,22 @@ public class SysRoleController {
 	@PreAuthorize("hasAuthority('back:role:save')")
 	@PostMapping("/roles2")
 	public ResultVo save2(@RequestBody SysRole sysRole) {
+		saveRole(sysRole);
+		return ResultVo.builder().data(sysRole).code(200).msg("添加成功!").build();
+	}
+
+	/**
+	 * 保存角色
+	 * @param sysRole
+	 */
+	private void saveRole(@RequestBody SysRole sysRole) {
 		if (StringUtils.isBlank(sysRole.getCode())) {
 			throw new IllegalArgumentException("角色code不能为空");
 		}
 		if (StringUtils.isBlank(sysRole.getName())) {
 			sysRole.setName(sysRole.getCode());
 		}
-
 		sysRoleService.save(sysRole);
-
-		return ResultVo.builder().data(sysRole).code(200).msg("添加成功!").build();
 	}
 
 	/**
