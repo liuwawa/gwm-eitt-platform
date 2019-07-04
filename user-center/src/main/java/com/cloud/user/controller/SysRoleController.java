@@ -164,7 +164,7 @@ public class SysRoleController {
 	}
 
 	/**
-	 * 分页查询
+	 * 分页查询(element ui)
 	 *
 	 * @param params
 	 */
@@ -173,8 +173,9 @@ public class SysRoleController {
 	public PageResult findPage(@RequestBody Map<String, Object> params) {
 		Long pageIndex = Long.valueOf(params.get("pageNum").toString());
 		Long pageSize = Long.valueOf(params.get("pageSize").toString());
-
-		IPage<SysRole> roleIPage = sysRoleService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize));
+		String condition = String.valueOf(params.get("condition").toString());
+		IPage<SysRole> roleIPage = sysRoleService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
+				new QueryWrapper<SysRole>().like("name",condition));
 		return PageResult.builder().content(roleIPage.getRecords()).
 				pageNum(roleIPage.getCurrent()).
 				pageSize(roleIPage.getSize()).
