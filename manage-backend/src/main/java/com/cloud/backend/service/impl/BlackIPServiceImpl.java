@@ -58,4 +58,10 @@ public class BlackIPServiceImpl extends ServiceImpl<BlackIPDao, BlackIP> impleme
 		}
 		return new Page<>(total, list);
 	}
+
+    @Override
+    @Transactional
+    public void deleteAll() {
+        blackIPDao.deleteAll();
+    }
 }

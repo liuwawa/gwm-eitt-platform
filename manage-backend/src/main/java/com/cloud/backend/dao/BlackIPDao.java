@@ -26,4 +26,7 @@ public interface BlackIPDao extends BaseMapper<BlackIP> {
 	int count(Map<String, Object> params);
 
 	List<BlackIP> findData(Map<String, Object> params);
+
+	@Delete("delete from black_ip")
+	int deleteAll();
 }
