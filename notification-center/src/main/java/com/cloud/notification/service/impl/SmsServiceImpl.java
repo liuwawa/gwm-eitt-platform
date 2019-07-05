@@ -6,8 +6,10 @@ import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.http.MethodType;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cloud.common.utils.PageUtil;
 import com.cloud.model.common.Page;
+import com.cloud.model.user.SysUser;
 import com.cloud.notification.dao.SmsDao;
 import com.cloud.notification.model.Sms;
 import com.cloud.notification.service.SmsService;
@@ -26,7 +28,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class SmsServiceImpl implements SmsService {
+public class SmsServiceImpl extends ServiceImpl<SmsDao, Sms>  implements SmsService {
 
     @Autowired
     private IAcsClient acsClient;

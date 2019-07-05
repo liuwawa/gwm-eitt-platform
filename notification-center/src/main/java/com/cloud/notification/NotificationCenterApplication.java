@@ -4,6 +4,7 @@ import com.cloud.config.SwaggerConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.PropertySource;
  */
 @EnableDiscoveryClient
 @SpringBootApplication
+@ComponentScan("com.cloud.*")
 @Import(value = {SwaggerConfig.class})
 public class NotificationCenterApplication {
 

@@ -1,25 +1,31 @@
 package com.cloud.notification.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.utils.PhoneUtil;
 import com.cloud.model.common.Page;
+import com.cloud.model.common.PageResult;
+import com.cloud.model.user.SysRole;
 import com.cloud.notification.model.Sms;
 import com.cloud.notification.model.VerificationCode;
 import com.cloud.notification.service.SmsService;
 import com.cloud.notification.service.VerificationCodeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
+@Slf4j
 public class SmsController {
 
     @Autowired
     private VerificationCodeService verificationCodeService;
+
+    @Autowired
+    private SmsService smsService;
 
     /**
      * 发送短信验证码
@@ -52,8 +58,6 @@ public class SmsController {
         return verificationCodeService.matcheCodeAndGetPhone(key, code, delete, second);
     }
 
-    @Autowired
-    private SmsService smsService;
 
     /**
      * 查询短信发送记录
@@ -65,5 +69,29 @@ public class SmsController {
     @GetMapping("/sms")
     public Page<Sms> findSms(@RequestParam Map<String, Object> params) {
         return smsService.findSms(params);
+    }
+
+    @PreAuthorize("hasAuthority('sms:query')")
+    @PostMapping("/findSmsPage")
+    public PageResult findPage(@RequestBody Map<String, Object> params) {
+        Long pageIndex = Long.valueOf(params.get("pageNum").toString());
+        Long pageSize = Long.valueOf(params.get("pageSize").toString());
+        String condition = String.valueOf(params.get("condition").toString());
+
+        QueryWrapper<Sms> queryWrapper = new QueryWrapper<>();
+
+        if(!"".equals(condition)){
+            queryWrapper.eq("phone",condition);
+        }
+
+
+        IPage<Sms> smsIPage = smsService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),queryWrapper);
+        return PageResult.builder().content(smsIPage.getRecords()).
+                pageNum(smsIPage.getCurrent()).
+                pageSize(smsIPage.getSize()).
+                totalPages(smsIPage.getPages()).
+                totalSize(smsIPage.getTotal()).build();
+
+
     }
 }
