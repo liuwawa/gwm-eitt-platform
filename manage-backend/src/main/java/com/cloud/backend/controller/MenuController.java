@@ -3,6 +3,7 @@ package com.cloud.backend.controller;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.JSONArray;
 import com.cloud.common.constants.SysConstants;
 import com.cloud.common.vo.Response;
 import com.cloud.common.vo.ResultVo;
@@ -57,7 +58,7 @@ public class MenuController {
 	 * @return
 	 */
 	@PostMapping("/me2")
-	public Map findMyMenu2(@RequestParam("condition") String condition) {
+	public Map findMyMenu2() {
 		LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
 		assert loginAppUser != null;
 		if (loginAppUser.getId().equals(SysConstants.ADMIN_USER_ID)){ //当前用户是超级管理员，拥有所有菜单权限
@@ -136,6 +137,19 @@ public class MenuController {
 	@PreAuthorize("hasAuthority('back:menu:set2role')")
 	@PostMapping("/toRole")
 	public void setMenuToRole(Long roleId, @RequestBody Set<Long> menuIds) {
+		menuService.setMenuToRole(roleId, menuIds);
+	}
+
+	/**
+	 * 给角色分配菜单(element ui)
+	 *
+	 */
+	@LogAnnotation(module = LogModule.SET_MENU_ROLE)
+	@PreAuthorize("hasAuthority('back:menu:set2role')")
+	@PostMapping("/setMenusToRole")
+	public void setMenusToRole(@RequestBody Map<String,Object> params) {
+		Long roleId = Long.valueOf(params.get("roleId").toString());
+        HashSet<Long> menuIds = new HashSet<>(JSONArray.parseArray(params.get("menuIds").toString(), Long.class));
 		menuService.setMenuToRole(roleId, menuIds);
 	}
 

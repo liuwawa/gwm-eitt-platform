@@ -1,5 +1,7 @@
 package com.cloud.user.controller;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -70,6 +72,7 @@ public class SysRoleController {
 		if (StringUtils.isBlank(sysRole.getName())) {
 			sysRole.setName(sysRole.getCode());
 		}
+		sysRole.setCreateTime(new Date());
 		sysRoleService.save(sysRole);
 	}
 

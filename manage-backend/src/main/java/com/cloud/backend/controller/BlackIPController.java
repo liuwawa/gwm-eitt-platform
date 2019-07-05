@@ -32,7 +32,6 @@ public class BlackIPController {
 	@PostMapping("/blackIPs")
 	public void save(@RequestBody BlackIP blackIP) {
 		blackIP.setCreateTime(new Date());
-
 		blackIPService.save(blackIP);
 	}
 
