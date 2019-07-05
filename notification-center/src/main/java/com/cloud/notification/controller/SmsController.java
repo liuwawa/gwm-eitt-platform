@@ -118,7 +118,7 @@ public class SmsController {
             return ResultVo.builder().msg("删除成功").data(null).code(200).build();
         } catch (Exception e) {
             e.printStackTrace();
-            return ResultVo.builder().msg("删除失败").data(null).code(200).build();
+            return ResultVo.builder().msg("删除失败").data(null).code(500).build();
         }
     }
 
