@@ -26,21 +26,16 @@ public class BlackIPServiceImpl extends ServiceImpl<BlackIPDao, BlackIP> impleme
     @Transactional
     @Override
     public void saveBlackIp(BlackIP blackIP) {
-        BlackIP ip = blackIPDao.findByIp(blackIP.getIp());
-        if (ip != null) {
-            throw new IllegalArgumentException(blackIP.getIp() + "已存在");
-        }
-
         blackIPDao.save(blackIP);
         log.info("添加黑名单ip:{}", blackIP);
     }
 
     @Transactional
     @Override
-    public void delete(String ip) {
-        int n = blackIPDao.delete(ip);
+    public void delete(Integer id) {
+        int n = blackIPDao.delete(id);
         if (n > 0) {
-            log.info("删除黑名单ip:{}", ip);
+            log.info("删除黑名单ip:{}", id);
         }
     }
 

@@ -10,7 +10,7 @@ public interface BlackIPService extends IService<BlackIP> {
 
     void saveBlackIp(BlackIP blackIP);
 
-    void delete(String ip);
+    void delete(Integer ip);
 
     Page<BlackIP> findBlackIPs(Map<String, Object> params);
 

@@ -1,5 +1,6 @@
 package com.cloud.backend.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.backend.model.BlackIP;
 import com.cloud.backend.service.BlackIPService;
@@ -33,9 +34,22 @@ public class BlackIPController {
     @LogAnnotation(module = LogModule.ADD_BLACK_IP)
     @PreAuthorize("hasAuthority('ip:black:save')")
     @PostMapping("/blackIPs")
-    public void save(@RequestBody BlackIP blackIP) {
-        blackIP.setCreateTime(new Date());
-        blackIPService.saveBlackIp(blackIP);
+    public ResultVo save(@RequestBody BlackIP blackIP) {
+        try {
+            blackIP.setCreateTime(new Date());
+            BlackIP blackIP1 = blackIPService.getOne(new QueryWrapper<BlackIP>().lambda()
+                    .eq(BlackIP::getIp, blackIP.getIp()));
+            if (blackIP1 != null) {
+                return new ResultVo(500,"已经存在ip:"+blackIP.getIp(), null);
+            }
+            blackIPService.saveBlackIp(blackIP);
+            log.info("添加,ip:{}", blackIP.getIp());
+            return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
+        } catch (Exception e) {
+            log.error("除删出现异常", e);
+            return new ResultVo(500, ResponseStatus.RESPONSE_OPERATION_ERROR.message, null);
+        }
+
     }
 
     /**
@@ -44,8 +58,15 @@ public class BlackIPController {
     @LogAnnotation(module = LogModule.DELETE_BLACK_IP)
     @PreAuthorize("hasAuthority('ip:black:delete')")
     @DeleteMapping("/blackIPs")
-    public void delete(String ip) {
-        blackIPService.delete(ip);
+    public ResultVo delete(@RequestParam Integer id) {
+        try {
+            blackIPService.delete(id);
+            log.info("删除成功,id:{}", id);
+            return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
+        } catch (Exception e) {
+            log.error("删除出现异常", e);
+            return new ResultVo(500, ResponseStatus.RESPONSE_OPERATION_ERROR.message, null);
+        }
     }
 
     /**
@@ -89,7 +110,7 @@ public class BlackIPController {
      * @return
      */
     @LogAnnotation(module = LogModule.DELETE_BLACK_IP)
-    @PreAuthorize("hasAuthority('ip:black:delete')")
+    @PreAuthorize("hasAuthority('ip:black:deleteall')")
     @GetMapping("/deleteAll")
     public ResultVo deleteAllBlackIp() {
         try {

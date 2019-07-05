@@ -18,9 +18,11 @@ import lombok.Data;
 @Data
 @TableName(value = "black_ip")
 public class BlackIP implements Serializable {
-
 	private static final long serialVersionUID = -2064187103535072261L;
+
 	@TableId(type = IdType.AUTO)
+	private Integer id;
+	@TableField("ip")
 	private String ip;
 	@TableField("createTime")
 	private Date createTime;
