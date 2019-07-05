@@ -2,12 +2,14 @@ package com.cloud.user.test;
 
 import com.alibaba.fastjson.JSON;
 import com.cloud.model.user.SysDept;
+import com.cloud.model.user.SysGroup;
 import com.cloud.user.UserCenterApplication;
 
 import com.cloud.user.controller.UserController;
 
 
 import com.cloud.user.dao.SysDeptDao;
+import com.cloud.user.service.SysGroupService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +27,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -34,16 +37,23 @@ import java.util.Map;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = UserCenterApplication.class)
 @SpringBootApplication
-@EnableAutoConfiguration
 @WebAppConfiguration
 public class UserControllerTest {
     private MockMvc mockMvc;
+
+
 
     @Autowired
     SysDeptDao sysDeptDao;
 
     @Autowired
     private UserController userController;
+
+    @Autowired
+    private SysGroupService sysGroupService;
+
+    @Autowired
+    RestTemplate restTemplate;
 
     @Before
     public void testBefore() {
@@ -118,5 +128,20 @@ public class UserControllerTest {
         sysDeptDao.insertDept(sysDept);
         sysDeptDao.updateSysDept(sysDept);
     }
+
+    @Test
+    public void  testGroupService(){
+        SysGroup sysGroup = SysGroup.builder().groupId(277).build();
+        boolean b = sysGroup.deleteById();
+        System.out.println("11111111111111111111111111111111111"+b);
+    }
+
+    @Test
+    public void testRestTemplate(){
+        String uri = "http://wthrcdn.etouch.cn/weather_mini?city=";
+
+    }
+
+
 
 }

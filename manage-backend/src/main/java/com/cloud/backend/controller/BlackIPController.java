@@ -46,7 +46,7 @@ public class BlackIPController {
             log.info("添加,ip:{}", blackIP.getIp());
             return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
         } catch (Exception e) {
-            log.error("除删出现异常", e);
+            log.error("删除出现异常", e);
             return new ResultVo(500, ResponseStatus.RESPONSE_OPERATION_ERROR.message, null);
         }
 

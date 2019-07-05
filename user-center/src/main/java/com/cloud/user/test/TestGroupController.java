@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.http.ResponseEntity.status;
 
@@ -42,16 +43,16 @@ public class TestGroupController {
     @Autowired
     SysGroupController groupController;
 
-/*    @Before
+    @Before
     public void before() {
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(groupController).build();
-    }*/
+    }
 
     @Test
     public void saveGroup() throws Exception {
         String contentAsString = mockMvc.perform(MockMvcRequestBuilders.post("/group/saveGroup")
-                .accept(MediaType.MULTIPART_FORM_DATA).param("groupName","wmy").param("groupParentId","4"))
+                .accept(MediaType.MULTIPART_FORM_DATA).param("groupName","wmy4").param("groupParentId","262").param("groupLevel","4"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().
@@ -61,6 +62,42 @@ public class TestGroupController {
         System.out.println(contentAsString);
     }
 
+    @Test
+    public void updateGroup() throws Exception {
+        String contentAsString = mockMvc.perform(MockMvcRequestBuilders.post("/group/updateGroup")
+                .accept(MediaType.MULTIPART_FORM_DATA).param("groupName","mayuris").param("groupParentId","2").param("groupId","260"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().
+                        getResponse().
+                        getContentAsString();
+
+        System.out.println(contentAsString);
+    }
+    @Test
+    public void deleteGroup() throws Exception {
+        String contentAsString = mockMvc.perform(MockMvcRequestBuilders.post("/group/deleteGroup")
+                .accept(MediaType.MULTIPART_FORM_DATA).param("groupId","261"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().
+                        getResponse().
+                        getContentAsString();
+
+        System.out.println(contentAsString);
+    }
+    @Test
+    public void findById() throws Exception {
+        String contentAsString = mockMvc.perform(MockMvcRequestBuilders.post("/group/findById")
+                .accept(MediaType.MULTIPART_FORM_DATA).param("groupId","261"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn().
+                        getResponse().
+                        getContentAsString();
+
+        System.out.println(contentAsString);
+    }
 
 
 }
