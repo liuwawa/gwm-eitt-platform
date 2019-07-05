@@ -98,7 +98,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao,SysUser> implemen
     @Transactional
     @Override
     public void updateAppUser(SysUser appUser) {
-        appUser.setUpdateTime(new Date());
+       // appUser.setUpdateTime(new Date());
 
         appUserDao.updateById(appUser);
         log.info("修改用户：{}", appUser);

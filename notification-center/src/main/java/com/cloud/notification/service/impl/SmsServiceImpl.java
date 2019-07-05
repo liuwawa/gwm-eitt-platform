@@ -86,6 +86,11 @@ public class SmsServiceImpl extends ServiceImpl<SmsDao, Sms>  implements SmsServ
         return response;
     }
 
+    @Override
+    public void delAllSms() {
+        smsDao.delAllSms();
+    }
+
     /**
      * 保存短信记录
      *

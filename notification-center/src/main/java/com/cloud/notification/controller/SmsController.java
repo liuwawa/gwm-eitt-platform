@@ -1,10 +1,14 @@
 package com.cloud.notification.controller;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.utils.PhoneUtil;
+import com.cloud.common.vo.ResultVo;
 import com.cloud.model.common.Page;
 import com.cloud.model.common.PageResult;
+import com.cloud.model.log.LogAnnotation;
+import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.user.SysRole;
 import com.cloud.notification.model.Sms;
 import com.cloud.notification.model.VerificationCode;
@@ -83,15 +87,40 @@ public class SmsController {
         if(!"".equals(condition)){
             queryWrapper.eq("phone",condition);
         }
-
-
         IPage<Sms> smsIPage = smsService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),queryWrapper);
         return PageResult.builder().content(smsIPage.getRecords()).
                 pageNum(smsIPage.getCurrent()).
                 pageSize(smsIPage.getSize()).
                 totalPages(smsIPage.getPages()).
                 totalSize(smsIPage.getTotal()).build();
-
-
     }
+
+
+    @LogAnnotation(module = LogModule.DELETE_ROLE)
+    @PreAuthorize("hasAuthority('back:sms:delete')")
+    @DeleteMapping("/delSms/{id}")
+    public ResultVo deleteSms(@PathVariable Long id) {
+        try {
+            smsService.removeById(id);
+            return ResultVo.builder().msg("删除成功").data(null).code(200).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultVo.builder().msg("删除失败").data(null).code(200).build();
+        }
+    }
+
+    @LogAnnotation(module = LogModule.DELETE_ROLE)
+    @PreAuthorize("hasAuthority('back:sms:delete')")
+    @DeleteMapping("/delAll")
+    public ResultVo deleteAll() {
+        try {
+            smsService.delAllSms();
+            return ResultVo.builder().msg("删除成功").data(null).code(200).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultVo.builder().msg("删除失败").data(null).code(200).build();
+        }
+    }
+
+
 }

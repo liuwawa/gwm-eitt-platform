@@ -26,4 +26,6 @@ public interface SmsService extends IService<Sms> {
 	 * 发送短信
 	 */
 	SendSmsResponse sendSmsMsg(Sms sms);
+
+	void delAllSms();
 }
