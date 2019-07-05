@@ -40,7 +40,7 @@ public class BlackIPController {
             BlackIP blackIP1 = blackIPService.getOne(new QueryWrapper<BlackIP>().lambda()
                     .eq(BlackIP::getIp, blackIP.getIp()));
             if (blackIP1 != null) {
-                return new ResultVo(500,"已经存在ip:"+blackIP.getIp(), null);
+                return new ResultVo(500, "已经存在ip:" + blackIP.getIp(), null);
             }
             blackIPService.saveBlackIp(blackIP);
             log.info("添加,ip:{}", blackIP.getIp());
@@ -80,7 +80,10 @@ public class BlackIPController {
     public PageResult findBlackIPs(@RequestBody Map<String, Object> params) {
         Long pageIndex = Long.valueOf(params.get("pageNum").toString());
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
-        IPage<BlackIP> blackIPage = blackIPService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize));
+        String ipAddress = String.valueOf(params.get("ip").toString());
+        IPage<BlackIP> blackIPage = blackIPService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
+                new QueryWrapper<BlackIP>()
+                        .like("ip", ipAddress));
         return PageResult.builder().content(blackIPage.getRecords()).
                 pageNum(blackIPage.getCurrent()).
                 pageSize(blackIPage.getSize()).
