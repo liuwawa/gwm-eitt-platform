@@ -307,10 +307,6 @@ public class MenuController {
 		for (Map<String, Long> id : ids) {
 			menuService.delete(id.get("id"));
 		}
-//		for (Map id : ids) {
-//			Long.valueOf(id.get("id").toString());
-//
-//		}
 	}
 
 	/**
