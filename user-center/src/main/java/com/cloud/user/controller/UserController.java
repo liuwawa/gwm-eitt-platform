@@ -1,9 +1,14 @@
 package com.cloud.user.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.utils.AppUserUtil;
 import com.cloud.common.utils.VerifyCodeUtils;
+import com.cloud.common.vo.ResultVo;
+import com.cloud.enums.ResponseStatus;
 import com.cloud.model.common.Page;
+import com.cloud.model.common.PageResult;
 import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.user.LoginAppUser;
@@ -259,6 +264,135 @@ public class UserController {
             throw new IllegalArgumentException("输入的验证码错误！");
         }
         log.info("验证码正确");
+    }
+
+
+    /**
+     * 用户查询
+     *
+     * @param params
+     */
+    @PreAuthorize("hasAuthority('back:user:query')")
+    @PostMapping("/users/findPages")
+    public PageResult findUsersByPages(@RequestBody Map<String, Object> params) {
+        // 取值判空
+        Long pageIndex = Long.valueOf(params.get("pageNum").toString());
+        Long pageSize = Long.valueOf(params.get("pageSize").toString());
+        String username = params.get("username").toString();
+        String nickname = params.get("nickname").toString();
+        String sex = null;
+        String enabled = null;
+        if (params.get("sex") != "") {
+            sex = params.get("sex").toString();
+        }
+        if (params.get("enabled") != "") {
+            enabled = params.get("enabled").toString();
+        }
+        IPage<SysUser> userPage = getPage(username, nickname, sex, enabled, pageIndex, pageSize);
+        // 封装结果
+        return PageResult.builder().content(userPage.getRecords()).
+                pageNum(userPage.getCurrent()).
+                pageSize(userPage.getSize()).
+                totalPages(userPage.getPages()).
+                totalSize(userPage.getTotal()).build();
+    }
+
+    // 获取分页的结果
+    public IPage<SysUser> getPage(String username, String nickname, String sex, String enabled, Long
+            pageIndex, Long pageSize) {
+        IPage<SysUser> userPage = null;
+        if (sex == null && enabled != null) {
+            userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
+                    new QueryWrapper<SysUser>().lambda()
+                            .eq(SysUser::getEnabled, enabled)
+                            .like(SysUser::getUsername, username)
+                            .like(SysUser::getNickname, nickname));
+        } else if (enabled == null && sex != null) {
+            userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
+                    new QueryWrapper<SysUser>().lambda()
+                            .eq(SysUser::getSex, sex)
+                            .like(SysUser::getUsername, username)
+                            .like(SysUser::getNickname, nickname));
+        } else if (sex == null && enabled == null) {
+            userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
+                    new QueryWrapper<SysUser>().lambda()
+                            .like(SysUser::getUsername, username)
+                            .like(SysUser::getNickname, nickname));
+        } else {
+            userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
+                    new QueryWrapper<SysUser>().lambda()
+                            .eq(SysUser::getSex, sex)
+                            .eq(SysUser::getEnabled, enabled)
+                            .like(SysUser::getUsername, username)
+                            .like(SysUser::getNickname, nickname));
+        }
+        return userPage;
+    }
+
+    /**
+     * 管理后台修改用户
+     *
+     * @param appUser
+     */
+    @LogAnnotation(module = LogModule.UPDATE_USER)
+    @PreAuthorize("hasAuthority('back:user:update')")
+    @PutMapping("/editUser")
+    public ResultVo updateUser(@RequestBody SysUser appUser) {
+        try {
+
+            SysUser sysUser = appUserService.getOne(new QueryWrapper<SysUser>().lambda().eq(SysUser::getUsername, appUser.getUsername()));
+            if (sysUser != null) {
+                return new ResultVo(500, "已经存在该用户", null);
+            }
+            appUserService.updateAppUser(appUser);
+            log.info("修改成功,id:{}", appUser.getId());
+            return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
+        } catch (Exception e) {
+            log.error("修改出现异常", e);
+            return new ResultVo(500, ResponseStatus.RESPONSE_OPERATION_ERROR.message, null);
+        }
+    }
+
+    /**
+     * 管理后台给用户分配角色
+     *
+     * @param id      用户id
+     * @param roleIds 角色ids
+     */
+    @LogAnnotation(module = LogModule.SET_ROLE)
+    @PreAuthorize("hasAuthority('back:user:role:set')")
+    @PostMapping("/users/{id}/forRoles")
+    public ResultVo setRoleForUser(@PathVariable Long id, @RequestBody Set<Long> roleIds) {
+        try {
+            appUserService.setRoleToUser(id, roleIds);
+            log.info("分配角色成功,用户id:{}", id);
+            return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
+        } catch (Exception e) {
+            log.error("分配失败", e);
+            return new ResultVo(500, e.getMessage(), null);
+        }
+
+    }
+
+
+    /**
+     * 添加用户,根据用户名注册
+     *
+     * @param appUser
+     */
+    @PreAuthorize("hasAuthority('back:user:save')")
+    @PostMapping("/user/saveUser")
+    public ResultVo saveUser(@RequestBody SysUser appUser) {
+        try {
+            appUser.setPassword("123.com");
+            appUserService.addAppUser(appUser);
+            log.info("添加成功,id:{}", appUser.getId());
+            return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
+        } catch (Exception e) {
+            log.error("添加失败", e);
+            return new ResultVo(500, e.getMessage(), null);
+        }
+
     }
 
 }

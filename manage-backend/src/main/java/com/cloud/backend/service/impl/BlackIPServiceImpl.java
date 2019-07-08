@@ -39,7 +39,14 @@ public class BlackIPServiceImpl extends ServiceImpl<BlackIPDao, BlackIP> impleme
         }
     }
 
-
+    @Transactional
+    @Override
+    public void delete(String ip) {
+        int n = blackIPDao.delete(ip);
+        if (n > 0) {
+            log.info("删除黑名单ip:{}", ip);
+        }
+    }
 
 
 	@Override

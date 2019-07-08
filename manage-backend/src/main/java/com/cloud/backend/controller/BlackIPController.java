@@ -33,8 +33,8 @@ public class BlackIPController {
      */
     @LogAnnotation(module = LogModule.ADD_BLACK_IP)
     @PreAuthorize("hasAuthority('ip:black:save')")
-    @PostMapping("/blackIPs")
-    public ResultVo save(@RequestBody BlackIP blackIP) {
+    @PostMapping("/saveBlackIP")
+    public ResultVo saveBlackIP(@RequestBody BlackIP blackIP) {
         try {
             blackIP.setCreateTime(new Date());
             BlackIP blackIP1 = blackIPService.getOne(new QueryWrapper<BlackIP>().lambda()
@@ -57,8 +57,8 @@ public class BlackIPController {
      */
     @LogAnnotation(module = LogModule.DELETE_BLACK_IP)
     @PreAuthorize("hasAuthority('ip:black:delete')")
-    @DeleteMapping("/blackIPs")
-    public ResultVo delete(@RequestParam Integer id) {
+    @DeleteMapping("/deleteIp")
+    public ResultVo deleteIp(@RequestParam Integer id) {
         try {
             blackIPService.delete(id);
             log.info("删除成功,id:{}", id);
@@ -77,7 +77,7 @@ public class BlackIPController {
      */
     @PreAuthorize("hasAuthority('ip:black:query')")
     @PostMapping("/findPage")
-    public PageResult findBlackIPs(@RequestBody Map<String, Object> params) {
+    public PageResult findBlackIPsByPage(@RequestBody Map<String, Object> params) {
         Long pageIndex = Long.valueOf(params.get("pageNum").toString());
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
         String ipAddress = String.valueOf(params.get("ip").toString());
@@ -91,21 +91,7 @@ public class BlackIPController {
                 totalSize(blackIPage.getTotal()).build();
     }
 
-    /**
-     * 查询黑名单<br>
-     * 可内网匿名访问
-     *
-     * @param params
-     * @return
-     */
-    @GetMapping("/backend-anon/internal/blackIPs")
-    public Set<String> findAllBlackIPs(@RequestParam Map<String, Object> params) {
-        Page<BlackIP> page = blackIPService.findBlackIPs(params);
-        if (page.getTotal() > 0) {
-            return page.getData().stream().map(BlackIP::getIp).collect(Collectors.toSet());
-        }
-        return Collections.emptySet();
-    }
+
 
     /**
      * 一键删除所有黑名单ip
@@ -123,5 +109,59 @@ public class BlackIPController {
             log.error("全部删除黑名单ip出现异常", e);
             return new ResultVo(500, ResponseStatus.RESPONSE_OPERATION_ERROR.message, null);
         }
+    }
+
+
+
+    /**
+     * 添加黑名单ip
+     *
+     */
+    @LogAnnotation(module = LogModule.ADD_BLACK_IP)
+    @PreAuthorize("hasAuthority('ip:black:save')")
+    @PostMapping("/blackIPs")
+    public void save(@RequestBody BlackIP blackIP) {
+        blackIP.setCreateTime(new Date());
+
+        blackIPService.save(blackIP);
+    }
+
+    /**
+     * 删除黑名单ip
+     *
+     */
+    @LogAnnotation(module = LogModule.DELETE_BLACK_IP)
+    @PreAuthorize("hasAuthority('ip:black:delete')")
+    @DeleteMapping("/blackIPs")
+    public void delete(String ip) {
+        blackIPService.delete(ip);
+    }
+
+    /**
+     * 查询黑名单
+     *
+     * @param params
+     * @return
+     */
+    @PreAuthorize("hasAuthority('ip:black:query')")
+    @GetMapping("/blackIPs")
+    public Page<BlackIP> findBlackIPs(@RequestParam Map<String, Object> params) {
+        return blackIPService.findBlackIPs(params);
+    }
+
+    /**
+     * 查询黑名单<br>
+     * 可内网匿名访问
+     *
+     * @param params
+     * @return
+     */
+    @GetMapping("/backend-anon/internal/blackIPs")
+    public Set<String> findAllBlackIPs(@RequestParam Map<String, Object> params) {
+        Page<BlackIP> page = blackIPService.findBlackIPs(params);
+        if (page.getTotal() > 0) {
+            return page.getData().stream().map(BlackIP::getIp).collect(Collectors.toSet());
+        }
+        return Collections.emptySet();
     }
 }
