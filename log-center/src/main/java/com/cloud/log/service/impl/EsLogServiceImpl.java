@@ -155,6 +155,11 @@ public class EsLogServiceImpl extends ServiceImpl<LogDao,Log> implements LogServ
 		return new Page<>(total.intValue(), list);
 	}
 
+	@Override
+	public void delAllLog() {
+
+	}
+
 	private Long toTimestamp(String str) {
 		LocalDateTime localDateTime = LocalDateTime.parse(str);
 		Date date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -18,4 +19,7 @@ public interface LogDao extends BaseMapper<Log> {
 	int count(Map<String, Object> params);
 
 	List<Log> findData(Map<String, Object> params);
+
+	@Delete("Delete from t_log")
+	void delAllLog();
 }

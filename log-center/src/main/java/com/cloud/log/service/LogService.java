@@ -17,4 +17,6 @@ public interface LogService extends IService<Log> {
 
 	Page<Log> findLogs(Map<String, Object> params);
 
+	void  delAllLog();
+
 }

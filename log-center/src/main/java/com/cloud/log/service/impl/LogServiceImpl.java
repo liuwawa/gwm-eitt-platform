@@ -56,4 +56,9 @@ public class LogServiceImpl extends ServiceImpl<LogDao,Log> implements LogServic
 		}
 		return new Page<>(total, list);
 	}
+
+	@Override
+	public void delAllLog() {
+		logDao.delAllLog();
+	}
 }
