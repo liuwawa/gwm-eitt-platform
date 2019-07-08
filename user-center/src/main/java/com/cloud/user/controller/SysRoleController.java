@@ -2,6 +2,7 @@ package com.cloud.user.controller;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.model.common.PageResult;
 import com.cloud.model.user.SysGrouping;
+import com.cloud.user.service.SysPermissionService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,6 +36,8 @@ public class SysRoleController {
 
 	@Autowired
 	private SysRoleService sysRoleService;
+	@Autowired
+	private SysPermissionService sysPermissionService;
 
 	/**
 	 * 管理后台添加角色
@@ -145,6 +149,24 @@ public class SysRoleController {
 	@GetMapping("/roles/{id}/permissions")
 	public Set<SysPermission> findPermissionsByRoleId(@PathVariable Long id) {
 		return sysRoleService.findPermissionsByRoleId(id);
+	}
+
+	/**
+	 * 获取角色的权限(element ui)
+	 *
+	 * @param id
+	 */
+	@PreAuthorize("hasAnyAuthority('back:role:permission:set','role:permission:byroleid')")
+	@PostMapping("/queryPermissionsByRoleId")
+	public ResultVo queryPermissionsByRoleId(Long id) {
+		Set<SysPermission> permissionsOfRole = sysRoleService.findPermissionsByRoleId(id);
+		List<SysPermission> list = sysPermissionService.list();
+		list.forEach(i->{
+			if (permissionsOfRole.contains(i)) {
+				i.setChecked(true);
+			}
+		});
+		return ResultVo.builder().code(200).msg("成功!").data(list).build();
 	}
 
 	@PreAuthorize("hasAuthority('back:role:query')")

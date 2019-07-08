@@ -1,9 +1,6 @@
 package com.cloud.user.controller;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import com.cloud.common.utils.AppUserUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -29,13 +26,6 @@ import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.user.SysPermission;
 import com.cloud.user.service.SysPermissionService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
-import java.util.Map;
 
 @RestController
 @Slf4j
@@ -223,22 +213,22 @@ public class SysPermissionController {
         return sysPermissionService.list();
     }
 
-//    /**
-//     * 查询用户的权限标识(element ui)
-//     */
-//    @PreAuthorize("hasAuthority('back:permission:query')")
-//    @PostMapping("/findUserPermissions")
-//    public List<SysPermission> findUserPermissions() {
-////		List<SysPermission> list = sysPermissionService.list();
-////		for (SysPermission sysPermission : list) {
-////		}
-//        Set<String> permissions = Objects.requireNonNull(AppUserUtil.getLoginAppUser()).getPermissions();
-//        List<SysPermission> list = sysPermissionService.list();
-//        list.forEach(l -> {
-//            if (permissions.contains(l.getPermission())) {
-//                l.setChecked(true);
-//            }
-//        });
-//        return list;
-//    }
+    /**
+     * 查询用户的权限标识(element ui)
+     */
+    @PreAuthorize("hasAuthority('back:permission:query')")
+    @PostMapping("/findUserPermissions")
+    public List<SysPermission> findUserPermissions() {
+//		List<SysPermission> list = sysPermissionService.list();
+//		for (SysPermission sysPermission : list) {
+//		}
+        Set<String> permissions = Objects.requireNonNull(AppUserUtil.getLoginAppUser()).getPermissions();
+        List<SysPermission> list = sysPermissionService.list();
+        list.forEach(l -> {
+            if (permissions.contains(l.getPermission())) {
+                l.setChecked(true);
+            }
+        });
+        return list;
+    }
 }

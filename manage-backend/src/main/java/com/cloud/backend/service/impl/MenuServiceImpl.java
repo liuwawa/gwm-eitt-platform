@@ -1,8 +1,10 @@
 package com.cloud.backend.service.impl;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.cloud.common.constants.SysConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,15 +104,9 @@ public class MenuServiceImpl implements MenuService {
 		}
 		Set<Long> menuIdsByRoleId = roleMenuDao.findMenuIdsByRoleId(roleId);
 		if (menuIdsByRoleId.size() == 0){
-			return null;
+			return Collections.emptyList();
 		}
 		return roleMenuDao.findMenusByRoleIds(menuIdsByRoleId);
-//		SysRole sysRole = sysRoleMapper.selectByPrimaryKey(roleId);
-//		if(SysConstants.ADMIN.equalsIgnoreCase(sysRole.getName())) {
-//			// 如果是超级管理员，返回全部
-//			return sysMenuMapper.findAll();
-//		}
-//		return sysMenuMapper.findRoleMenus(roleId);
 	}
 
 }
