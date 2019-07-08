@@ -141,6 +141,20 @@ public class SysRoleController {
 	}
 
 	/**
+	 * 管理后台给角色分配权限
+	 *
+	 * @param id            角色id
+	 * @param permissionIds 权限ids
+	 */
+	@LogAnnotation(module = LogModule.SET_PERMISSION)
+	@PreAuthorize("hasAuthority('back:role:permission:set')")
+	@PostMapping("/setPermission2Role")
+	public ResultVo setPermission2Role(@RequestParam("roleId") Long id, @RequestParam("permissions") @RequestBody Set<Long> permissionIds) {
+		sysRoleService.setPermissionToRole(id, permissionIds);
+		return ResultVo.builder().code(200).build();
+	}
+
+	/**
 	 * 获取角色的权限
 	 * 
 	 * @param id
