@@ -1,17 +1,14 @@
 package com.cloud.user.controller;
 
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.model.common.PageResult;
-import com.cloud.model.user.SysGrouping;
 import com.cloud.user.service.SysPermissionService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,6 +29,7 @@ import com.cloud.model.user.SysRole;
 import com.cloud.user.service.SysRoleService;
 
 @RestController
+@Slf4j
 public class SysRoleController {
 
 	@Autowired
@@ -143,15 +141,22 @@ public class SysRoleController {
 	/**
 	 * 管理后台给角色分配权限
 	 *
-	 * @param id            角色id
-	 * @param permissionIds 权限ids
+	 * @param map        角色id和权限id的集合
 	 */
 	@LogAnnotation(module = LogModule.SET_PERMISSION)
 	@PreAuthorize("hasAuthority('back:role:permission:set')")
 	@PostMapping("/setPermission2Role")
-	public ResultVo setPermission2Role(@RequestParam("roleId") Long id, @RequestParam("permissions") @RequestBody Set<Long> permissionIds) {
-		sysRoleService.setPermissionToRole(id, permissionIds);
-		return ResultVo.builder().code(200).build();
+	public ResultVo setPermission2Role(@RequestBody Map<String,Object> map) {
+		try {
+			Long roleId = Long.valueOf(map.get("roleId").toString());
+			HashSet<Long> permissionIds = new HashSet<>(JSONArray.parseArray(map.get("permissions").toString(), Long.class));
+			sysRoleService.setPermissionToRole(roleId, permissionIds);
+			return ResultVo.builder().code(200).build();
+		}catch (Exception e){
+			log.info(e+"");
+			return ResultVo.builder().code(5000).msg("请联系管理员!").build();
+		}
+
 	}
 
 	/**
