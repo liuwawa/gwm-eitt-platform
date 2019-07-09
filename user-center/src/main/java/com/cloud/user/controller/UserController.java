@@ -1,6 +1,7 @@
 package com.cloud.user.controller;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.utils.AppUserUtil;
@@ -15,6 +16,7 @@ import com.cloud.model.user.LoginAppUser;
 import com.cloud.model.user.SysRole;
 import com.cloud.model.user.SysUser;
 import com.cloud.user.feign.SmsClient;
+import com.cloud.user.service.SysRoleService;
 import com.cloud.user.service.SysUserService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,6 +42,9 @@ public class UserController {
 
     @Autowired
     private SysUserService appUserService;
+
+    @Autowired
+    private SysRoleService sysRoleService;
 
     /**
      * 当前登录用户 LoginAppUser
@@ -356,14 +363,15 @@ public class UserController {
     /**
      * 管理后台给用户分配角色
      *
-     * @param id      用户id
-     * @param roleIds 角色ids
+     * @param map 用户id和角色id集合
      */
     @LogAnnotation(module = LogModule.SET_ROLE)
     @PreAuthorize("hasAuthority('back:user:role:set')")
-    @PostMapping("/users/{id}/forRoles")
-    public ResultVo setRoleForUser(@PathVariable Long id, @RequestBody Set<Long> roleIds) {
+    @PostMapping("/users/setRoles")
+    public ResultVo setRoleForUser(@RequestBody Map map) {
         try {
+            Long id = Long.valueOf(map.get("userId").toString());
+            HashSet<Long> roleIds = new HashSet<>(JSONArray.parseArray(map.get("roleIds").toString(), Long.class));
             appUserService.setRoleToUser(id, roleIds);
             log.info("分配角色成功,用户id:{}", id);
             return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
@@ -393,6 +401,24 @@ public class UserController {
             return new ResultVo(500, e.getMessage(), null);
         }
 
+    }
+
+    /**
+     * 获取用户的角色
+     *
+     * @param id 用户id
+     */
+    @PreAuthorize("hasAnyAuthority('back:user:role:set','user:role:byuid')")
+    @PostMapping("/queryRolesByUserId")
+    public ResultVo findRolesById(Long id) {
+        Set<SysRole> rolesByUserId = appUserService.findRolesByUserId(id);
+        List<SysRole> list = sysRoleService.list();
+        list.forEach(i -> {
+            if (rolesByUserId.contains(i)) {
+                i.setChecked(true);
+            }
+        });
+        return ResultVo.builder().code(200).msg("成功!").data(list).build();
     }
 
 }

@@ -50,6 +50,14 @@ public abstract class LogModule {
     public static final String DELETE_CLIENT = "DELETE_CLIENT";
     public static final String RESET_PASSWORD_CLIENT = "RESET_PASSWORD_CLIENT";
 
+    public static final String ADD_GROUP = "ADD_GROUP";
+    public static final String UPDATE_GROUP = "UPDATE_GROUP";
+    public static final String DELETE_GROUP = "DELETE_GROUP";
+
+    public static final String ADD_GROUPING = "ADD_GROUPING";
+    public static final String UPDATE_GROUPING = "UPDATE_GROUPING";
+    public static final String DELETE_GROUPING = "DELETE_GROUPING";
+
     static {
         MODULES.put(LOGIN, "登陆");
         MODULES.put(LOGOUT, "退出");
@@ -87,6 +95,15 @@ public abstract class LogModule {
         MODULES.put(UPDATE_CLIENT, "修改client");
         MODULES.put(DELETE_CLIENT, "删除client");
         MODULES.put(RESET_PASSWORD_CLIENT, "修改client密码");
+
+        MODULES.put(ADD_GROUP, "添加组织");
+        MODULES.put(UPDATE_GROUP, "修改组织");
+        MODULES.put(DELETE_GROUP, "删除组织");
+
+        MODULES.put(ADD_GROUPING, "添加分组");
+        MODULES.put(UPDATE_GROUPING, "修改分组");
+        MODULES.put(DELETE_GROUPING, "删除分组");
+
     }
 
 }
