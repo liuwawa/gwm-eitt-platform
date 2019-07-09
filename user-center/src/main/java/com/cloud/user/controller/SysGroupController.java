@@ -3,6 +3,8 @@ package com.cloud.user.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
+import com.cloud.model.log.LogAnnotation;
+import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.user.GroupWithExpand;
 import com.cloud.model.user.SysGroup;
 import com.cloud.model.user.SysGroupExpand;
@@ -11,6 +13,7 @@ import com.cloud.response.ObjectConversionEntityUtil;
 import com.cloud.user.service.SysGroupService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,6 +44,8 @@ public class SysGroupController {
      * @return 操作结果
      * 新建一个组织
      */
+    @LogAnnotation(module = LogModule.ADD_GROUP)
+    @PreAuthorize("hasAuthority('back:group:save')")
     @PostMapping("/saveGroup")
     public ResultVo saveGroup(@RequestBody BaseEntity baseEntity) {
         SysGroup sysGroup = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroup.class);
@@ -81,6 +86,8 @@ public class SysGroupController {
      * @return 修改结果
      * 修改组织和其拓展信息
      */
+    @LogAnnotation(module = LogModule.UPDATE_GROUP)
+    @PreAuthorize("hasAuthority('back:group:update')")
     @PutMapping("/updateGroup")
     public ResultVo updateGroup(@RequestBody BaseEntity baseEntity) {
         SysGroup sysGroup = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroup.class);
@@ -106,6 +113,8 @@ public class SysGroupController {
      * @return 操作结果
      * 组织单删(逻辑删除)
      */
+    @LogAnnotation(module = LogModule.DELETE_GROUP)
+    @PreAuthorize("hasAuthority('back:group:delete')")
     @PutMapping("/deleteGroup")
     public ResultVo deleteGroup(@RequestBody BaseEntity baseEntity) {
         SysGroup sysGroup = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroup.class);
@@ -145,6 +154,7 @@ public class SysGroupController {
     /**
      * @return 获取所有组织
      */
+    @PreAuthorize("hasAuthority('back:group:query')")
     @GetMapping("/getAllGroup")
     public Map getAllGroup() {
 

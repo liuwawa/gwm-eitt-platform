@@ -6,11 +6,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.common.Page;
+import com.cloud.model.log.LogAnnotation;
+import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.user.SysGrouping;
 import com.cloud.user.service.SysGroupingService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -38,6 +41,8 @@ public class SysGroupingController {
      * @return 操作结果
      * 添加分组
      */
+    @LogAnnotation(module = LogModule.ADD_GROUPING)
+    @PreAuthorize("hasAuthority('back:group:save')")
     @PostMapping("/saveGrouping")
     public ResultVo saveGrouping(@RequestBody SysGrouping sysGrouping) {
         try {
@@ -70,6 +75,8 @@ public class SysGroupingController {
      * @return 修改结果
      * 对分组进行修改
      */
+    @LogAnnotation(module = LogModule.UPDATE_GROUPING)
+    @PreAuthorize("hasAuthority('back:group:update')")
     @PutMapping("/updateGrouping")
     public ResultVo updateGroupingById(@RequestBody SysGrouping sysGrouping) {
         try {
@@ -95,6 +102,7 @@ public class SysGroupingController {
      * @return 分页查询结果
      * 分组的分页查询
      */
+    @PreAuthorize("hasAuthority('back:group:query')")
     @GetMapping(value = "/groupingByPage")
     public Page<SysGrouping> selectGroupingByPage(@RequestParam(value = "pageIndex") Integer pageIndex,
                                                   @RequestParam(value = "pageSize", required = false) Integer pageSize) {
@@ -128,6 +136,8 @@ public class SysGroupingController {
      * @return 删除结果
      * 单项删除分组(逻辑删除)
      */
+    @LogAnnotation(module = LogModule.DELETE_GROUPING)
+    @PreAuthorize("hasAuthority('back:group:delete')")
     @PutMapping("/deleteGrouping")
     public ResultVo deleteGrouping(@RequestBody SysGrouping sysGrouping) {
         //设置删除时间，删除人
