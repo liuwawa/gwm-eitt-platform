@@ -81,7 +81,7 @@ public class SysGroupGroupingServiceImpl extends ServiceImpl<SysGroupGroupingDao
             groupIds.add(groupGrouping.getGroupId());
         }
         SysGroup sysGroup = SysGroup.builder().build();
-        List<SysGroup> groupList = sysGroup.selectList(new QueryWrapper<SysGroup>().lambda().in(SysGroup::getGroupId, groupIds));
+        List<SysGroup> groupList = sysGroup.selectList(new QueryWrapper<SysGroup>().lambda().in(SysGroup::getId, groupIds));
         return groupList;
     }
 }

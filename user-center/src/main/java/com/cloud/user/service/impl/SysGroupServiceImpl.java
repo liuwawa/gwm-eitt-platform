@@ -33,7 +33,7 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
     @Transactional
     public boolean saveGroupAndGroupExpand(SysGroup sysGroup, SysGroupExpand sysGroupExpand) {
         // 非空验证
-        if (StringUtils.isBlank(sysGroup.getGroupName())) {
+        if (StringUtils.isBlank(sysGroup.getLabel())) {
             log.error("添加组织的名字为空值!");
             throw new ResultException(ResultEnum.GROUPNAME_NULL.getCode(),
                     ResultEnum.GROUPNAME_NULL.getMessage());
@@ -43,7 +43,7 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         // 先添加group主表
         boolean groupSave = sysGroup.insert();
         // 给expand拓展表添加外键groupId
-        sysGroupExpand.setGroupId(sysGroup.getGroupId());
+        sysGroupExpand.setGroupId(sysGroup.getId());
         // 设置全称(路径)
         sysGroupExpand.setGFullname(sysGroupExpand.getUnitName() + sysGroupExpand.getDeptName() + sysGroupExpand.getTeamName());
 
@@ -66,7 +66,7 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         SysGroup sysGroup = SysGroup.builder().build();
         SysGroup group = sysGroup.selectOne(new QueryWrapper<SysGroup>().lambda()
                 .eq(SysGroup::getIsDel, 0)
-                .eq(SysGroup::getGroupId, groupId));
+                .eq(SysGroup::getId, groupId));
         // 判断是否存在该组织
         if (null == group) {
             log.error("根据id查找组织时，组织主表中不存在该id的组织，或者已经删除，id:{}", groupId);
@@ -76,7 +76,7 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         // 计算子节点
         Integer childCount = sysGroup.selectCount(new QueryWrapper<SysGroup>().lambda().
                 eq(SysGroup::getIsDel, "0")
-                .eq(SysGroup::getGroupParentId, group.getGroupId()));
+                .eq(SysGroup::getParentid, group.getId()));
         group.setGroupChildCount(childCount);
         // 每次查询对子节点数量进行更新
         group.updateById();
@@ -92,7 +92,7 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
     @Transactional
     public boolean updateGroupAndGroupExpand(SysGroup sysGroup, SysGroupExpand sysGroupExpand) {
         // 非空验证
-        if (null == sysGroup.getGroupId()) {
+        if (null == sysGroup.getId()) {
             log.error("修改组织的id为空值!");
             throw new ResultException(ResultEnum.GROUPID_NULL.getCode(),
                     ResultEnum.GROUPID_NULL.getMessage());
@@ -102,13 +102,13 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         boolean groupSave = sysGroup.updateById();
         // 查找该对象
         SysGroupExpand groupExpandBySelect = sysGroupExpand.selectOne(new QueryWrapper<SysGroupExpand>().lambda()
-                .eq(SysGroupExpand::getGroupId, sysGroup.getGroupId()));
+                .eq(SysGroupExpand::getGroupId, sysGroup.getId()));
         // 设置全称
         String gFullname = getGFullname(sysGroupExpand, groupExpandBySelect);
         sysGroupExpand.setGFullname(gFullname);
         // 再修改groupExpand拓展表
         boolean groupExpandSave = sysGroupExpand.update(new QueryWrapper<SysGroupExpand>().lambda()
-                .eq(SysGroupExpand::getGroupId, sysGroup.getGroupId()));
+                .eq(SysGroupExpand::getGroupId, sysGroup.getId()));
 
         return groupSave && groupExpandSave;
     }
@@ -157,7 +157,7 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
                 .deleteBy(loginAdminName).deleteTime(new Date()).build();
         // 进行修改操作
         for (Integer groupId : groupIds) {
-            sysGroup.setGroupId(groupId);
+            sysGroup.setId(groupId);
             log.info("删除的组织id:{}", groupId);
             if (!sysGroup.updateById()) {
                 throw new ResultException(ResultEnum.GROUP_NOT_EXIST.getCode(),
@@ -171,7 +171,7 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
     @Transactional
     public boolean updateById(SysGroup sysGroup) {
         // 非空验证
-        if (null == sysGroup.getGroupId()) {
+        if (null == sysGroup.getId()) {
             log.error("删除分组,获取到的分组id为空值");
             throw new ResultException(ResultEnum.GROUPINGID_NULL.getCode(),
                     ResultEnum.GROUPINGID_NULL.getMessage());

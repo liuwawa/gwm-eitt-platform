@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -34,20 +35,20 @@ public class SysGroup extends Model<SysGroup> {
     /**
      * 组id
      */
-    @TableId(value = "groupId", type = IdType.AUTO)
-    private Integer groupId;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
 
     /**
      * 组名称
      */
-    @TableField("groupName")
-    private String groupName;
+    @TableField("label")
+    private String label;
 
     /**
      * 组的父组id(0为没有父级，默认为0)
      */
-    @TableField("groupParentId")
-    private Integer groupParentId;
+    @TableField("parentid")
+    private Integer parentid;
 
     /**
      * 定义展示顺序标识
@@ -58,8 +59,8 @@ public class SysGroup extends Model<SysGroup> {
     /**
      * 组的级别(默认为一级组织)
      */
-    @TableField("groupLevel")
-    private Integer groupLevel;
+    @TableField("level")
+    private Integer level;
 
     /**
      * 子节点数(默认0)
@@ -145,10 +146,16 @@ public class SysGroup extends Model<SysGroup> {
     private String loginAdminName;
 
     /**
+     * 子节点
+     */
+    @TableField(exist = false)
+    private List<SysGroup> children;
+
+    /**
      * 指定主键
      */
     @Override
     protected Serializable pkVal() {
-        return groupId;
+        return id;
     }
 }

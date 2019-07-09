@@ -33,7 +33,7 @@ public class SysGroupExpandServiceImpl extends ServiceImpl<SysGroupExpandDao, Sy
                     ResultEnum.GROUPID_NULL.getMessage());
         }
         // 是否在主表存在组织
-        SysGroup sysGroup = SysGroup.builder().groupId(sysGroupExpand.getGroupId()).build();
+        SysGroup sysGroup = SysGroup.builder().id(sysGroupExpand.getGroupId()).build();
         if(null == sysGroup.selectById()){
             log.error("添加组织拓展表时，不存在该组织，groupId为:{}",sysGroupExpand.getGroupId());
             throw new ResultException(ResultEnum.GROUP_NOT_EXIST.getCode(),

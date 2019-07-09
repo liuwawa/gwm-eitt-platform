@@ -11,11 +11,14 @@ import com.cloud.response.ObjectConversionEntityUtil;
 import com.cloud.user.service.SysGroupService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -44,10 +47,10 @@ public class SysGroupController {
         SysGroupExpand sysGroupExpand = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroupExpand.class);
         try {
             if (!sysGroupService.saveGroupAndGroupExpand(sysGroup, sysGroupExpand)) {
-                log.info("操作失败，添加的组织名称:{}", sysGroup.getGroupName());
+                log.info("操作失败，添加的组织名称:{}", sysGroup.getLabel());
                 return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.code, ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.message, null);
             }
-            log.info("操作成功，添加的组织名称:{}", sysGroup.getGroupName());
+            log.info("操作成功，添加的组织名称:{}", sysGroup.getLabel());
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
             log.error("添加组织，出现异常！", e);
@@ -87,14 +90,14 @@ public class SysGroupController {
         sysGroup.setIsUpdate("1");
         try {
             if (!sysGroupService.updateGroupAndGroupExpand(sysGroup, sysGroupExpand)) {
-                log.info("操作失败，修改的组织名称:{}", sysGroup.getGroupName());
+                log.info("操作失败，修改的组织名称:{}", sysGroup.getLabel());
                 return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.code, ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.message, null);
             }
         } catch (Exception e) {
             log.error("修改组织，出现异常！", e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.message, null);
         }
-        log.info("操作成功，修改的组织名称:{}", sysGroup.getGroupName());
+        log.info("操作成功，修改的组织名称:{}", sysGroup.getLabel());
         return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
     }
 
@@ -108,14 +111,14 @@ public class SysGroupController {
         SysGroup sysGroup = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroup.class);
         try {
             if (!sysGroupService.updateById(sysGroup)) {
-                log.info("操作失败，删除的组织id:{}", sysGroup.getGroupId());
+                log.info("操作失败，删除的组织id:{}", sysGroup.getId());
                 return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.code, ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.message, null);
             }
         } catch (Exception e) {
             log.error("删除组织，出现异常！", e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.message, null);
         }
-        log.info("操作成功，删除的组织id:{}", sysGroup.getGroupId());
+        log.info("操作成功，删除的组织id:{}", sysGroup.getId());
         return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
     }
 
@@ -143,12 +146,38 @@ public class SysGroupController {
      * @return 获取最高组织及其下属组织
      */
     @GetMapping("/getAllGroup")
-    public ResultVo<SysGroup> getAllGroup() {
-        List<SysGroup> list = sysGroupService.list(new QueryWrapper<SysGroup>().lambda()
+    public Map getAllGroup() {
+
+        List<SysGroup> groupList = sysGroupService.list(new QueryWrapper<SysGroup>().lambda()
                 .eq(SysGroup::getIsDel, "0")
-                .in(SysGroup::getGroupParentId, 0, 1)
                 .orderByAsc(SysGroup::getGroupShowOrder));
-        return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, list);
+        List<SysGroup> firstLevelMenus;
+        HashMap<Object, Object> reslut = new HashMap<>();
+        firstLevelMenus = groupList.stream().filter(m -> m.getParentid().equals(0))
+                .collect(Collectors.toList());
+        firstLevelMenus.forEach(m -> setChildren(m, groupList));
+        reslut.put("code", 200);
+        reslut.put("msg", null);
+        reslut.put("data", firstLevelMenus);
+        return reslut;
+    }
+
+    /**
+     * element  ui  数据
+     *
+     * @param sysGroup
+     * @param sysGroupList
+     */
+    private void setChildren(SysGroup sysGroup, List<SysGroup> sysGroupList) {
+        List<SysGroup> child = sysGroupList.stream().filter(m -> m.getParentid().equals(sysGroup.getId()))
+                .collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(child)) {
+            sysGroup.setChildren(child);
+            //递归设置子元素，多级菜单支持
+            child.parallelStream().forEach(c -> {
+                setChildren(c, sysGroupList);
+            });
+        }
     }
 
     /**
@@ -159,9 +188,9 @@ public class SysGroupController {
     @GetMapping("/getGroupsByGroupId/{groupId}")
     public ResultVo<SysGroup> getGroupsByGroupId(@PathVariable Integer groupId) {
         List<SysGroup> list = sysGroupService.list(new QueryWrapper<SysGroup>().lambda()
-                .select(SysGroup::getGroupId, SysGroup::getGroupName)//TODO
+                .select(SysGroup::getId, SysGroup::getLabel)
                 .eq(SysGroup::getIsDel, "0")
-                .eq(SysGroup::getGroupParentId, groupId)
+                .eq(SysGroup::getParentid, groupId)
                 .orderByAsc(SysGroup::getGroupShowOrder));
         return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, list);
 
