@@ -1,5 +1,6 @@
 package com.cloud.backend.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cloud.backend.dao.MailDao;
 import com.cloud.backend.service.MailService;
 import com.cloud.backend.service.SendMailService;
@@ -23,7 +24,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class MailServiceImpl implements MailService {
+public class MailServiceImpl extends ServiceImpl<MailDao,Mail> implements MailService {
 
     @Autowired
     private MailDao mailDao;

@@ -1,7 +1,11 @@
 package com.cloud.backend.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.backend.service.MailService;
+import com.cloud.common.vo.ResultVo;
 import com.cloud.model.common.Page;
+import com.cloud.model.common.PageResult;
 import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.mail.Mail;
@@ -9,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -68,5 +74,43 @@ public class MailController {
         return mail;
     }
 
+    @PreAuthorize("hasAuthority('mail:query')")
+    @PostMapping("/findPage")
+    public PageResult findPage(@RequestBody Map<String, Object> params) {
+        Long pageIndex = Long.valueOf(params.get("pageNum").toString());
+        Long pageSize = Long.valueOf(params.get("pageSize").toString());
+        String username = String.valueOf(params.get("username").toString());
+        String toMail = String.valueOf(params.get("toMail").toString());
 
+        QueryWrapper<Mail> queryWrapper = new QueryWrapper<>();
+
+       queryWrapper.like("username",username).like("toEmail",toMail);
+
+       IPage<Mail> mailIPage = mailService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),queryWrapper);
+        return PageResult.builder().content(mailIPage.getRecords()).
+                pageNum(mailIPage.getCurrent()).
+                pageSize(mailIPage.getSize()).
+                totalPages(mailIPage.getPages()).
+                totalSize(mailIPage.getTotal()).build();
+    }
+
+
+    @LogAnnotation(module = LogModule.DELETE_ROLE)
+    @PreAuthorize("hasAuthority('back:mail:delete')")
+    @DeleteMapping("/delBatch/{ids}")
+    public ResultVo deleteBatchMail(@PathVariable String ids) {
+        List<Integer> list = new ArrayList<>();
+        try {
+            String[] id = ids.split(",");
+            for(int i=0;i<id.length;i++){
+                list.add(Integer.valueOf(id[i]));
+            }
+
+            mailService.removeByIds(list);
+            return ResultVo.builder().msg("删除成功").data(null).code(200).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultVo.builder().msg("删除失败").data(null).code(500).build();
+        }
+    }
 }
