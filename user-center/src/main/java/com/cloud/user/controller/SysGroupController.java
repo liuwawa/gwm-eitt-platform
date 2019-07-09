@@ -143,7 +143,7 @@ public class SysGroupController {
 
 
     /**
-     * @return 获取最高组织及其下属组织
+     * @return 获取所有组织
      */
     @GetMapping("/getAllGroup")
     public Map getAllGroup() {
