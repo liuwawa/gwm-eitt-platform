@@ -131,7 +131,7 @@ public class UserControllerTest {
 
     @Test
     public void  testGroupService(){
-        SysGroup sysGroup = SysGroup.builder().groupId(277).build();
+        SysGroup sysGroup = SysGroup.builder().id(277).build();
         boolean b = sysGroup.deleteById();
         System.out.println("11111111111111111111111111111111111"+b);
     }

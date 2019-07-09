@@ -58,7 +58,7 @@ public class GroupingTest {
 
     @Test
     public void testSaveGroup() {
-        SysGroup sysGroup = SysGroup.builder().groupName("王茂云").build();
+        SysGroup sysGroup = SysGroup.builder().label("王茂云").build();
         boolean save = sysGroupService.save(sysGroup);
         System.out.println(save);
     }

@@ -40,8 +40,8 @@ public class GroupTest {
     @Test
     public void testSave() {
         SysGroup sysGroup = SysGroup.builder().groupAddress("工程楼四楼")
-                .groupChildCount(3).groupLevel(0).groupName("测试组织")
-                .groupParentId(0).groupRemark("这是一个测试用的组织")
+                .groupChildCount(3).level(0).label("测试组织")
+                .parentid(0).groupRemark("这是一个测试用的组织")
                 .groupShowOrder(0).groupTel("1333333333").createBy("liu")
                 .createTime(new Date()).build();
         for (int i = 0; i < 30; i++) {
@@ -51,13 +51,13 @@ public class GroupTest {
 
     @Test
     public void testUpdate() {
-        SysGroup sysGroup = SysGroup.builder().groupId(124).groupAddress("长城").build();
+        SysGroup sysGroup = SysGroup.builder().id(124).groupAddress("长城").build();
         System.out.println(sysGroup.updateById());
     }
 
     @Test
     public void testDelete() {
-        SysGroup sysGroup = SysGroup.builder().groupId(124).build();
+        SysGroup sysGroup = SysGroup.builder().id(124).build();
         System.out.println(sysGroup.deleteById());
     }
 
@@ -93,7 +93,7 @@ public class GroupTest {
 
     @Test
     public void testSelectById() {
-        SysGroup sysGroup = SysGroup.builder().groupId(155).build();
+        SysGroup sysGroup = SysGroup.builder().id(155).build();
         System.out.println(sysGroup.selectById());
     }
 
@@ -109,8 +109,8 @@ public class GroupTest {
     @Test
     public void testTransactional(){
         SysGroup sysGroup = SysGroup.builder().groupAddress("工程楼顶楼")
-                .groupChildCount(100).groupLevel(0).groupName("测试的分组")
-                .groupParentId(0).groupRemark("这是一个测试事务用的组织")
+                .groupChildCount(100).level(0).label("测试的分组")
+                .parentid(0).groupRemark("这是一个测试事务用的组织")
                 .groupShowOrder(0).groupTel("13491111").createBy("liu")
                 .createTime(new Date()).build();
         try{
@@ -124,7 +124,7 @@ public class GroupTest {
     }
     @Test
     public void test(){
-        SysGroup sysGroup = SysGroup.builder().groupName("1213154").build();
+        SysGroup sysGroup = SysGroup.builder().label("1213154").build();
     }
     @Test
     public void testSaveSysGroup(){
@@ -134,7 +134,7 @@ public class GroupTest {
 
     @Test
     public void testSave2(){
-        SysGroup sysGroup = SysGroup.builder().groupTel("5555558").groupName("最新的group测试").build();
+        SysGroup sysGroup = SysGroup.builder().groupTel("5555558").label("最新的group测试").build();
 
         sysGroupService.saveGroupAndGroupExpand(sysGroup,new SysGroupExpand());
 
@@ -149,7 +149,7 @@ public class GroupTest {
 
     @Test
     public void testDeleteGroup(){
-        SysGroup sysGroup = SysGroup.builder().groupId(260).build();
+        SysGroup sysGroup = SysGroup.builder().id(260).build();
 //        ResultVo resultVo = controller.deleteGroup(sysGroup);
 //        System.out.println(resultVo);
     }

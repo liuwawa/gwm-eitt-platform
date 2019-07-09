@@ -25,7 +25,7 @@ public class UserTest {
 		System.out.println(string);
 		System.out.println(string.length());
 		SysGroup sysGroup = new SysGroup();
-		sysGroup.setGroupName("123456");
+		sysGroup.setLabel("123456");
 		boolean save = sysGroupService.save(sysGroup);
 		System.out.println(save);
 	}
