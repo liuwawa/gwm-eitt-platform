@@ -1,5 +1,6 @@
 package com.cloud.file.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloud.file.dao.FileDao;
@@ -11,7 +12,7 @@ import com.cloud.file.utils.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class AbstractFileService implements FileService {
+public abstract class AbstractFileService extends ServiceImpl<FileDao, FileInfo> implements FileService {
 
 	protected abstract FileDao getFileDao();
 

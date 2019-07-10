@@ -1,10 +1,11 @@
 package com.cloud.file.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloud.file.model.FileInfo;
 
-public interface FileService {
+public interface FileService extends IService<FileInfo> {
 
 	/**
 	 * 上传文件

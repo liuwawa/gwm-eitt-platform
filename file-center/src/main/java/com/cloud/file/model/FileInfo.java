@@ -3,14 +3,19 @@ package com.cloud.file.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 @Data
+@TableName(value = "file_info")
 public class FileInfo implements Serializable {
 
 	private static final long serialVersionUID = -1438078028040922174L;
 
 	/** 文件的md5 */
+	@TableId(type = IdType.AUTO)
 	private String id;
 	/** 原始文件名 */
 	private String name;

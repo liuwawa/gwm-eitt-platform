@@ -3,6 +3,7 @@ package com.cloud.file.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -11,7 +12,7 @@ import org.apache.ibatis.annotations.Select;
 import com.cloud.file.model.FileInfo;
 
 @Mapper
-public interface FileDao {
+public interface FileDao extends BaseMapper<FileInfo> {
 
 	@Select("select * from file_info t where t.id = #{id}")
 	FileInfo getById(String id);

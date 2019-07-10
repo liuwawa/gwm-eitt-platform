@@ -1,19 +1,14 @@
 package com.cloud.file.controller;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.cloud.common.vo.ResultVo;
+import com.cloud.model.common.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloud.common.utils.PageUtil;
@@ -25,12 +20,17 @@ import com.cloud.model.common.Page;
 import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
 
+import javax.annotation.Resource;
+
 @RestController
 @RequestMapping("/files")
 public class FileController {
 
 	@Autowired
 	private FileServiceFactory fileServiceFactory;
+
+	@Resource(name = "localFileServiceImpl")
+	private FileService fileService;
 
 	/**
 	 * 文件上传<br>
@@ -111,4 +111,44 @@ public class FileController {
 		}
 		return new Page<>(total, list);
 	}
+
+	@PreAuthorize("hasAuthority('file:query')")
+	@PostMapping("/findPages")
+	public PageResult findPage(@RequestBody Map<String, Object> params) {
+		Long pageIndex = Long.valueOf(params.get("pageNum").toString());
+		Long pageSize = Long.valueOf(params.get("pageSize").toString());
+		String condition = String.valueOf(params.get("fileName").toString());
+
+		QueryWrapper<FileInfo> queryWrapper = new QueryWrapper<>();
+
+		queryWrapper.like("name",condition);
+
+		IPage<FileInfo> fileInfoPage = fileService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),queryWrapper);
+		return PageResult.builder().content(fileInfoPage.getRecords()).
+				pageNum(fileInfoPage.getCurrent()).
+				pageSize(fileInfoPage.getSize()).
+				totalPages(fileInfoPage.getPages()).
+				totalSize(fileInfoPage.getTotal()).build();
+	}
+
+
+	@LogAnnotation(module = LogModule.FILE_DELETE)
+	@PreAuthorize("hasAuthority('file:del')")
+	@DeleteMapping("/delBatch/{ids}")
+	public ResultVo<Object> deleteFile(@PathVariable String ids){
+		List<Integer> list = new ArrayList<>();
+		String[] idList = ids.split(",");
+		for(int i=0;i<idList.length;i++){
+			list.add(Integer.valueOf(idList[i]));
+		}
+		try {
+			fileService.removeByIds(list);
+			return ResultVo.builder().msg("删除成功").data(null).code(200).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResultVo.builder().msg("删除失败").data(null).code(500).build();
+		}
+	}
+
+
 }
