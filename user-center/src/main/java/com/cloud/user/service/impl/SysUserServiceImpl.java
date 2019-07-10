@@ -174,7 +174,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao,SysUser> implemen
      */
     @Transactional
     @Override
-    public void updatePassword(Long id, String oldPassword, String newPassword) {
+    public void updatePassword(Long id, String oldPassword, String newPassword) throws IllegalArgumentException {
         SysUser appUser = appUserDao.findById(id);
         if (StringUtils.isNoneBlank(oldPassword)) {
             if (!passwordEncoder.matches(oldPassword, appUser.getPassword())) { // 旧密码校验

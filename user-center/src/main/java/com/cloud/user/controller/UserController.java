@@ -114,6 +114,27 @@ public class UserController {
     }
 
     /**
+     * 修改自己的个人信息 (element ui)
+     * register
+     *
+     * @param appUser
+     */
+    @LogAnnotation(module = LogModule.UPDATE_ME)
+    @PostMapping("/users/modifyMineInfo")
+    public ResultVo modifyMineInfo(@RequestBody SysUser appUser) {
+        SysUser user = AppUserUtil.getLoginAppUser();
+        appUser.setId(user.getId());
+
+        appUserService.updateAppUser(appUser);
+        user.setNickname(appUser.getNickname());
+        user.setHeadImgUrl(appUser.getHeadImgUrl());
+        user.setUsername(appUser.getUsername());
+        user.setSex(appUser.getSex());
+        return ResultVo.builder().code(200).msg("操作成功!").data(user).build();
+//        return appUser;
+    }
+
+    /**
      * 修改密码
      *
      * @param oldPassword 旧密码
@@ -131,6 +152,31 @@ public class UserController {
 
         SysUser user = AppUserUtil.getLoginAppUser();
         appUserService.updatePassword(user.getId(), oldPassword, newPassword);
+    }
+
+    /**
+     * 修改密码(element ui)
+     *
+     * @param oldPassword 旧密码
+     * @param newPassword 新密码
+     */
+    @LogAnnotation(module = LogModule.UPDATE_PASSWORD)
+    @PostMapping(value = "/users/modifyPassword")
+    public ResultVo modifyPassword(@RequestParam("oldPassword") String oldPassword,@RequestParam("newPassword") String newPassword) {
+        try {
+            SysUser user = AppUserUtil.getLoginAppUser();
+            appUserService.updatePassword(user.getId(), oldPassword, newPassword);
+            return ResultVo.builder().code(200).msg("操作成功!").data(null).build();
+        }catch (Exception e){
+            log.info(e + "");
+            if ("旧密码错误".equals(e.getMessage())){
+                return ResultVo.builder().code(5000).msg(e.getMessage()).data(null).build();
+            }
+            return ResultVo.builder().code(5000).msg("请联系管理员!").data(null).build();
+
+        }
+
+
     }
 
     /**
