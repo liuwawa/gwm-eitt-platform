@@ -393,10 +393,6 @@ public class UserController {
     public ResultVo updateUser(@RequestBody SysUser appUser) {
         try {
 
-            SysUser sysUser = appUserService.getOne(new QueryWrapper<SysUser>().lambda().eq(SysUser::getUsername, appUser.getUsername()));
-            if (sysUser != null) {
-                return new ResultVo(500, "已经存在该用户", null);
-            }
             appUserService.updateAppUser(appUser);
             log.info("修改成功,id:{}", appUser.getId());
             return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
@@ -466,5 +462,30 @@ public class UserController {
         });
         return ResultVo.builder().code(200).msg("成功!").data(list).build();
     }
+
+    /**
+     * 管理后台，给用户重置密码
+     *
+     * @param id 用户id
+     */
+    @LogAnnotation(module = LogModule.RESET_PASSWORD)
+    @PreAuthorize("hasAuthority('back:user:password')")
+    @PostMapping(value = "/users/{id}/setPassword")
+    public ResultVo resetPasswordBackend(@PathVariable Long id, @RequestBody Map map) {
+        try {
+            String oldPassword = map.get("oldPassword").toString();
+            String newPassword = map.get("newPassword").toString();
+            if (StringUtils.isBlank(newPassword)) {
+                return new ResultVo(500, "新密码为空", null);
+            }
+            appUserService.updatePassword(id, oldPassword, newPassword);
+            log.info("设置新密码成功,userId:{}", id);
+            return new ResultVo(200, "操作成功", null);
+        } catch (Exception e) {
+            log.error("设置新密码失败", e);
+            return new ResultVo(500, e.getMessage(), null);
+        }
+    }
+
 
 }
