@@ -131,7 +131,6 @@ public class UserController {
         user.setUsername(appUser.getUsername());
         user.setSex(appUser.getSex());
         return ResultVo.builder().code(200).msg("操作成功!").data(user).build();
-//        return appUser;
     }
 
     /**
@@ -264,6 +263,50 @@ public class UserController {
             appUserService.bindingPhone(loginAppUser.getId(), phone);
         } else {
             throw new IllegalArgumentException("手机号不一致");
+        }
+    }
+
+    /**
+     * 绑定手机号(element ui)
+     *
+     * @param phone
+     * @param key
+     * @param code
+     */
+    @PostMapping(value = "/users/bindPhone")
+    public ResultVo bindPhone(String phone, String key, String code) {
+
+        if (StringUtils.isBlank(phone)) {
+            return ResultVo.builder().code(50001).data(null).msg("手机号不能为空!").build();
+        }
+
+        if (StringUtils.isBlank(code)) {
+            return ResultVo.builder().code(50002).data(null).msg("验证码不能为空!").build();
+        }
+
+        LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+        assert loginAppUser != null;
+        log.info("绑定手机号，key:{},code:{},username:{}", key, code, loginAppUser.getUsername());
+
+        String value = smsClient.matcheCodeAndGetPhone(key, code, false, 10);
+        if (value == null) {
+            return ResultVo.builder().code(50003).data(null).msg("验证码错误!").build();
+        }
+
+        if (appUserService.findByPhone(phone) != null){
+            return ResultVo.builder().code(50003).data(null).msg("手机号已被绑定!").build();
+        }
+
+        if (phone.equals(value)) {
+            try {
+                appUserService.bindingPhone(loginAppUser.getId(), phone);
+                return ResultVo.builder().code(200).data(null).msg("绑定成功!").build();
+            }catch (Exception e){
+                log.info(e+"");
+                return ResultVo.builder().code(50003).data(null).msg(e.getMessage()).build();
+            }
+        } else {
+            return ResultVo.builder().code(50003).data(null).msg("手机号不一致!").build();
         }
     }
 

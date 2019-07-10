@@ -52,7 +52,7 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
                 TimeUnit.MINUTES);
         log.info("缓存验证码：{}", map);
         //发送验证码
-        String content = "您正在进行短信验证登录操作，验证码为:" + code + ".";
+        String content = "您正在进行短信验证操作，验证码为:" + code + ".";
         checkTodaySendCount(phone);
         PhoneUtil.sendCode(phone, content);
         //保存发送记录

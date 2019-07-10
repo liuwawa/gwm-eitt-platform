@@ -212,7 +212,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao,SysUser> implemen
      */
     @Transactional
     @Override
-    public void bindingPhone(Long userId, String phone) {
+    public void bindingPhone(Long userId, String phone) throws IllegalArgumentException{
         UserCredential userCredential = userCredentialsDao.findByUsername(phone);
         if (userCredential != null) {
             throw new IllegalArgumentException("手机号已被绑定");
