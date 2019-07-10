@@ -3,6 +3,7 @@ package com.cloud.notification.controller;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.cloud.common.exception.SmsException;
 import com.cloud.common.utils.PhoneUtil;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.model.common.Page;
@@ -41,6 +42,17 @@ public class SmsController {
     public VerificationCode sendSmsVerificationCode(String phone) {
         if (!PhoneUtil.checkPhone(phone)) {
             throw new IllegalArgumentException("手机号格式不正确");
+        }
+
+        VerificationCode verificationCode = verificationCodeService.generateCode(phone);
+
+        return verificationCode;
+    }
+
+    @PostMapping(value = "/notification-anon/sms/codes", params = {"phone"})
+    public VerificationCode sendSmsLoginVerificationCode(String phone) {
+        if (!PhoneUtil.checkPhone(phone)) {
+            throw new SmsException("手机号格式不正确");
         }
 
         VerificationCode verificationCode = verificationCodeService.generateCode(phone);
