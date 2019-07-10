@@ -9,8 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>
@@ -56,7 +59,12 @@ public class SysUserGroupingController {
      */
     @GetMapping("/getGroupings/{userId}")
     public ResultVo<List<SysGrouping>> getGroupingsByUserId(@PathVariable Integer userId) {
+
         List<SysGrouping> groupings = sysUserGroupingService.getGroupingsByUserId(userId);
+        // 去除空的分组
+        groupings = groupings.stream().filter(m -> m.getChildren() != null)
+                .collect(Collectors.toList());
+
         log.info("根据userId查找可以查看的所有grouping,用户的id:{}", userId);
         return new ResultVo<List<SysGrouping>>(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message, groupings);
 

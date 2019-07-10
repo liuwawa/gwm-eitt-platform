@@ -3,6 +3,7 @@ package com.cloud.user.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cloud.common.enums.ResultEnum;
 import com.cloud.common.exception.ResultException;
+import com.cloud.model.user.SysGroupGrouping;
 import com.cloud.model.user.SysGrouping;
 import com.cloud.user.dao.SysGroupingDao;
 import com.cloud.user.service.SysGroupingService;
@@ -25,6 +26,9 @@ import java.util.List;
 @Service
 @Slf4j
 public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGrouping> implements SysGroupingService {
+    @Autowired
+    private SysGroupingDao groupingDao;
+
     @Override
     @Transactional
     public boolean save(SysGrouping sysGrouping) {
@@ -71,6 +75,23 @@ public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGroup
             if (!sysGrouping.updateById()) {
                 throw new ResultException(ResultEnum.GROUPING_NOT_EXIST.getCode(),
                         ResultEnum.GROUPING_NOT_EXIST.getMessage() + ",分组id:" + groupingId);
+            }
+        }
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean initGroupingSaveGroup(List<Integer> list, SysGrouping grouping) {
+        // 先添加生成一个分组
+        grouping.insert();
+        // 构建对象
+        SysGroupGrouping sysGroupGrouping = SysGroupGrouping.builder().groupingId(grouping.getGroupingId()).build();
+        // 添加到中间表
+        for (Integer groupId : list) {
+            sysGroupGrouping.setGroupId(groupId);
+            if (!sysGroupGrouping.insert()) {
+                return false;
             }
         }
         return true;

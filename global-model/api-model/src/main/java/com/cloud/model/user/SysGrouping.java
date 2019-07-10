@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -102,6 +103,12 @@ public class SysGrouping extends Model<SysGrouping> {
      */
     @TableField(exist = false)
     private String loginAdminName;
+
+    /**
+     * 分组之下的组织
+     */
+    @TableField(exist = false)
+    private List<SysGroup> children;
 
     /**
      * 指定主键

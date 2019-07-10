@@ -39,6 +39,7 @@ public class SysGroupController {
     private SysGroupService sysGroupService;
 
 
+
     /**
      * @param baseEntity 封装组织的数据
      * @return 操作结果
@@ -69,6 +70,7 @@ public class SysGroupController {
      * @return 查询结果
      * 根据组织id查询详细数据
      */
+    @PreAuthorize("hasAuthority('back:group:query')")
     @GetMapping("/findGroup/{groupId}")
     public ResultVo<GroupWithExpand> findGroupById(@PathVariable Integer groupId) {
         try {
@@ -136,6 +138,7 @@ public class SysGroupController {
      * @return 操作结果
      * 批量删除组织(逻辑删除)
      */
+    @PreAuthorize("hasAuthority('back:group:delete')")
     @PutMapping("/deleteGroups")
     public ResultVo deleteGroups(@RequestBody Map map) {
         List<Integer> groupIds = (List<Integer>) map.get("groupIds");
@@ -195,6 +198,7 @@ public class SysGroupController {
      * @return 查询结果
      * 根据组织的id查询其下属组织
      */
+    @PreAuthorize("hasAuthority('back:group:query')")
     @GetMapping("/getGroupsByGroupId/{groupId}")
     public ResultVo<SysGroup> getGroupsByGroupId(@PathVariable Integer groupId) {
         List<SysGroup> list = sysGroupService.list(new QueryWrapper<SysGroup>().lambda()
@@ -205,5 +209,6 @@ public class SysGroupController {
         return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, list);
 
     }
+
 }
 

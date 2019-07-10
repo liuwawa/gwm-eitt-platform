@@ -2,8 +2,11 @@ package com.cloud.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cloud.common.constants.SysConstants;
 import com.cloud.common.enums.ResultEnum;
 import com.cloud.common.exception.ResultException;
+import com.cloud.model.user.SysGroup;
+import com.cloud.model.user.SysGroupGrouping;
 import com.cloud.model.user.SysGrouping;
 import com.cloud.model.user.SysUserGrouping;
 import com.cloud.user.dao.SysUserGroupingDao;
@@ -62,6 +65,16 @@ public class SysUserGroupingServiceImpl extends ServiceImpl<SysUserGroupingDao, 
             throw new ResultException(ResultEnum.USERID_ISNULL.getCode(),
                     ResultEnum.USERID_ISNULL.getMessage());
         }
+        SysGroupGrouping groupGrouping = SysGroupGrouping.builder().build();
+        List<SysGroupGrouping> groupGroupings = groupGrouping.selectAll();
+        // 用户为超级管理员
+        if (userId.equals(SysConstants.ADMIN_USER_ID)) {
+            SysGrouping grouping = SysGrouping.builder().build();
+            List<SysGrouping> groupings = grouping.selectAll();
+            return getGroups(groupings, groupGroupings);
+        }
+
+
         // 构建对象
         SysUserGrouping sysUserGrouping = SysUserGrouping.builder().build();
         // 根据userId查找所有的usergrouping对象
@@ -75,6 +88,25 @@ public class SysUserGroupingServiceImpl extends ServiceImpl<SysUserGroupingDao, 
         SysGrouping sysGrouping = SysGrouping.builder().build();
         List<SysGrouping> sysGroupings = sysGrouping.selectList(new QueryWrapper<SysGrouping>().lambda()
                 .in(SysGrouping::getGroupingId, groupingIds));
+
+        return getGroups(sysGroupings, groupGroupings);
+    }
+
+    // 该方法找出grouping在groupGrouping中间表中的所有的group，并给每个grouping的children赋值并返回
+    public static List<SysGrouping> getGroups(List<SysGrouping> sysGroupings, List<SysGroupGrouping> groupGroupings) {
+        for (SysGrouping grouping : sysGroupings) {
+            List<Integer> groupIds = new ArrayList<>();
+            for (SysGroupGrouping sysGroupGrouping : groupGroupings) {
+                if (sysGroupGrouping.getGroupingId().equals(grouping.getGroupingId())) {
+                    groupIds.add(sysGroupGrouping.getGroupId());
+                }
+            }
+            SysGroup sysGroup = SysGroup.builder().build();
+            if (groupIds.size() != 0 || groupIds != null) {
+                List<SysGroup> list = sysGroup.selectList(new QueryWrapper<SysGroup>().lambda().in(SysGroup::getId, groupIds));
+                grouping.setChildren(list);
+            }
+        }
         return sysGroupings;
     }
 }

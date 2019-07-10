@@ -163,6 +163,8 @@ public class SysGroupingController {
      * @return 操作结果
      * 批量删除(逻辑删除)
      */
+    @LogAnnotation(module = LogModule.DELETE_GROUPING)
+    @PreAuthorize("hasAuthority('back:group:delete')")
     @PutMapping(value = "/deleteGroupings")
     public ResultVo deleteGroupings(@RequestBody Map map) {
         // 获取数据
@@ -176,6 +178,42 @@ public class SysGroupingController {
             log.error("删除分组(批删)，出现异常！", e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.message, null);
         }
+    }
+
+    /**
+     * 生成一个分组的同时把组织添加到这个分组里
+     *
+     * @param map 需要添加的gorupId和新增的grouping的数据
+     * @return 操作结果
+     */
+    @LogAnnotation(module = LogModule.ADD_GROUPING)
+    @PreAuthorize("hasAuthority('back:group:save')")
+    @PostMapping("/initGroupingSaveGroup")
+    public ResultVo initGroupingSaveGroup(@RequestBody Map map) {
+        List<Integer> groupIds = (List<Integer>) map.get("ids");
+        String gorupingName = map.get("name").toString();
+        String groupingRemark = map.get("remark").toString();
+        String loginAdminName = map.get("userName").toString();
+        SysGrouping grouping = SysGrouping.builder()
+                .groupingName(gorupingName)
+                .groupingRemark(groupingRemark)
+                .createBy(loginAdminName)
+                .createTime(new Date()).build();
+        if (gorupingName == null) {
+            return ResultVo.builder().code(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code).msg("分组名不能为空").data(null).build();
+        }
+        try {
+            if (!sysGroupingService.initGroupingSaveGroup(groupIds, grouping)) {
+                log.info("生成分组和添加组织到分组失败,分组名:{}", gorupingName);
+                return ResultVo.builder().code(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code).msg(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.message).data(null).build();
+            }
+            log.info("生成分组和添加组织到分组成功,分组名:{}", gorupingName);
+            return ResultVo.builder().code(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code).msg(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message).data(null).build();
+        } catch (Exception e) {
+            log.error("生成分组和添加组织到分组出现异常", e);
+            return ResultVo.builder().code(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code).msg(e.getMessage()).data(null).build();
+        }
+
     }
 }
 
