@@ -34,11 +34,6 @@ public class SysUserGroupingServiceImpl extends ServiceImpl<SysUserGroupingDao, 
     @Transactional
     public boolean saveUserCheck(List<Integer> groupingIds, Integer userId) {
         // 非空验证
-        if (null == groupingIds || groupingIds.size() == 0) {
-            log.error("添加用户可以查看的分组,获取到的分组id为空值");
-            throw new ResultException(ResultEnum.GROUPINGID_NULL.getCode(),
-                    ResultEnum.GROUPINGID_NULL.getMessage());
-        }
         if (null == userId) {
             log.error("添加用户可以查看的分组,获取到的用户id为空值");
             throw new ResultException(ResultEnum.USERID_ISNULL.getCode(),
@@ -47,6 +42,10 @@ public class SysUserGroupingServiceImpl extends ServiceImpl<SysUserGroupingDao, 
         SysUserGrouping sysUserGrouping = SysUserGrouping.builder().userId(userId).build();
         // 先进行删除
         sysUserGrouping.delete(new QueryWrapper<SysUserGrouping>().lambda().eq(SysUserGrouping::getUserId, userId));
+        // 传来空数组证明取消该用户和所有分组的关联关系，直接删除中间表中的数据并返回true
+        if (groupingIds.size() == 0 || groupingIds == null) {
+            return true;
+        }
         // 添加
         for (Integer groupingId : groupingIds) {
             sysUserGrouping.setGroupingId(groupingId);
@@ -70,7 +69,8 @@ public class SysUserGroupingServiceImpl extends ServiceImpl<SysUserGroupingDao, 
         // 用户为超级管理员
         if (userId.equals(SysConstants.ADMIN_USER_ID)) {
             SysGrouping grouping = SysGrouping.builder().build();
-            List<SysGrouping> groupings = grouping.selectAll();
+            List<SysGrouping> groupings = grouping.selectList(new QueryWrapper<SysGrouping>().lambda()
+                    .eq(SysGrouping::getIsDel, "0"));
             return getGroups(groupings, groupGroupings);
         }
 
@@ -87,8 +87,8 @@ public class SysUserGroupingServiceImpl extends ServiceImpl<SysUserGroupingDao, 
         }
         SysGrouping sysGrouping = SysGrouping.builder().build();
         List<SysGrouping> sysGroupings = sysGrouping.selectList(new QueryWrapper<SysGrouping>().lambda()
-                .in(SysGrouping::getGroupingId, groupingIds));
-
+                .in(SysGrouping::getGroupingId, groupingIds)
+                .eq(SysGrouping::getIsDel, "0"));
         return getGroups(sysGroupings, groupGroupings);
     }
 
@@ -102,8 +102,10 @@ public class SysUserGroupingServiceImpl extends ServiceImpl<SysUserGroupingDao, 
                 }
             }
             SysGroup sysGroup = SysGroup.builder().build();
-            if (groupIds.size() != 0 || groupIds != null) {
-                List<SysGroup> list = sysGroup.selectList(new QueryWrapper<SysGroup>().lambda().in(SysGroup::getId, groupIds));
+            if (groupIds.size() != 0 && groupIds != null) {
+                List<SysGroup> list = sysGroup.selectList(new QueryWrapper<SysGroup>().lambda()
+                        .in(SysGroup::getId, groupIds)
+                        .eq(SysGroup::getIsDel, "0"));
                 grouping.setChildren(list);
             }
         }

@@ -61,7 +61,7 @@ public class SysUserGroupingController {
     public ResultVo<List<SysGrouping>> getGroupingsByUserId(@PathVariable Integer userId) {
 
         List<SysGrouping> groupings = sysUserGroupingService.getGroupingsByUserId(userId);
-        // 去除空的分组
+        // 筛选有group的分组
         groupings = groupings.stream().filter(m -> m.getChildren() != null)
                 .collect(Collectors.toList());
 

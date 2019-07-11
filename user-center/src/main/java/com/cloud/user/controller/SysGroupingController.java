@@ -12,6 +12,7 @@ import com.cloud.model.user.SysGrouping;
 import com.cloud.user.service.SysGroupingService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -165,18 +166,19 @@ public class SysGroupingController {
      */
     @LogAnnotation(module = LogModule.DELETE_GROUPING)
     @PreAuthorize("hasAuthority('back:group:delete')")
-    @PutMapping(value = "/deleteGroupings")
+//    @PutMapping(value = "/deleteGroupings")
+    @DeleteMapping (value = "/deleteGroupings")
     public ResultVo deleteGroupings(@RequestBody Map map) {
         // 获取数据
         List<Integer> groupingIds = (List<Integer>) map.get("groupingIds");
-        String loginAdminName = (String) map.get("loginAdminName");
+        String loginAdminName = map.get("loginAdminName").toString();
         try {
             sysGroupingService.updateByIds(groupingIds, loginAdminName);
             log.info("删除分组操作成功，删除的分组Id:{}", groupingIds);
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
             log.error("删除分组(批删)，出现异常！", e);
-            return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.message, null);
+            return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code, e.getMessage(), null);
         }
     }
 

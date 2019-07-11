@@ -32,11 +32,6 @@ public class SysGroupGroupingServiceImpl extends ServiceImpl<SysGroupGroupingDao
     @Transactional
     public boolean saveGroupToGrouping(List<Integer> groupIds, Integer groupingId) {
         // 非空验证
-        if (null == groupIds || groupIds.size() == 0) {
-            log.error("添加组织到分组,获取到的组织id为空值");
-            throw new ResultException(ResultEnum.GROUPID_NULL.getCode(),
-                    ResultEnum.GROUPID_NULL.getMessage());
-        }
         if (null == groupingId) {
             log.error("添加组织到分组,获取到的分组id为空值");
             throw new ResultException(ResultEnum.GROUPINGID_NULL.getCode(),
@@ -49,9 +44,14 @@ public class SysGroupGroupingServiceImpl extends ServiceImpl<SysGroupGroupingDao
                     ResultEnum.GROUPING_NOT_EXIST.getMessage());
         }
         // 构建对象
+
         SysGroupGrouping sysGroupGrouping = SysGroupGrouping.builder().groupingId(groupingId).build();
         // 先删除存在表中的
         sysGroupGrouping.delete(new QueryWrapper<SysGroupGrouping>().lambda().eq(SysGroupGrouping::getGroupingId, groupingId));
+        // 如果传来一个空数组直接删除所有的关联关系,直接返回true
+        if (groupIds.size() == 0 || groupIds == null) {
+            return true;
+        }
         // 进行添加
         for (Integer groupId : groupIds) {
             sysGroupGrouping.setGroupId(groupId);

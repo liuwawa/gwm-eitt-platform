@@ -1,10 +1,12 @@
 package com.cloud.user.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cloud.common.enums.ResultEnum;
 import com.cloud.common.exception.ResultException;
 import com.cloud.model.user.SysGroupGrouping;
 import com.cloud.model.user.SysGrouping;
+import com.cloud.model.user.SysUserGrouping;
 import com.cloud.user.dao.SysGroupingDao;
 import com.cloud.user.service.SysGroupingService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +28,6 @@ import java.util.List;
 @Service
 @Slf4j
 public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGrouping> implements SysGroupingService {
-    @Autowired
-    private SysGroupingDao groupingDao;
 
     @Override
     @Transactional
@@ -65,6 +65,13 @@ public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGroup
             throw new ResultException(ResultEnum.GROUPINGID_NULL.getCode(),
                     ResultEnum.GROUPINGID_NULL.getMessage());
         }
+
+        /*SysUserGrouping userGrouping = SysUserGrouping.builder().build();
+        List<SysUserGrouping> userGroupings = userGrouping.selectList(new QueryWrapper<SysUserGrouping>().lambda()
+                .in(SysUserGrouping::getGroupingId, groupingIds));
+        if (userGroupings != null || userGroupings.size() != 0) {
+            throw new ResultException(500, "用户使用分组中，请先解除关系");
+        }*/
         // 构建对象
         SysGrouping sysGrouping = SysGrouping.builder().isDel("1")
                 .deleteBy(loginAdminName).deleteTime(new Date()).build();

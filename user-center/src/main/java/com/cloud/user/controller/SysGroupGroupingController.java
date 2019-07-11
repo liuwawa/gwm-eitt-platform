@@ -7,6 +7,7 @@ import com.cloud.model.user.SysGroup;
 import com.cloud.user.service.SysGroupGroupingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,8 +31,9 @@ public class SysGroupGroupingController {
     /**
      * @param map 添加的组织ids，和分组id
      * @return 操作结果
-     * 添加分组到组织（如果存在则先删除所有存在的,再添加）
+     * 添加组织到分组（如果存在则先删除所有存在的,再添加）
      */
+    @PreAuthorize("hasAnyAuthority('back:group:delete','back:group:save')")
     @PostMapping("/addGroupToGrouping")
     public ResultVo addGroupToGrouping(@RequestBody Map map) {
         List<Integer> groupIds = (List<Integer>) map.get("groupIds");
