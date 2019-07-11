@@ -166,7 +166,6 @@ public class SysGroupingController {
      */
     @LogAnnotation(module = LogModule.DELETE_GROUPING)
     @PreAuthorize("hasAuthority('back:group:delete')")
-//    @PutMapping(value = "/deleteGroupings")
     @DeleteMapping (value = "/deleteGroupings")
     public ResultVo deleteGroupings(@RequestBody Map map) {
         // 获取数据

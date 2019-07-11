@@ -513,15 +513,16 @@ public class UserController {
      */
     @LogAnnotation(module = LogModule.RESET_PASSWORD)
     @PreAuthorize("hasAuthority('back:user:password')")
-    @PostMapping(value = "/users/{id}/setPassword")
-    public ResultVo resetPasswordBackend(@PathVariable Long id, @RequestBody Map map) {
+    @PostMapping(value = "/users/{id}/reSetPassword")
+    public ResultVo resetPasswordBackend(@PathVariable Long id) {
         try {
-            String oldPassword = map.get("oldPassword").toString();
-            String newPassword = map.get("newPassword").toString();
-            if (StringUtils.isBlank(newPassword)) {
-                return new ResultVo(500, "新密码为空", null);
+            if(null == id){
+                return new ResultVo(500, "id为空", null);
             }
-            appUserService.updatePassword(id, oldPassword, newPassword);
+            SysUser sysUser = new SysUser();
+            sysUser.setId(id);
+            sysUser.setPassword("123.com");
+            appUserService.updateAppUser(sysUser);
             log.info("设置新密码成功,userId:{}", id);
             return new ResultVo(200, "操作成功", null);
         } catch (Exception e) {
