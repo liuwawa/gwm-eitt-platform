@@ -38,16 +38,24 @@ public class Mail implements Serializable {
      * 正文
      */
     private String content;
+
+    /*
+     * 是否已读
+     * */
+    private Integer isRead;
+    /**
+     * 发送时间
+     */
+    private Date sendTime;
+
     /**
      * 发送状态
      *
      * @see com.cloud.model.mail.constants.MailStatus
      */
     private Integer status;
-    /**
-     * 发送时间
-     */
-    private Date sendTime;
+
+
     private Date createTime;
     private Date updateTime;
 

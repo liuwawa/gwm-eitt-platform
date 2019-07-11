@@ -111,4 +111,9 @@ public class MailServiceImpl extends ServiceImpl<MailDao,Mail> implements MailSe
         }
         return new Page<>(total, list);
     }
+
+    @Override
+    public List<Mail> findNoRead(Long userId) {
+        return mailDao.findNoRead(userId);
+    }
 }

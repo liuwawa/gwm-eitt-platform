@@ -25,4 +25,7 @@ public interface MailDao extends BaseMapper<Mail> {
     int count(Map<String, Object> params);
 
     List<Mail> findData(Map<String, Object> params);
+
+    @Select("SELECT * FROM t_mail WHERE isRead=0 and userId=#{userId} ORDER BY sendTime DESC LIMIT 5")
+    List<Mail> findNoRead(Long userId);
 }

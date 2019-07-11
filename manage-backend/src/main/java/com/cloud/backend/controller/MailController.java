@@ -3,12 +3,14 @@ package com.cloud.backend.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.backend.service.MailService;
+import com.cloud.common.utils.AppUserUtil;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.model.common.Page;
 import com.cloud.model.common.PageResult;
 import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.mail.Mail;
+import com.cloud.model.user.LoginAppUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -112,5 +114,13 @@ public class MailController {
             e.printStackTrace();
             return ResultVo.builder().msg("删除失败").data(null).code(500).build();
         }
+    }
+
+
+    @PostMapping("/findNoRead")
+    public List<Mail> findNoRead() {
+        LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+        List<Mail> noRead = mailService.findNoRead(loginAppUser.getId());
+        return  noRead;
     }
 }
