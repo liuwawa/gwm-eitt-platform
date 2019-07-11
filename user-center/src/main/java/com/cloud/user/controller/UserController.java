@@ -130,6 +130,7 @@ public class UserController {
         user.setHeadImgUrl(appUser.getHeadImgUrl());
         user.setUsername(appUser.getUsername());
         user.setSex(appUser.getSex());
+        user.setPhone(appUser.getPhone());
         return ResultVo.builder().code(200).msg("操作成功!").data(user).build();
     }
 

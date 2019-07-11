@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.common.utils.PhoneUtil;
@@ -34,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class SysUserServiceImpl extends ServiceImpl<SysUserDao,SysUser> implements SysUserService {
+public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> implements SysUserService {
 
     @Autowired
     private SysUserDao appUserDao;
@@ -98,9 +100,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao,SysUser> implemen
     @Transactional
     @Override
     public void updateAppUser(SysUser appUser) {
-       // appUser.setUpdateTime(new Date());
+        // appUser.setUpdateTime(new Date());
 
         appUserDao.updateById(appUser);
+        QueryWrapper<UserCredential> deleteWrapper = new QueryWrapper<>();
+        deleteWrapper.eq("userId", appUser.getId())
+                .and(
+                        i -> i.eq("type", CredentialType.PHONE.name())
+                );
+        userCredentialsDao.delete(deleteWrapper);
+//        QueryWrapper<UserCredential> wrapper = new QueryWrapper<>();
+//        wrapper.eq("userId",appUser.getId());
+        userCredentialsDao.save(new UserCredential(appUser.getPhone(), CredentialType.PHONE.name(), appUser.getId()));
         log.info("修改用户：{}", appUser);
     }
 
@@ -212,7 +223,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao,SysUser> implemen
      */
     @Transactional
     @Override
-    public void bindingPhone(Long userId, String phone) throws IllegalArgumentException{
+    public void bindingPhone(Long userId, String phone) throws IllegalArgumentException {
         UserCredential userCredential = userCredentialsDao.findByUsername(phone);
         if (userCredential != null) {
             throw new IllegalArgumentException("手机号已被绑定");
