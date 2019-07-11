@@ -2,6 +2,7 @@ package com.cloud.model.user;
 
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,11 +17,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName(value = "user_credential")
+@TableName(value = "user_credentials")
 public class UserCredential implements Serializable {
 
 	private static final long serialVersionUID = -958701617717204974L;
-
 	private String username;
 	/**
 	 * @see com.cloud.model.user.constants.CredentialType
