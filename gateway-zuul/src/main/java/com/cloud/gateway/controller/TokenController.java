@@ -75,7 +75,7 @@ public class TokenController {
 
         //获取登录真实ip
         String ipAddress = IPUtil.getIpAddr(request);
-        saveLoginLog(username, "用户名密码登陆",ipAddress);
+        saveLoginLog(username, "用户名密码登陆", ipAddress);
         //加入errorCode和message
         ZuulUtils.initZuulResponseForCode(tokenInfo, ResponseStatus.RESPONSE_SUCCESS);
         return tokenInfo;
@@ -90,7 +90,7 @@ public class TokenController {
      * @return
      */
     @PostMapping("/sys/login-sms")
-    public Map<String, Object> smsLogin(String phone, String key, String code,HttpServletRequest request) {
+    public Map<String, Object> smsLogin(String phone, String key, String code, HttpServletRequest request) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(OAuth2Utils.GRANT_TYPE, "password");
         parameters.put(OAuth2Utils.CLIENT_ID, SystemClientInfo.CLIENT_ID);
@@ -112,8 +112,9 @@ public class TokenController {
 
         //获取登录真实ip
         String ipAddress = IPUtil.getIpAddr(request);
-        saveLoginLog(phone, "手机号短信登陆",ipAddress);
-
+        saveLoginLog(phone, "手机号短信登陆", ipAddress);
+        //加入errorCode和message
+        ZuulUtils.initZuulResponseForCode(tokenInfo, ResponseStatus.RESPONSE_SUCCESS);
         return tokenInfo;
     }
 
@@ -123,7 +124,7 @@ public class TokenController {
      * @return
      */
     @PostMapping("/sys/login-wechat")
-    public Map<String, Object> smsLogin(String openid, String tempCode,HttpServletRequest request) {
+    public Map<String, Object> smsLogin(String openid, String tempCode, HttpServletRequest request) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(OAuth2Utils.GRANT_TYPE, "password");
         parameters.put(OAuth2Utils.CLIENT_ID, SystemClientInfo.CLIENT_ID);
@@ -138,7 +139,7 @@ public class TokenController {
 
         //获取登录真实ip
         String ipAddress = IPUtil.getIpAddr(request);
-        saveLoginLog(openid, "微信登陆",ipAddress);
+        saveLoginLog(openid, "微信登陆", ipAddress);
 
         return tokenInfo;
     }
@@ -148,7 +149,7 @@ public class TokenController {
      *
      * @param username
      */
-    private void saveLoginLog(String username, String remark,String ipAddress) {
+    private void saveLoginLog(String username, String remark, String ipAddress) {
         log.info("{}登陆", username);
         // 异步
         CompletableFuture.runAsync(() -> {
