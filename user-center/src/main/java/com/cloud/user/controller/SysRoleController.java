@@ -75,7 +75,7 @@ public class SysRoleController {
 			sysRole.setName(sysRole.getCode());
 		}
 		sysRole.setCreateTime(new Date());
-		sysRoleService.save(sysRole);
+		sysRoleService.saveOrUpdate(sysRole);
 	}
 
 	/**

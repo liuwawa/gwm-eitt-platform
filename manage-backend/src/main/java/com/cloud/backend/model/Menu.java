@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 @Data
@@ -13,6 +14,8 @@ public class Menu implements Serializable {
 
 	private Long id;
 	private Long parentId;
+	@TableField(exist = false)
+	private String parentName;
 	private String name;
 	private String css;
 	private String url;
