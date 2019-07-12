@@ -75,7 +75,7 @@ public class MailServiceImpl extends ServiceImpl<MailDao,Mail> implements MailSe
         }
         mail.setUpdateTime(new Date());
 
-        mailDao.update(mail);
+        mailDao.updateEmail(mail);
 
         log.info("修改邮件：{}", mail);
     }
@@ -92,7 +92,7 @@ public class MailServiceImpl extends ServiceImpl<MailDao,Mail> implements MailSe
         mail.setSendTime(new Date());
         mail.setStatus(flag ? MailStatus.SUCCESS : MailStatus.ERROR);
 
-        mailDao.update(mail);
+        mailDao.updateEmail(mail);
     }
 
     @Override

@@ -14,7 +14,7 @@ public interface MailDao extends BaseMapper<Mail> {
     @Insert("insert into t_mail(userId, username, toEmail, subject, content, status, createTime, updateTime) values(#{userId}, #{username}, #{toEmail}, #{subject}, #{content}, #{status}, #{createTime}, #{updateTime})")
     int save(Mail mail);
 
-    int update(Mail mail);
+    int updateEmail(Mail mail);
 
     @Select("select * from t_mail t where t.id = #{id}")
     Mail findById(Long id);

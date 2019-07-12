@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cloud.backend.dao.MailDao">
 
-	<update id="update">
+	<update id="updateMail">
 		update t_mail t
 		<set>
 			<if test="toEmail != null and toEmail != ''">
