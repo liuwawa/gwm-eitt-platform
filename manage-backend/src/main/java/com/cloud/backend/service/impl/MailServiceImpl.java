@@ -122,6 +122,10 @@ public class MailServiceImpl extends ServiceImpl<MailDao,Mail> implements MailSe
         mailDao.updateIsRead(id);
     }
 
+    @Override
+    public void updateIsReadByUserId(Long userId) {
+        mailDao.updateIsReadByUserId(userId);
+    }
 
 
 }

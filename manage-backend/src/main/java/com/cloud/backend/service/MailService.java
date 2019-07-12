@@ -22,4 +22,6 @@ public interface MailService extends IService<Mail> {
     List<Mail> findNoRead(Long userId);
 
     void updateIsRead(Long id);
+
+    void updateIsReadByUserId(Long id);
 }

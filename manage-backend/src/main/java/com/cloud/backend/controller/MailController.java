@@ -128,12 +128,9 @@ public class MailController {
     @PostMapping("/batchRead")
     public ResultVo batchRead() {
         LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
-        Mail mail = new Mail();
-        mail.setIsRead(1);
-        QueryWrapper<Mail> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("userId", loginAppUser.getId());
+
         try {
-            mailService.update(mail, queryWrapper);
+            mailService.updateIsReadByUserId(loginAppUser.getId());
             return ResultVo.builder().msg("成功").data(null).code(200).build();
         } catch (Exception e) {
             e.printStackTrace();
