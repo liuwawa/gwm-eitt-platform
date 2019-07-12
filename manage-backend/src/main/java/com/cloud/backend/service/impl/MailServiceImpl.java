@@ -116,4 +116,12 @@ public class MailServiceImpl extends ServiceImpl<MailDao,Mail> implements MailSe
     public List<Mail> findNoRead(Long userId) {
         return mailDao.findNoRead(userId);
     }
+
+    @Override
+    public void updateIsRead(Long id) {
+        mailDao.updateIsRead(id);
+    }
+
+
+
 }

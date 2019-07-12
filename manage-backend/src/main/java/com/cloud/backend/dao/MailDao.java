@@ -2,10 +2,7 @@ package com.cloud.backend.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cloud.model.mail.Mail;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 import java.util.Map;
@@ -28,4 +25,7 @@ public interface MailDao extends BaseMapper<Mail> {
 
     @Select("SELECT * FROM t_mail WHERE isRead=0 and userId=#{userId} ORDER BY sendTime DESC LIMIT 5")
     List<Mail> findNoRead(Long userId);
+
+    @Update("UPDATE t_mail SET isRead=1 where id = #{id}")
+    void updateIsRead(Long id);
 }

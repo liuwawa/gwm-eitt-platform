@@ -20,4 +20,6 @@ public interface MailService extends IService<Mail> {
     Page<Mail> findMails(Map<String, Object> params);
 
     List<Mail> findNoRead(Long userId);
+
+    void updateIsRead(Long id);
 }
