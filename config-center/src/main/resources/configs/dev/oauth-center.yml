@@ -1,4 +1,10 @@
 spring:
+  rabbitmq:
+      host: @ipAddress@
+      port: @mq-port@
+      username: @mq-username@
+      password: @mq-password@
+      virtual-host: @mq-virtual-host@
   redis:
     host: @ipAddress@
     port: @redis-port@

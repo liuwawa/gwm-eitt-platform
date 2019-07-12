@@ -1,19 +1,19 @@
 spring:
   application:
     name: config-center
-#  profiles:
-#    active: native
+  profiles:
+    active: native
   cloud:
     config:
       server:
-#        native:
-#          searchLocations: classpath:/configs/{profile}
+        native:
+          searchLocations: classpath:/configs/{profile}
 #          searchLocations: file:/d:/configs/{profile}
         git:
-          uri: http://10.255.20.38/jyjc/hr/cloud-config.git
+          uri: http://10.255.20.38/jyjc/hr/cloud-config.git #https://gitee.com/javaFinall/cloud-config.git
           default-label: master
           force-pull: true
-          searchPaths: test2
+          searchPaths: '{profile}'
       bus:
         enabled: true
         trace:
