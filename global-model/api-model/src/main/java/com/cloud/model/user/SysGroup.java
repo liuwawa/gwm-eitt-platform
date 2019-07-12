@@ -1,12 +1,9 @@
 package com.cloud.model.user;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-
-import java.time.LocalDateTime;
-
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -150,6 +147,12 @@ public class SysGroup extends Model<SysGroup> {
      */
     @TableField(exist = false)
     private List<SysGroup> children;
+
+    /**
+     * 组织的拓展数据
+     */
+    @TableField(exist = false)
+    private SysGroupExpand groupExpand;
 
     /**
      * 指定主键

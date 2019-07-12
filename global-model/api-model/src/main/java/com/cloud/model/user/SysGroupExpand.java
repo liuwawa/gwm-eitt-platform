@@ -76,6 +76,11 @@ public class SysGroupExpand extends Model<SysGroupExpand> {
     private String gModule;
 
     /**
+     * 子模块
+     */
+    @TableField("subModule")
+    private String subModule;
+    /**
      * 该组织全称（路径）
      */
     @TableField("gFullname")

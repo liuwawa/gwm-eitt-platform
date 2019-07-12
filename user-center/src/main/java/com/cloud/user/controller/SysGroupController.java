@@ -8,10 +8,12 @@ import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.user.GroupWithExpand;
 import com.cloud.model.user.SysGroup;
 import com.cloud.model.user.SysGroupExpand;
+import com.cloud.model.user.SysUser;
 import com.cloud.response.BaseEntity;
 import com.cloud.response.ObjectConversionEntityUtil;
 import com.cloud.user.service.SysGroupService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
@@ -37,8 +39,6 @@ import java.util.stream.Collectors;
 public class SysGroupController {
     @Autowired
     private SysGroupService sysGroupService;
-
-
 
     /**
      * @param baseEntity 封装组织的数据
@@ -117,7 +117,7 @@ public class SysGroupController {
      */
     @LogAnnotation(module = LogModule.DELETE_GROUP)
     @PreAuthorize("hasAuthority('back:group:delete')")
-    @PutMapping("/deleteGroup")
+    @DeleteMapping("/deleteGroup")
     public ResultVo deleteGroup(@RequestBody BaseEntity baseEntity) {
         SysGroup sysGroup = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroup.class);
         try {
@@ -139,7 +139,7 @@ public class SysGroupController {
      * 批量删除组织(逻辑删除)
      */
     @PreAuthorize("hasAuthority('back:group:delete')")
-    @PutMapping("/deleteGroups")
+    @DeleteMapping("/deleteGroups")
     public ResultVo deleteGroups(@RequestBody Map map) {
         List<Integer> groupIds = (List<Integer>) map.get("groupIds");
         String loginAdminName = (String) map.get("loginAdminName");
@@ -149,7 +149,7 @@ public class SysGroupController {
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
             log.error("删除分组(批删)，出现异常！", e);
-            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.message, null);
+            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, e.getMessage(), null);
         }
     }
 
@@ -169,6 +169,13 @@ public class SysGroupController {
         firstLevelMenus = groupList.stream().filter(m -> m.getParentid().equals(0))
                 .collect(Collectors.toList());
         firstLevelMenus.forEach(m -> setChildren(m, groupList));
+        // 设置拓展信息
+        for (SysGroup sysGroup : firstLevelMenus) {
+            SysGroupExpand sysGroupExpand = SysGroupExpand.builder().build();
+            SysGroupExpand expand = sysGroupExpand.selectOne(new QueryWrapper<SysGroupExpand>().lambda()
+                    .eq(SysGroupExpand::getGroupId, sysGroup.getId()));
+            sysGroup.setGroupExpand(expand);
+        }
         reslut.put("code", 200);
         reslut.put("msg", null);
         reslut.put("data", firstLevelMenus);
@@ -186,7 +193,7 @@ public class SysGroupController {
                 .collect(Collectors.toList());
         if (!CollectionUtils.isEmpty(child)) {
             sysGroup.setChildren(child);
-            //递归设置子元素，多级菜单支持
+            //递归设置子元素
             child.parallelStream().forEach(c -> {
                 setChildren(c, sysGroupList);
             });

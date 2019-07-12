@@ -7,10 +7,13 @@ import com.cloud.common.exception.ResultException;
 import com.cloud.model.user.GroupWithExpand;
 import com.cloud.model.user.SysGroup;
 import com.cloud.model.user.SysGroupExpand;
+import com.cloud.model.user.SysUser;
 import com.cloud.user.dao.SysGroupDao;
+import com.cloud.user.dao.SysUserDao;
 import com.cloud.user.service.SysGroupService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +32,9 @@ import java.util.List;
 @Slf4j
 public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> implements SysGroupService {
 
+    @Autowired
+    private SysUserDao sysUserDao;
+
     @Override
     @Transactional
     public boolean saveGroupAndGroupExpand(SysGroup sysGroup, SysGroupExpand sysGroupExpand) {
@@ -44,11 +50,133 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         boolean groupSave = sysGroup.insert();
         // 给expand拓展表添加外键groupId
         sysGroupExpand.setGroupId(sysGroup.getId());
-        // 设置全称(路径)
-        sysGroupExpand.setGFullname(sysGroupExpand.getUnitName() + sysGroupExpand.getDeptName() + sysGroupExpand.getTeamName());
 
+        // 设置gGrade
+        sysGroupExpand = setGgradeByLevel(sysGroup, sysGroupExpand);
+
+        // 判断新增的组织是哪个级别
+        if (!sysGroupExpand.getGGrade().equals("0")) {   //不是集团级别，肯定有父级，是集团级别也不会有这六个属性
+            boolean flag = false;
+            // 根据其父id查找出其上一级的组织拓展数据
+            while (flag) {
+
+                // 根据传来的父id查找出父对象
+                SysGroup group = sysGroup.selectOne(new QueryWrapper<SysGroup>().lambda()
+                        .eq(SysGroup::getIsDel, "0")
+                        .eq(SysGroup::getId, sysGroup.getParentid()));
+                // 根据父对象的id查出他的拓展数据
+                SysGroupExpand groupExpand = sysGroupExpand.selectOne(new QueryWrapper<SysGroupExpand>().lambda()
+                        .eq(SysGroupExpand::getGroupId, group.getId()));
+                // 为拓展数据赋值
+                sysGroupExpand = setProperty(groupExpand, sysGroupExpand, group);
+                // 为sysGroup重新赋值父id，一直查找
+                sysGroup.setParentid(group.getParentid());
+
+                // 直到找到顶级
+                if (sysGroupExpand.getUnitId() != null) {
+                    flag = true;
+                }
+            }
+        }
         // 再添加groupExpand拓展表
         boolean groupExpandSave = sysGroupExpand.insert();
+
+        return groupSave && groupExpandSave;
+    }
+
+    // 根据level设置gGrade
+    public static SysGroupExpand setGgradeByLevel(SysGroup sysGroup, SysGroupExpand sysGroupExpand) {
+        switch (sysGroup.getLevel()) {
+            case 0:
+                sysGroupExpand.setGGrade("0");
+                break;
+            case 1:
+                sysGroupExpand.setGGrade("10");
+                break;
+            case 2:
+                sysGroupExpand.setGGrade("20");
+                break;
+            case 3:
+                sysGroupExpand.setGGrade("20");
+                break;
+            case 4:
+                sysGroupExpand.setGGrade("30");
+                break;
+            case 5:
+                sysGroupExpand.setGGrade("30");
+                break;
+            case 6:
+                sysGroupExpand.setGGrade("30");
+                break;
+        }
+        return sysGroupExpand;
+    }
+
+    // 设置单位，部门，科室，全称(路径)
+    public static SysGroupExpand setProperty(SysGroupExpand sysGroupExpand, SysGroupExpand groupExpand, SysGroup sysGroup) {
+        if (sysGroupExpand.getGGrade().equals("20")) {
+            groupExpand.setTeamId(sysGroupExpand.getGroupId());
+            groupExpand.setTeamName(sysGroup.getLabel());
+        }
+        if (sysGroupExpand.getGGrade().equals("10")) {
+            groupExpand.setDeptId(sysGroupExpand.getGroupId());
+            groupExpand.setDeptName(sysGroup.getLabel());
+        }
+        if (sysGroupExpand.getGGrade().equals("0")) {
+            groupExpand.setUnitId(sysGroupExpand.getGroupId());
+            groupExpand.setUnitName(sysGroup.getLabel());
+        }
+        groupExpand.setGFullname(sysGroup.getLabel() + groupExpand.getGFullname());
+        return groupExpand;
+
+    }
+
+    @Override
+    @Transactional
+    public boolean updateGroupAndGroupExpand(SysGroup sysGroup, SysGroupExpand sysGroupExpand) {
+        // 非空验证
+        if (null == sysGroup.getId()) {
+            log.error("修改组织的id为空值!");
+            throw new ResultException(ResultEnum.GROUPID_NULL.getCode(),
+                    ResultEnum.GROUPID_NULL.getMessage());
+        }
+
+        // 先修改group主表
+        boolean groupSave = sysGroup.updateById();
+        // 查找该对象
+        SysGroupExpand groupExpandBySelect = sysGroupExpand.selectOne(new QueryWrapper<SysGroupExpand>().lambda()
+                .eq(SysGroupExpand::getGroupId, sysGroup.getId()));
+        // 设置gGrade
+        sysGroupExpand = setGgradeByLevel(sysGroup, sysGroupExpand);
+
+        // 判断新增的组织是哪个级别
+        if (!sysGroupExpand.getGGrade().equals("0")) {   //不是集团级别，肯定有父级，是集团级别也不会有这六个属性
+            boolean flag = false;
+            // 根据其父id查找出其上一级的组织拓展数据
+            while (flag) {
+
+                // 根据传来的父id查找出父对象
+                SysGroup group = sysGroup.selectOne(new QueryWrapper<SysGroup>().lambda()
+                        .eq(SysGroup::getIsDel, "0")
+                        .eq(SysGroup::getId, sysGroup.getParentid()));
+                // 根据父对象的id查出他的拓展数据
+                SysGroupExpand groupExpand = sysGroupExpand.selectOne(new QueryWrapper<SysGroupExpand>().lambda()
+                        .eq(SysGroupExpand::getGroupId, group.getId()));
+                // 为拓展数据赋值
+                sysGroupExpand = setProperty(groupExpand, sysGroupExpand, group);
+                // 为sysGroup重新赋值父id，查找
+                sysGroup.setParentid(group.getParentid());
+                // 直到找到顶级
+                if (sysGroupExpand.getUnitId() != null) {
+                    flag = true;
+                }
+            }
+        }
+
+
+        // 再修改groupExpand拓展表
+        boolean groupExpandSave = sysGroupExpand.update(new QueryWrapper<SysGroupExpand>().lambda()
+                .eq(SysGroupExpand::getGroupId, sysGroup.getId()));
 
         return groupSave && groupExpandSave;
     }
@@ -88,33 +216,9 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         return new GroupWithExpand(group, groupExpand);
     }
 
-    @Override
-    @Transactional
-    public boolean updateGroupAndGroupExpand(SysGroup sysGroup, SysGroupExpand sysGroupExpand) {
-        // 非空验证
-        if (null == sysGroup.getId()) {
-            log.error("修改组织的id为空值!");
-            throw new ResultException(ResultEnum.GROUPID_NULL.getCode(),
-                    ResultEnum.GROUPID_NULL.getMessage());
-        }
-
-        // 先修改group主表
-        boolean groupSave = sysGroup.updateById();
-        // 查找该对象
-        SysGroupExpand groupExpandBySelect = sysGroupExpand.selectOne(new QueryWrapper<SysGroupExpand>().lambda()
-                .eq(SysGroupExpand::getGroupId, sysGroup.getId()));
-        // 设置全称
-        String gFullname = getGFullname(sysGroupExpand, groupExpandBySelect);
-        sysGroupExpand.setGFullname(gFullname);
-        // 再修改groupExpand拓展表
-        boolean groupExpandSave = sysGroupExpand.update(new QueryWrapper<SysGroupExpand>().lambda()
-                .eq(SysGroupExpand::getGroupId, sysGroup.getId()));
-
-        return groupSave && groupExpandSave;
-    }
 
     // 设置全称
-    private static String getGFullname(SysGroupExpand sysGroupExpand, SysGroupExpand sysGroupExpand2) {
+    /*private static String setGFullname(SysGroupExpand sysGroupExpand, SysGroupExpand sysGroupExpand2) {
         String unitName = sysGroupExpand.getUnitName();
         String deptName = sysGroupExpand.getDeptName();
         String teamName = sysGroupExpand.getTeamName();
@@ -142,7 +246,7 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
             return new StringBuilder().append(unitName1).append(deptName).append(teamName1).toString();
         }
         return new StringBuilder().append(unitName1).append(deptName1).append(teamName1).toString();
-    }
+    }*/
 
     @Override
     @Transactional
@@ -151,6 +255,12 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
             log.error("逻辑批量删除组织,获取到的组织id都为空值");
             throw new ResultException(ResultEnum.GROUPID_NULL.getCode(),
                     ResultEnum.GROUPID_NULL.getMessage());
+        }
+        List<SysUser> userList = sysUserDao.selectList(new QueryWrapper<>());
+        for (SysUser sysUser : userList) {
+            if (groupIds.contains(sysUser.getGroupId())) {
+                throw new ResultException(500, "删除的组织中有用户占用，删除失败！");
+            }
         }
         // 构建对象
         SysGroup sysGroup = SysGroup.builder().isDel("1")
