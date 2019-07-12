@@ -130,7 +130,6 @@ public class MailController {
         LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
         Mail mail = new Mail();
         mail.setIsRead(1);
-        mail.setToEmail("112233");
         QueryWrapper<Mail> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("userId", loginAppUser.getId());
         try {
