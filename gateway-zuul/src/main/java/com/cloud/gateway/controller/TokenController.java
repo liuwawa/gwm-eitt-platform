@@ -95,7 +95,9 @@ public class TokenController {
             String token = UUID.randomUUID().toString().replace("-", "");
             String remoteAddr = IPUtil.getIpAddr(request);
             String loginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-            redisUtils.set(USER_CODE + username, token + "_" + remoteAddr + "_" + loginTime, 86400);
+            String val = token + "_" + remoteAddr + "_" + loginTime;
+            log.info("`````````````` val = " + val);
+            redisUtils.set(USER_CODE + username, val, 7200);
             Cookie cookie = new Cookie("token", username + "_" + token);
             cookie.setMaxAge(Integer.MAX_VALUE);
             cookie.setPath("/");
