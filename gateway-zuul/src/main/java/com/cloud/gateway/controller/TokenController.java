@@ -1,5 +1,7 @@
 package com.cloud.gateway.controller;
 
+import com.cloud.common.utils.AppUserUtil;
+import com.cloud.common.utils.RedisUtils;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.gateway.feign.LogClient;
 import com.cloud.gateway.feign.Oauth2Client;
@@ -8,6 +10,7 @@ import com.cloud.gateway.utils.IPUtil;
 import com.cloud.model.log.Log;
 import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.oauth.SystemClientInfo;
+import com.cloud.model.user.LoginAppUser;
 import com.cloud.model.user.SysUser;
 import com.cloud.model.user.constants.CredentialType;
 import com.cloud.utils.ZuulUtils;
@@ -20,10 +23,14 @@ import org.springframework.security.oauth2.common.util.OAuth2Utils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -40,6 +47,8 @@ public class TokenController {
     private UserClient userClient;
     @Autowired
     private LogClient logClient;
+    @Autowired
+    private RedisUtils redisUtils;
 
     /**
      * @return
@@ -61,7 +70,7 @@ public class TokenController {
      * @return
      */
     @PostMapping("/sys/login")
-    public Map<String, Object> login(String username, String password, HttpServletRequest request) {
+    public Map<String, Object> login(String username, String password, HttpServletRequest request, HttpServletResponse response) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(OAuth2Utils.GRANT_TYPE, "password");
         parameters.put(OAuth2Utils.CLIENT_ID, SystemClientInfo.CLIENT_ID);
@@ -78,6 +87,19 @@ public class TokenController {
         saveLoginLog(username, "用户名密码登陆", ipAddress);
         //加入errorCode和message
         ZuulUtils.initZuulResponseForCode(tokenInfo, ResponseStatus.RESPONSE_SUCCESS);
+
+        if ("10000".equals(String.valueOf(tokenInfo.get("errorCode")))) {
+            // 验证用户是否是登陆状态
+            String token = UUID.randomUUID().toString().replace("-", "");
+            String remoteAddr = IPUtil.getIpAddr(request);
+            String loginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+            redisUtils.set("userCode|" + username, token + "_" + remoteAddr + "_" + loginTime, 86400);
+            Cookie cookie = new Cookie("token", username + "_" + token);
+            cookie.setMaxAge(Integer.MAX_VALUE);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+        }
+
         return tokenInfo;
     }
 
@@ -188,11 +210,14 @@ public class TokenController {
      * @param access_token
      */
     @GetMapping("/sys/logout")
-    public void logout(String access_token, @RequestHeader(required = false, value = "Authorization") String token) {
+    public void logout(String access_token, String username, @RequestHeader(required = false, value = "Authorization") String token) {
         if (StringUtils.isBlank(access_token)) {
             if (StringUtils.isNoneBlank(token)) {
                 access_token = token.substring(OAuth2AccessToken.BEARER_TYPE.length() + 1);
             }
+        }
+        if (username != null){
+            redisUtils.del("userCode|" + username);
         }
         oauth2Client.removeToken(access_token);
     }

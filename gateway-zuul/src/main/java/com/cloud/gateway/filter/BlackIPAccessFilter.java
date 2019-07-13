@@ -69,7 +69,7 @@ public class BlackIPAccessFilter extends ZuulFilter {
     /**
      * 定时同步黑名单IP
      */
-    @Scheduled(cron = "0/5 * * * * ?")
+//    @Scheduled(cron = "0/5 * * * * ?")
     @Async
     public void syncBlackIPList() {
         try {

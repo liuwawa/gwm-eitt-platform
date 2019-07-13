@@ -7,6 +7,17 @@ spring:
     enabled: @zipkin-enabled@
     sender:
       type: web
+  redis:
+      host: @ipAddress@
+      port: @redis-port@
+      password: @redis-password@
+      timeout: 10s
+      lettuce:
+        pool:
+          min-idle: 0
+          max-idle: 8
+          max-active: 8
+          max-wait: -1ms
 logging:
   level:
     root: info
