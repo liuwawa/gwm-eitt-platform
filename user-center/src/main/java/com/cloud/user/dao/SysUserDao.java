@@ -13,30 +13,30 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface SysUserDao extends BaseMapper<SysUser> {
 
-	@Options(useGeneratedKeys = true, keyProperty = "id")
-	@Insert("insert into sys_user(username, password, nickname, headImgUrl, phone, sex, enabled, type, createTime, updateTime) "
-			+ "values(#{username}, #{password}, #{nickname}, #{headImgUrl}, #{phone}, #{sex}, #{enabled}, #{type}, #{createTime}, #{updateTime})")
-	int save(SysUser appUser);
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    @Insert("insert into sys_user(username, password, nickname, headImgUrl, phone, sex, groupId, enabled, type, createTime, updateTime) "
+            + "values(#{username}, #{password}, #{nickname}, #{headImgUrl}, #{phone}, #{sex},#{groupId},#{enabled}, #{type}, #{createTime}, #{updateTime})")
+    int save(SysUser appUser);
 
-	/**
-	 * @param username
-	 * @return
-	 */
-	@Select("select * from sys_user t where t.username = #{username}")
-	SysUser findByUsername(String username);
+    /**
+     * @param username
+     * @return
+     */
+    @Select("select * from sys_user t where t.username = #{username}")
+    SysUser findByUsername(String username);
 
-	@Select("select * from sys_user t where t.phone = #{phone}")
-	SysUser findByPhone(String phone);
+    @Select("select * from sys_user t where t.phone = #{phone}")
+    SysUser findByPhone(String phone);
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	@Select("select * from sys_user t where t.id = #{id}")
-	SysUser findById(Long id);
+    /**
+     * @param id
+     * @return
+     */
+    @Select("select * from sys_user t where t.id = #{id}")
+    SysUser findById(Long id);
 
-	int count(Map<String, Object> params);
+    int count(Map<String, Object> params);
 
-	List<SysUser> findData(Map<String, Object> params);
+    List<SysUser> findData(Map<String, Object> params);
 
 }

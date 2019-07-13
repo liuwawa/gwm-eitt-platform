@@ -55,8 +55,8 @@ public class SysGrouping extends Model<SysGrouping> {
     /**
      * 该分组共组织数
      */
-    @TableField("groupingNumber")
-    private Integer groupingNumber;
+    @TableField("groupNumber")
+    private Integer groupNumber;
 
     /**
      * 分组创建时间

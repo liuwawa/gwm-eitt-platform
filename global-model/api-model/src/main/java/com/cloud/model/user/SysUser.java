@@ -23,8 +23,7 @@ public class SysUser implements Serializable {
     private String headImgUrl;
     private String phone;
     private Integer sex;
-//    @TableField("departmentId")
-//    private Integer departmentId;
+
     /**
      * 状态
      */
@@ -34,7 +33,14 @@ public class SysUser implements Serializable {
     private Date createTime;
     @TableField("updateTime")
     private Date updateTime;
-    // 所在的组织
+    /**
+     * 所在组织id
+     */
     @TableField("groupId")
     private Integer groupId;
+    /**
+     * 传前台的数据
+     */
+    @TableField(exist = false)
+    private SysGroup group;
 }

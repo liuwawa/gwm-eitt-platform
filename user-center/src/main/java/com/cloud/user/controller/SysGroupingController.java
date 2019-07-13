@@ -84,6 +84,7 @@ public class SysGroupingController {
             // 设置修改时间
             sysGrouping.setUpdateTime(new Date());
             sysGrouping.setUpdateBy(sysGrouping.getLoginAdminName());
+            sysGrouping.setIsDel("0");
             if (!sysGroupingService.updateById(sysGrouping)) {
                 log.info("编辑分组操作失败，编辑的分组id:{}", sysGrouping.getGroupingId());
                 return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_FAILED.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_FAILED.message, null);

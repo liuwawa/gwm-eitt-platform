@@ -22,7 +22,7 @@ public interface SysGroupGroupingService extends IService<SysGroupGrouping> {
      * @return 保存是否成功
      * 保存多个组织到一个分组里
      */
-    boolean saveGroupToGrouping(List<Integer> groupIds, Integer groupingId);
+    boolean saveGroupToGrouping(List<Integer> groupIds, Integer groupingId, String groupingName, String groupingRemark, String loginAdminName);
 
     /**
      * @param groupingId 分组的id

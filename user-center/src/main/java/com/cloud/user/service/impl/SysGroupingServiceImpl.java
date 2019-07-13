@@ -41,12 +41,14 @@ public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGroup
         // 设置创建时间
         sysGrouping.setCreateTime(new Date());
         sysGrouping.setCreateBy(sysGrouping.getLoginAdminName());
+
         return sysGrouping.insert();
     }
 
     @Override
     @Transactional
     public boolean updateById(SysGrouping sysGrouping) {
+
         // 非空验证
         if (null == sysGrouping.getGroupingId()) {
             log.error("编辑分组,获取到的分组id为空值");

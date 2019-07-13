@@ -13,6 +13,7 @@ import com.cloud.model.common.PageResult;
 import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.user.LoginAppUser;
+import com.cloud.model.user.SysGroup;
 import com.cloud.model.user.SysRole;
 import com.cloud.model.user.SysUser;
 import com.cloud.user.feign.SmsClient;
@@ -162,14 +163,14 @@ public class UserController {
      */
     @LogAnnotation(module = LogModule.UPDATE_PASSWORD)
     @PostMapping(value = "/users/modifyPassword")
-    public ResultVo modifyPassword(@RequestParam("oldPassword") String oldPassword,@RequestParam("newPassword") String newPassword) {
+    public ResultVo modifyPassword(@RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword) {
         try {
             SysUser user = AppUserUtil.getLoginAppUser();
             appUserService.updatePassword(user.getId(), oldPassword, newPassword);
             return ResultVo.builder().code(200).msg("操作成功!").data(null).build();
-        }catch (Exception e){
+        } catch (Exception e) {
             log.info(e + "");
-            if ("旧密码错误".equals(e.getMessage())){
+            if ("旧密码错误".equals(e.getMessage())) {
                 return ResultVo.builder().code(5000).msg(e.getMessage()).data(null).build();
             }
             return ResultVo.builder().code(5000).msg("请联系管理员!").data(null).build();
@@ -294,7 +295,7 @@ public class UserController {
             return ResultVo.builder().code(50003).data(null).msg("验证码错误!").build();
         }
 
-        if (appUserService.findByPhone(phone) != null){
+        if (appUserService.findByPhone(phone) != null) {
             return ResultVo.builder().code(50003).data(null).msg("手机号已被绑定!").build();
         }
 
@@ -302,8 +303,8 @@ public class UserController {
             try {
                 appUserService.bindingPhone(loginAppUser.getId(), phone);
                 return ResultVo.builder().code(200).data(null).msg("绑定成功!").build();
-            }catch (Exception e){
-                log.info(e+"");
+            } catch (Exception e) {
+                log.info(e + "");
                 return ResultVo.builder().code(50003).data(null).msg(e.getMessage()).build();
             }
         } else {
@@ -386,8 +387,16 @@ public class UserController {
             enabled = params.get("enabled").toString();
         }
         IPage<SysUser> userPage = getPage(username, nickname, sex, enabled, pageIndex, pageSize);
+        List<SysUser> sysUsers = userPage.getRecords();
+        SysGroup sysGroup = SysGroup.builder().build();
+        //  查找并设置每个用户所在的分组
+        sysUsers.forEach(i -> {
+            SysGroup group = sysGroup.selectOne(new QueryWrapper<SysGroup>().lambda()
+                    .eq(SysGroup::getId, i.getGroupId()));
+            i.setGroup(group);
+        });
         // 封装结果
-        return PageResult.builder().content(userPage.getRecords()).
+        return PageResult.builder().content(sysUsers).
                 pageNum(userPage.getCurrent()).
                 pageSize(userPage.getSize()).
                 totalPages(userPage.getPages()).
@@ -436,8 +445,17 @@ public class UserController {
     @PutMapping("/editUser")
     public ResultVo updateUser(@RequestBody SysUser appUser) {
         try {
-
-            appUserService.updateAppUser(appUser);
+            // 设置该用户所在的组织
+            Integer groupId = appUser.getGroupId();
+            if (groupId != null) {
+                SysGroup group = SysGroup.builder().id(groupId).build();
+                if (group.selectById() != null) {
+                    appUser.setGroupId(group.getId());
+                } else {
+                    return new ResultVo(500, "请选择有效组织", null);
+                }
+            }
+            appUserService.updateUser(appUser);
             log.info("修改成功,id:{}", appUser.getId());
             return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
         } catch (Exception e) {
@@ -470,7 +488,7 @@ public class UserController {
 
 
     /**
-     * 添加用户,根据用户名注册
+     * 添加用户
      *
      * @param appUser
      */
@@ -478,8 +496,19 @@ public class UserController {
     @PostMapping("/user/saveUser")
     public ResultVo saveUser(@RequestBody SysUser appUser) {
         try {
+            // 设置该用户所在的组织
+            Integer groupId = appUser.getGroupId();
+            if (groupId != null) {
+                SysGroup group = SysGroup.builder().id(groupId).build();
+                if (group.selectById() != null) {
+                    appUser.setGroupId(group.getId());
+                } else {
+                    return new ResultVo(500, "请选择有效组织", null);
+                }
+            }
+
             appUser.setPassword("123.com");
-            appUserService.addAppUser(appUser);
+            appUserService.addUser(appUser);
             log.info("添加成功,id:{}", appUser.getId());
             return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
         } catch (Exception e) {
@@ -517,13 +546,13 @@ public class UserController {
     @PostMapping(value = "/users/{id}/reSetPassword")
     public ResultVo resetPasswordBackend(@PathVariable Long id) {
         try {
-            if(null == id){
+            if (null == id) {
                 return new ResultVo(500, "id为空", null);
             }
             SysUser sysUser = new SysUser();
             sysUser.setId(id);
             sysUser.setPassword("123.com");
-            appUserService.updateAppUser(sysUser);
+            appUserService.updateUser(sysUser);
             log.info("设置新密码成功,userId:{}", id);
             return new ResultVo(200, "操作成功", null);
         } catch (Exception e) {

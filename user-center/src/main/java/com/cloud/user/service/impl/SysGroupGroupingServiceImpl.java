@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ public class SysGroupGroupingServiceImpl extends ServiceImpl<SysGroupGroupingDao
 
     @Override
     @Transactional
-    public boolean saveGroupToGrouping(List<Integer> groupIds, Integer groupingId) {
+    public boolean saveGroupToGrouping(List<Integer> groupIds, Integer groupingId, String groupingName, String groupingRemark, String loginAdminName) {
         // 非空验证
         if (null == groupingId) {
             log.error("添加组织到分组,获取到的分组id为空值");
@@ -43,8 +44,13 @@ public class SysGroupGroupingServiceImpl extends ServiceImpl<SysGroupGroupingDao
             throw new ResultException(ResultEnum.GROUPING_NOT_EXIST.getCode(),
                     ResultEnum.GROUPING_NOT_EXIST.getMessage());
         }
-        // 构建对象
 
+        // 修改分组
+        SysGrouping grouping = SysGrouping.builder()
+                .groupingId(groupingId).groupingName(groupingName).groupingRemark(groupingRemark).updateBy(loginAdminName).updateTime(new Date()).build();
+        grouping.updateById();
+
+        // 构建对象
         SysGroupGrouping sysGroupGrouping = SysGroupGrouping.builder().groupingId(groupingId).build();
         // 先删除存在表中的
         sysGroupGrouping.delete(new QueryWrapper<SysGroupGrouping>().lambda().eq(SysGroupGrouping::getGroupingId, groupingId));

@@ -239,4 +239,74 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         userCredentialsDao.save(new UserCredential(phone, CredentialType.PHONE.name(), userId));
     }
 
+
+
+
+
+    @Transactional
+    @Override
+    public void addUser(SysUser appUser) {
+        String username = appUser.getUsername();
+        if (StringUtils.isBlank(username)) {
+            throw new IllegalArgumentException("用户名不能为空");
+        }
+
+        if (PhoneUtil.checkPhone(username)) {// 防止用手机号直接当用户名，手机号要发短信验证
+            throw new IllegalArgumentException("用户名要包含英文字符");
+        }
+
+        if (username.contains("@")) {// 防止用邮箱直接当用户名，邮箱也要发送验证（暂未开发）
+            throw new IllegalArgumentException("用户名不能包含@");
+        }
+
+        if (username.contains("|")) {
+            throw new IllegalArgumentException("用户名不能包含|字符");
+        }
+
+        if (StringUtils.isBlank(appUser.getPassword())) {
+            throw new IllegalArgumentException("密码不能为空");
+        }
+
+        if (StringUtils.isBlank(appUser.getNickname())) {
+            appUser.setNickname(username);
+        }
+
+        //默认添加后台用户
+        if (StringUtils.isBlank(appUser.getType())) {
+            appUser.setType(UserType.BACKEND.name());
+        }
+
+        UserCredential userCredential = userCredentialsDao.findByUsername(appUser.getUsername());
+        if (userCredential != null) {
+            throw new IllegalArgumentException("用户名已存在");
+        }
+
+        appUser.setPassword(passwordEncoder.encode(appUser.getPassword())); // 加密密码
+        appUser.setEnabled(Boolean.TRUE);
+        appUser.setCreateTime(new Date());
+        appUser.setUpdateTime(appUser.getCreateTime());
+
+        appUserDao.save(appUser);
+        userCredentialsDao
+                .save(new UserCredential(appUser.getUsername(), CredentialType.USERNAME.name(), appUser.getId()));
+        log.info("添加用户：{}", appUser);
+    }
+
+    @Transactional
+    @Override
+    public void updateUser(SysUser appUser) {
+        // appUser.setUpdateTime(new Date());
+
+        appUserDao.updateById(appUser);
+        QueryWrapper<UserCredential> deleteWrapper = new QueryWrapper<>();
+        deleteWrapper.eq("userId", appUser.getId())
+                .and(
+                        i -> i.eq("type", CredentialType.USERNAME.name())
+                );
+        userCredentialsDao.delete(deleteWrapper);
+//        QueryWrapper<UserCredential> wrapper = new QueryWrapper<>();
+//        wrapper.eq("userId",appUser.getId());
+        userCredentialsDao.save(new UserCredential(appUser.getUsername(), CredentialType.USERNAME.name(), appUser.getId()));
+        log.info("修改用户：{}", appUser);
+    }
 }

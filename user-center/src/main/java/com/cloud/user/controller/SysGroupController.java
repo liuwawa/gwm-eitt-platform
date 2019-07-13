@@ -96,6 +96,7 @@ public class SysGroupController {
         SysGroupExpand sysGroupExpand = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroupExpand.class);
         sysGroup.setUpdateTime(new Date());
         sysGroup.setUpdateBy(sysGroup.getLoginAdminName());
+        sysGroup.setIsDel("0");
         sysGroup.setIsUpdate("1");
         try {
             if (!sysGroupService.updateGroupAndGroupExpand(sysGroup, sysGroupExpand)) {
@@ -216,6 +217,15 @@ public class SysGroupController {
                 .orderByAsc(SysGroup::getGroupShowOrder));
         return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, list);
 
+    }
+
+    // 获取所有组织
+    @PreAuthorize("hasAuthority('back:group:query')")
+    @GetMapping("/getAll")
+    public ResultVo<List<SysGroup>> getAll() {
+        SysGroup sysGroup = SysGroup.builder().build();
+        List<SysGroup> groups = sysGroup.selectAll();
+        return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, groups);
     }
 
 }

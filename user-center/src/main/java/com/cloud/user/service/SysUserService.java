@@ -11,23 +11,27 @@ import com.cloud.model.user.SysRole;
 
 public interface SysUserService extends IService<SysUser> {
 
-	void addAppUser(SysUser appUser);
+    void addAppUser(SysUser appUser);
 
-	void updateAppUser(SysUser appUser);
+    void addUser(SysUser appUser);
 
-	LoginAppUser findByUsername(String username);
+    void updateAppUser(SysUser appUser);
 
-	SysUser findByPhone(String phone);
+    void updateUser(SysUser appUser);
 
-	SysUser findById(Long id);
+    LoginAppUser findByUsername(String username);
 
-	void setRoleToUser(Long id, Set<Long> roleIds);
+    SysUser findByPhone(String phone);
 
-	void updatePassword(Long id, String oldPassword, String newPassword);
+    SysUser findById(Long id);
 
-	Page<SysUser> findUsers(Map<String, Object> params);
+    void setRoleToUser(Long id, Set<Long> roleIds);
 
-	Set<SysRole> findRolesByUserId(Long userId);
+    void updatePassword(Long id, String oldPassword, String newPassword);
 
-	void bindingPhone(Long userId, String phone);
+    Page<SysUser> findUsers(Map<String, Object> params);
+
+    Set<SysRole> findRolesByUserId(Long userId);
+
+    void bindingPhone(Long userId, String phone);
 }
