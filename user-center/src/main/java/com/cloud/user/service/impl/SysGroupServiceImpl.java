@@ -47,6 +47,7 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         }
         sysGroup.setCreateBy(sysGroup.getLoginAdminName());
         sysGroup.setCreateTime(new Date());
+        sysGroup.setEnableTime(new Date());
         // 先添加group主表
         boolean groupSave = sysGroup.insert();
         // 给expand拓展表添加外键groupId

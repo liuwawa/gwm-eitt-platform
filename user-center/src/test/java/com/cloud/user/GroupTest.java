@@ -22,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = UserCenterApplication.class)
@@ -39,7 +40,7 @@ public class GroupTest {
     private SysGroupGroupingController groupGroupingController;
     @Test
     public void testSave() {
-        SysGroup sysGroup = SysGroup.builder().groupAddress("工程楼四楼")
+        SysGroup sysGroup = SysGroup.builder().groupAddress("工程楼")
                 .groupChildCount(3).level(0).label("测试组织")
                 .parentid(0).groupRemark("这是一个测试用的组织")
                 .groupShowOrder(0).groupTel("1333333333").createBy("liu")
@@ -148,10 +149,15 @@ public class GroupTest {
     }
 
     @Test
-    public void testDeleteGroup(){
-        SysGroup sysGroup = SysGroup.builder().id(260).build();
-//        ResultVo resultVo = controller.deleteGroup(sysGroup);
-//        System.out.println(resultVo);
+    public void testGetAllGroup(){
+       /* Map allGroup = controller.getAllGroup();
+        List<SysGroup> data = (List<SysGroup>) allGroup.get("data");
+        for (SysGroup datum : data) {
+            System.out.println(datum);
+        }*/
+       StringBuilder stringBuilder = new StringBuilder();
+       stringBuilder.insert(0,"A");
+        System.out.println(stringBuilder);
     }
 
     @Test

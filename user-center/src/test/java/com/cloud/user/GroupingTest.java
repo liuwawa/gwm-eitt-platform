@@ -5,6 +5,7 @@ import com.cloud.model.common.Page;
 import com.cloud.model.user.SysGroup;
 import com.cloud.model.user.SysGrouping;
 import com.cloud.user.controller.SysGroupingController;
+import com.cloud.user.controller.SysUserGroupingController;
 import com.cloud.user.service.SysGroupService;
 import com.cloud.user.service.SysGroupingService;
 import org.junit.Test;
@@ -28,11 +29,23 @@ public class GroupingTest {
     @Autowired
     private SysGroupingService sysGroupingService;
 
+    @Autowired
+    private SysUserGroupingController controller;
+
+    @Test
+    public void testQuery(){
+        ResultVo<List<SysGrouping>> groupingsByUserId = controller.getGroupingsByUserId(2);
+        List<SysGrouping> data = groupingsByUserId.getData();
+        for (SysGrouping datum : data) {
+            System.out.println(datum);
+        }
+    }
+
     @Test
     public void testSave() {
 
         SysGrouping sysGrouping = SysGrouping.builder()
-                .groupingNumber(0).groupingRemark("这个是测试的").createBy("liuek")
+                .groupNumber(0).groupingRemark("这个是测试的").createBy("liuek")
                 .createTime(new Date()).build();
         sysGrouping.setLoginAdminName("刘恩科");
         ResultVo resultVo = sysGroupingController.saveGrouping(sysGrouping);
@@ -50,7 +63,7 @@ public class GroupingTest {
     @Test
     public void testS() {
         SysGrouping sysGrouping = SysGrouping.builder().groupingName("122")
-                .groupingNumber(0).groupingRemark("这个是测试的").createBy("liuek")
+                .groupNumber(0).groupingRemark("这个是测试的").createBy("liuek")
                 .createTime(new Date()).build();
         boolean save = sysGroupingService.save(sysGrouping);
         System.out.println(save);
@@ -66,7 +79,7 @@ public class GroupingTest {
     @Test
     public void testUpdateGrouping(){
         SysGrouping sysGrouping = SysGrouping.builder()
-                .groupingNumber(0).groupingRemark("这测试真难搞")
+                .groupNumber(0).groupingRemark("这测试真难搞")
                 .groupingId(8).build();
         sysGrouping.setLoginAdminName("liuenke");
         ResultVo resultVo = sysGroupingController.updateGroupingById(sysGrouping);
