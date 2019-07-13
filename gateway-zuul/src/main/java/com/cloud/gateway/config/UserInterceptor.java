@@ -17,11 +17,14 @@ import static com.cloud.enums.ResponseStatus.RESPONSE_LOGIN_SIGNAL_ERROR;
 
 @Slf4j
 public class UserInterceptor implements HandlerInterceptor {
+
+    public static final String USER_CODE = "userCode|";
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
         RedisUtils redisUtils = (RedisUtils) SpringContextHolder.getBean("redisUtils");
         Cookie[] cookies = request.getCookies();
-        if (redisUtils.get("userCode|" + request.getParameter("username")) == null){
+        if (redisUtils.get(USER_CODE + request.getParameter("username")) == null){
             return true;
         }
         if (getCookies(redisUtils, cookies)) {
@@ -42,7 +45,7 @@ public class UserInterceptor implements HandlerInterceptor {
                 if ("token".equals(cookie.getName())) {
                     String username = cookie.getValue().split("_")[0];
                     String token = cookie.getValue().split("_")[1];
-                    String value = (String) redisUtils.get("userCode|" + username);
+                    String value = (String) redisUtils.get(USER_CODE + username);
                     String[] valueArr = value.split("_");
                     String cacheToken = valueArr[0];
                     if (token.equals(cacheToken)) {

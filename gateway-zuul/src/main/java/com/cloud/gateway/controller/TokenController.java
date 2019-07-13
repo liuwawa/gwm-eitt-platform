@@ -33,6 +33,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import static com.cloud.gateway.config.UserInterceptor.USER_CODE;
+
 /**
  * 登陆、刷新token、退出
  *
@@ -93,7 +95,7 @@ public class TokenController {
             String token = UUID.randomUUID().toString().replace("-", "");
             String remoteAddr = IPUtil.getIpAddr(request);
             String loginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-            redisUtils.set("userCode|" + username, token + "_" + remoteAddr + "_" + loginTime, 86400);
+            redisUtils.set(USER_CODE + username, token + "_" + remoteAddr + "_" + loginTime, 86400);
             Cookie cookie = new Cookie("token", username + "_" + token);
             cookie.setMaxAge(Integer.MAX_VALUE);
             cookie.setPath("/");
@@ -217,7 +219,7 @@ public class TokenController {
             }
         }
         if (username != null){
-            redisUtils.del("userCode|" + username);
+            redisUtils.del(USER_CODE + username);
         }
         oauth2Client.removeToken(access_token);
     }

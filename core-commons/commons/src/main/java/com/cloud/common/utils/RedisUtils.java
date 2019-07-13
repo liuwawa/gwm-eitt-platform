@@ -1,5 +1,6 @@
 package com.cloud.common.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Component
+@Slf4j
 public class RedisUtils {
     @Autowired
     private RedisTemplate redisTemplate;
@@ -557,5 +559,17 @@ public class RedisUtils {
             e.printStackTrace();
             return 0;
         }
+    }
+
+    /**
+     * 删除所有已keys命名的值
+     * @param keys
+     */
+    public void delAllKey(String keys){
+        Set<String> keysList = redisTemplate.keys(keys+"*");
+        keysList.forEach(k->{
+            log.info("444444444  " + k);
+        });
+        redisTemplate.delete(redisTemplate.keys(keys+"*"));
     }
 }
