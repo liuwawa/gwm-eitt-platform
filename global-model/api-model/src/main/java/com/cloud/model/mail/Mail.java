@@ -1,6 +1,7 @@
 package com.cloud.model.mail;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -21,31 +22,38 @@ public class Mail implements Serializable {
 
     @TableId(type = IdType.AUTO)
     private Long id;
+    @TableField("userId")
     private Long userId;
     /**
      * 发送人用户名
      */
+    @TableField("username")
     private String username;
     /**
      * 收件人邮件地址
      */
+    @TableField("toEmail")
     private String toEmail;
     /**
      * 标题
      */
+    @TableField("subject")
     private String subject;
     /**
      * 正文
      */
+    @TableField("content")
     private String content;
 
     /*
      * 是否已读
      * */
+    @TableField("isRead")
     private Integer isRead;
     /**
      * 发送时间
      */
+    @TableField("sendTime")
     private Date sendTime;
 
     /**
@@ -53,9 +61,10 @@ public class Mail implements Serializable {
      *
      * @see com.cloud.model.mail.constants.MailStatus
      */
+    @TableField("status")
     private Integer status;
 
-
+    
     private Date createTime;
     private Date updateTime;
 

@@ -131,7 +131,7 @@ public class MailController {
         Mail mail = new Mail();
         mail.setIsRead(1);
         QueryWrapper<Mail> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("userId", loginAppUser.getId());
+        queryWrapper.lambda().eq(Mail::getUserId, loginAppUser.getId());
         try {
             mailService.update(mail, queryWrapper);
             return ResultVo.builder().msg("成功").data(null).code(200).build();

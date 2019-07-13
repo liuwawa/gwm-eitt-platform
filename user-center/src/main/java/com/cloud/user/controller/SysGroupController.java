@@ -8,12 +8,11 @@ import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.user.GroupWithExpand;
 import com.cloud.model.user.SysGroup;
 import com.cloud.model.user.SysGroupExpand;
-import com.cloud.model.user.SysUser;
 import com.cloud.response.BaseEntity;
 import com.cloud.response.ObjectConversionEntityUtil;
 import com.cloud.user.service.SysGroupService;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
@@ -36,6 +35,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/group")
 @Slf4j
+@Api(value = "部门", tags = {"groupController"})
 public class SysGroupController {
     @Autowired
     private SysGroupService sysGroupService;
@@ -60,7 +60,7 @@ public class SysGroupController {
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
             log.error("添加组织，出现异常！", e);
-            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.message, null);
+            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, e.getMessage(), null);
         }
 
     }
@@ -138,6 +138,7 @@ public class SysGroupController {
      * @return 操作结果
      * 批量删除组织(逻辑删除)
      */
+    @LogAnnotation(module = LogModule.DELETE_GROUP)
     @PreAuthorize("hasAuthority('back:group:delete')")
     @DeleteMapping("/deleteGroups")
     public ResultVo deleteGroups(@RequestBody Map map) {

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cloud.common.enums.ResultEnum;
 import com.cloud.common.exception.ResultException;
+import com.cloud.common.utils.PhoneUtil;
 import com.cloud.model.user.GroupWithExpand;
 import com.cloud.model.user.SysGroup;
 import com.cloud.model.user.SysGroupExpand;
@@ -69,7 +70,7 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
                         .eq(SysGroupExpand::getGroupId, group.getId()));
                 // 为拓展数据赋值
                 sysGroupExpand = setProperty(groupExpand, sysGroupExpand, group);
-                // 为sysGroup重新赋值父id，一直查找
+                // 为sysGroup重新赋值父id， 循环查找
                 sysGroup.setParentid(group.getParentid());
 
                 // 直到找到顶级
@@ -143,9 +144,7 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
 
         // 先修改group主表
         boolean groupSave = sysGroup.updateById();
-        // 查找该对象
-        SysGroupExpand groupExpandBySelect = sysGroupExpand.selectOne(new QueryWrapper<SysGroupExpand>().lambda()
-                .eq(SysGroupExpand::getGroupId, sysGroup.getId()));
+
         // 设置gGrade
         sysGroupExpand = setGgradeByLevel(sysGroup, sysGroupExpand);
 
@@ -164,7 +163,7 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
                         .eq(SysGroupExpand::getGroupId, group.getId()));
                 // 为拓展数据赋值
                 sysGroupExpand = setProperty(groupExpand, sysGroupExpand, group);
-                // 为sysGroup重新赋值父id，查找
+                // 为sysGroup重新赋值父id，循环查找
                 sysGroup.setParentid(group.getParentid());
                 // 直到找到顶级
                 if (sysGroupExpand.getUnitId() != null) {
@@ -172,8 +171,6 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
                 }
             }
         }
-
-
         // 再修改groupExpand拓展表
         boolean groupExpandSave = sysGroupExpand.update(new QueryWrapper<SysGroupExpand>().lambda()
                 .eq(SysGroupExpand::getGroupId, sysGroup.getId()));
@@ -216,38 +213,6 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         return new GroupWithExpand(group, groupExpand);
     }
 
-
-    // 设置全称
-    /*private static String setGFullname(SysGroupExpand sysGroupExpand, SysGroupExpand sysGroupExpand2) {
-        String unitName = sysGroupExpand.getUnitName();
-        String deptName = sysGroupExpand.getDeptName();
-        String teamName = sysGroupExpand.getTeamName();
-
-        String unitName1 = sysGroupExpand2.getUnitName();
-        String deptName1 = sysGroupExpand2.getDeptName();
-        String teamName1 = sysGroupExpand2.getTeamName();
-
-        if (null == unitName && null != deptName && null != teamName) {
-            return new StringBuilder().append(unitName1).append(deptName).append(teamName).toString();
-        }
-        if (null == deptName && null != unitName && null != teamName) {
-            return new StringBuilder().append(unitName).append(deptName1).append(teamName).toString();
-        }
-        if (null == teamName && null != unitName && null != deptName) {
-            return new StringBuilder().append(unitName).append(deptName).append(teamName1).toString();
-        }
-        if (null == unitName && null == deptName && null != teamName) {
-            return new StringBuilder().append(unitName1).append(deptName1).append(teamName).toString();
-        }
-        if (null == deptName && null != unitName && null == teamName) {
-            return new StringBuilder().append(unitName).append(deptName1).append(teamName1).toString();
-        }
-        if (null == teamName && null == unitName && null != deptName) {
-            return new StringBuilder().append(unitName1).append(deptName).append(teamName1).toString();
-        }
-        return new StringBuilder().append(unitName1).append(deptName1).append(teamName1).toString();
-    }*/
-
     @Override
     @Transactional
     public boolean updateByIds(List<Integer> groupIds, String loginAdminName) {
@@ -256,6 +221,8 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
             throw new ResultException(ResultEnum.GROUPID_NULL.getCode(),
                     ResultEnum.GROUPID_NULL.getMessage());
         }
+
+        // 判断该组织是否有用户占用
         List<SysUser> userList = sysUserDao.selectList(new QueryWrapper<>());
         for (SysUser sysUser : userList) {
             if (groupIds.contains(sysUser.getGroupId())) {
