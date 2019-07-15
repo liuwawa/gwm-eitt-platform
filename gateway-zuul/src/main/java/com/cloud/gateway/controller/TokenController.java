@@ -7,6 +7,7 @@ import com.cloud.gateway.feign.LogClient;
 import com.cloud.gateway.feign.Oauth2Client;
 import com.cloud.gateway.feign.UserClient;
 import com.cloud.gateway.utils.IPUtil;
+import com.cloud.gateway.utils.SystemUtils;
 import com.cloud.model.log.Log;
 import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.oauth.SystemClientInfo;
@@ -94,6 +95,7 @@ public class TokenController {
             // 验证用户是否是登陆状态
             String token = UUID.randomUUID().toString().replace("-", "");
             String remoteAddr = IPUtil.getIpAddr(request);
+            log.info("-----------" + SystemUtils.getMacAddress(remoteAddr));
             String loginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
             String val = token + "_" + remoteAddr + "_" + loginTime;
             log.info("`````````````` val = " + val);
