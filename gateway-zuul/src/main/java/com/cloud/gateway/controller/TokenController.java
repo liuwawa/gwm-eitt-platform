@@ -1,17 +1,14 @@
 package com.cloud.gateway.controller;
 
-import com.cloud.common.utils.AppUserUtil;
 import com.cloud.common.utils.RedisUtils;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.gateway.feign.LogClient;
 import com.cloud.gateway.feign.Oauth2Client;
 import com.cloud.gateway.feign.UserClient;
 import com.cloud.gateway.utils.IPUtil;
-import com.cloud.gateway.utils.SystemUtils;
 import com.cloud.model.log.Log;
 import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.oauth.SystemClientInfo;
-import com.cloud.model.user.LoginAppUser;
 import com.cloud.model.user.SysUser;
 import com.cloud.model.user.constants.CredentialType;
 import com.cloud.utils.ZuulUtils;
@@ -34,6 +31,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import static com.cloud.common.constants.SysConstants.PAST;
 import static com.cloud.gateway.config.UserInterceptor.USER_CODE;
 
 /**
@@ -75,6 +73,17 @@ public class TokenController {
     @PostMapping("/sys/login")
     public Map<String, Object> login(String username, String password, HttpServletRequest request, HttpServletResponse response) {
         Map<String, String> parameters = new HashMap<>();
+        //如果需要踢出用户，先踢再登陆
+        if ("1".equals(request.getParameter("out"))) {
+            if (username != null) {
+                String tok = (String) redisUtils.get(USER_CODE + username);
+                String[] split = tok.split("@");
+                if (split != null && split.length == 4){
+                    redisUtils.set(PAST + username, split[3]);
+                    oauth2Client.removeToken(split[3]);
+                }
+            }
+        }
         parameters.put(OAuth2Utils.GRANT_TYPE, "password");
         parameters.put(OAuth2Utils.CLIENT_ID, SystemClientInfo.CLIENT_ID);
         parameters.put("client_secret", SystemClientInfo.CLIENT_SECRET);
@@ -95,11 +104,10 @@ public class TokenController {
             // 验证用户是否是登陆状态
             String token = UUID.randomUUID().toString().replace("-", "");
             String remoteAddr = IPUtil.getIpAddr(request);
-            log.info("-----------" + SystemUtils.getMacAddress(remoteAddr));
             String loginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-            String val = token + "_" + remoteAddr + "_" + loginTime;
-            log.info("`````````````` val = " + val);
-            redisUtils.set(USER_CODE + username, val, 7200);
+            String val = token + "@" + remoteAddr + "@" + loginTime + "@" + tokenInfo.get("access_token");
+            redisUtils.del(USER_CODE + username);
+            redisUtils.set(USER_CODE + username, val);
             Cookie cookie = new Cookie("token", username + "_" + token);
             cookie.setMaxAge(Integer.MAX_VALUE);
             cookie.setPath("/");
@@ -222,9 +230,10 @@ public class TokenController {
                 access_token = token.substring(OAuth2AccessToken.BEARER_TYPE.length() + 1);
             }
         }
-        if (username != null){
+        if (username != null) {
             redisUtils.del(USER_CODE + username);
         }
         oauth2Client.removeToken(access_token);
     }
+
 }

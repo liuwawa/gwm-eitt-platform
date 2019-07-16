@@ -4,16 +4,24 @@ import com.cloud.common.utils.RedisUtils;
 import com.cloud.gateway.config.SpringContextHolder;
 import com.cloud.gateway.config.UserInterceptor;
 import com.cloud.gateway.utils.IPUtil;
+import com.cloud.model.common.Response;
+import com.cloud.utils.JsonUtils;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+
+import static com.cloud.common.constants.SysConstants.PAST;
+import static com.cloud.enums.ResponseStatus.RESPONSE_LOGOUT_SIGNAL_ERROR;
 
 /**
  * 过滤uri<br>
@@ -28,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 @Slf4j
 public class UniUserFilter extends ZuulFilter {
+
     @Bean
     public SpringContextHolder springContextHolder() {
         return new SpringContextHolder();
@@ -57,6 +66,28 @@ public class UniUserFilter extends ZuulFilter {
     public boolean shouldFilter() {
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
+
+        String authentication = request.getHeader("Authorization");
+        authentication = authentication.substring(OAuth2AccessToken.BEARER_TYPE.length() + 1);
+        //针对多个用户登陆暂时做的处理
+        String my = request.getHeader("My");
+        if (my != null) {
+            String past = (String) redisUtils.get(PAST + my);
+            if (past != null && past.equals(authentication)) {
+                redisUtils.del(PAST + my);
+                requestContext.getResponse().setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+                Response result = new Response();
+                result.setMessage(RESPONSE_LOGOUT_SIGNAL_ERROR.message);
+                result.setErrorCode(RESPONSE_LOGOUT_SIGNAL_ERROR.code);
+                try {
+                    requestContext.getResponse().getWriter().write(JsonUtils.toJson(result));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }
+        }
+
         Cookie[] cookies = request.getCookies();
         if (UserInterceptor.getCookies(redisUtils, cookies)) {
             return true;

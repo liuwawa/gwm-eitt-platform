@@ -25,9 +25,16 @@ public class UserInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
         RedisUtils redisUtils = (RedisUtils) SpringContextHolder.getBean("redisUtils");
         Cookie[] cookies = request.getCookies();
+        //第一次登录直接忽略
         if (redisUtils.get(USER_CODE + request.getParameter("username")) == null){
             return true;
         }
+        //是否允许被其他用户踢掉
+        String out = request.getParameter("out");
+        if (out != null && "1".equals(out)){
+            return true;
+        }
+        //此用户已经登陆过
         if (getCookies(redisUtils, cookies)) {
             return true;
         }
@@ -40,6 +47,12 @@ public class UserInterceptor implements HandlerInterceptor {
         return false;
     }
 
+    /**
+     * 校验cookie
+     * @param redisUtils
+     * @param cookies
+     * @return
+     */
     public static boolean getCookies(RedisUtils redisUtils, Cookie[] cookies) {
         if (null != cookies) {
             for (Cookie cookie : cookies) {

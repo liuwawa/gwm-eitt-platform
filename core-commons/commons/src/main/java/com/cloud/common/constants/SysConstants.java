@@ -16,5 +16,7 @@ public interface SysConstants {
 	 * 超级管理员用户id
 	 */
 	Long ADMIN_USER_ID = 2L;
+
+	public static final String PAST = "PAST|";
 	
 }
