@@ -43,4 +43,14 @@ public class SysUser implements Serializable {
      */
     @TableField(exist = false)
     private SysGroup group;
+    /**
+     * 工号
+     */
+    @TableField("personnelID")
+    private String personnelID;
+    /**
+     * 职务
+     */
+    @TableField("duties")
+    private String duties;
 }

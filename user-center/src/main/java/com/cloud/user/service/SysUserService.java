@@ -1,13 +1,15 @@
 package com.cloud.user.service;
 
-import java.util.Map;
-import java.util.Set;
-
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cloud.model.common.Page;
-import com.cloud.model.user.SysUser;
 import com.cloud.model.user.LoginAppUser;
 import com.cloud.model.user.SysRole;
+import com.cloud.model.user.SysUser;
+import com.cloud.model.user.constants.SysUserResponse;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface SysUserService extends IService<SysUser> {
 
@@ -34,4 +36,8 @@ public interface SysUserService extends IService<SysUser> {
     Set<SysRole> findRolesByUserId(Long userId);
 
     void bindingPhone(Long userId, String phone);
+
+    void deleteUser(SysUser user);
+
+    List<SysUserResponse> getUsers();
 }

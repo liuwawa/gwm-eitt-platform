@@ -1,19 +1,21 @@
 package com.cloud.user.service.impl;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.cloud.enums.ResponseStatus;
+import com.cloud.common.utils.PageUtil;
 import com.cloud.common.utils.PhoneUtil;
+import com.cloud.enums.ResponseStatus;
+import com.cloud.model.common.Page;
 import com.cloud.model.user.*;
+import com.cloud.model.user.constants.CredentialType;
+import com.cloud.model.user.constants.SysUserResponse;
 import com.cloud.model.user.constants.UserType;
+import com.cloud.user.dao.SysUserDao;
+import com.cloud.user.dao.UserCredentialsDao;
+import com.cloud.user.dao.UserRoleDao;
+import com.cloud.user.service.SysPermissionService;
+import com.cloud.user.service.SysUserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,18 +23,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.DigestUtils;
 
-import com.cloud.common.utils.PageUtil;
-import com.cloud.model.common.Page;
-import com.cloud.model.user.SysUser;
-import com.cloud.model.user.constants.CredentialType;
-import com.cloud.user.dao.SysUserDao;
-import com.cloud.user.dao.UserRoleDao;
-import com.cloud.user.dao.UserCredentialsDao;
-import com.cloud.user.service.SysUserService;
-import com.cloud.user.service.SysPermissionService;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -240,9 +234,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     }
 
 
-
-
-
     @Transactional
     @Override
     public void addUser(SysUser appUser) {
@@ -281,21 +272,49 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             throw new IllegalArgumentException("用户名已存在");
         }
 
-        appUser.setPassword(passwordEncoder.encode(appUser.getPassword())); // 加密密码
+        String md5DigestAsHex = DigestUtils.md5DigestAsHex(appUser.getPassword().getBytes());
+
+        appUser.setPassword(passwordEncoder.encode(md5DigestAsHex)); // 加密密码
         appUser.setEnabled(Boolean.TRUE);
         appUser.setCreateTime(new Date());
         appUser.setUpdateTime(appUser.getCreateTime());
 
-        appUserDao.save(appUser);
+        // 自动生成下一个工号
+        String personnelNO = appUserDao.selectMaxPersonnelNO();
+        if (personnelNO != null) {
+            Integer personelno = Integer.valueOf(personnelNO.substring(2, 10));
+            personelno = personelno + 1;
+            String zeroForNum = addZeroForNum(personelno.toString(), 8);
+            appUser.setPersonnelID("GW" + zeroForNum);
+        } else {
+            appUser.setPersonnelID("GW00000001");
+        }
+
+        appUserDao.insert(appUser);
         userCredentialsDao
                 .save(new UserCredential(appUser.getUsername(), CredentialType.USERNAME.name(), appUser.getId()));
         log.info("添加用户：{}", appUser);
     }
 
+    // 计算工号
+    public static String addZeroForNum(String str, int strLength) {
+        int strLen = str.length();
+        if (strLen < strLength) {
+            while (strLen < strLength) {
+                StringBuffer sb = new StringBuffer();
+                sb.append("0").append(str);// 左补0
+                // sb.append(str).append("0");//右补0
+                str = sb.toString();
+                strLen = str.length();
+            }
+        }
+
+        return str;
+    }
+
     @Transactional
     @Override
     public void updateUser(SysUser appUser) {
-        // appUser.setUpdateTime(new Date());
 
         appUserDao.updateById(appUser);
         QueryWrapper<UserCredential> deleteWrapper = new QueryWrapper<>();
@@ -304,9 +323,37 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
                         i -> i.eq("type", CredentialType.USERNAME.name())
                 );
         userCredentialsDao.delete(deleteWrapper);
-//        QueryWrapper<UserCredential> wrapper = new QueryWrapper<>();
-//        wrapper.eq("userId",appUser.getId());
+
+
         userCredentialsDao.save(new UserCredential(appUser.getUsername(), CredentialType.USERNAME.name(), appUser.getId()));
         log.info("修改用户：{}", appUser);
+    }
+
+    @Transactional
+    @Override
+    public void deleteUser(SysUser appUser) {
+
+        appUserDao.updateById(appUser);
+
+        log.info("用户id：{}", appUser.getId());
+    }
+
+    @Override
+    public List<SysUserResponse> getUsers() {
+        List<SysUser> userList = appUserDao.selectList(new QueryWrapper<>());
+        SysGroup sysGroup = SysGroup.builder().build();
+        List<SysUserResponse> list = new ArrayList<>();
+
+        userList.forEach(i -> {
+            SysGroup group = sysGroup.selectById(i.getGroupId());
+            SysUserResponse userResponse = SysUserResponse.builder()
+                    .nickname(i.getNickname())
+                    .duties(i.getDuties())
+                    .personnelID(i.getPersonnelID())
+                    .groupName(group.getLabel())
+                    .build();
+            list.add(userResponse);
+        });
+        return list;
     }
 }

@@ -219,7 +219,9 @@ public class SysGroupController {
 
     }
 
-    // 获取所有组织
+    /**
+     * 获取所有组织
+     */
     @PreAuthorize("hasAuthority('back:group:query')")
     @GetMapping("/getAll")
     public ResultVo<List<SysGroup>> getAll() {
@@ -228,5 +230,23 @@ public class SysGroupController {
         return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, groups);
     }
 
+
+    /**
+     * 修改组织接口的接口
+     */
+    @LogAnnotation(module = LogModule.UPDATE_GROUP)
+    @PreAuthorize("hasAuthority('back:group:update')")
+    @PutMapping("/changeGroup")
+    public ResultVo changeGroupStructure(Map map) {
+        Integer parentId = Integer.valueOf(map.get("parentId").toString());
+        List<Integer> groupIds = (List<Integer>) map.get("groupIds");
+        try {
+            sysGroupService.changeGroup(groupIds, parentId);
+            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
+        } catch (Exception e) {
+            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, e.getMessage(), null);
+
+        }
+    }
 }
 

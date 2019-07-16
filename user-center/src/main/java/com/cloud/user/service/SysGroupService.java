@@ -47,4 +47,12 @@ public interface SysGroupService extends IService<SysGroup> {
      * 逻辑批量删除组织
      */
     boolean updateByIds(List<Integer> groupIds, String loginAdminName);
+
+    /**
+     * @param groupIds 需要移动的组织id
+     * @param parentId 移动到哪个组织下的id
+     * @return 操作结果
+     * 把一个组织结构移动到另一个组织上
+     */
+    boolean changeGroup(List<Integer> groupIds, Integer parentId);
 }

@@ -16,6 +16,7 @@ import com.cloud.model.user.LoginAppUser;
 import com.cloud.model.user.SysGroup;
 import com.cloud.model.user.SysRole;
 import com.cloud.model.user.SysUser;
+import com.cloud.model.user.constants.SysUserResponse;
 import com.cloud.user.feign.SmsClient;
 import com.cloud.user.service.SysRoleService;
 import com.cloud.user.service.SysUserService;
@@ -24,16 +25,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.ui.Model;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -46,6 +46,8 @@ public class UserController {
 
     @Autowired
     private SysRoleService sysRoleService;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     /**
      * 当前登录用户 LoginAppUser
@@ -507,7 +509,7 @@ public class UserController {
                 }
             }
 
-            appUser.setPassword("123.com");
+            appUser.setPassword("123456");
             appUserService.addUser(appUser);
             log.info("添加成功,id:{}", appUser.getId());
             return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
@@ -551,8 +553,10 @@ public class UserController {
             }
             SysUser sysUser = new SysUser();
             sysUser.setId(id);
-            sysUser.setPassword("123.com");
-            appUserService.updateUser(sysUser);
+            sysUser.setPassword("123456");
+            String md5DigestAsHex = DigestUtils.md5DigestAsHex(sysUser.getPassword().getBytes());
+            sysUser.setPassword(passwordEncoder.encode(md5DigestAsHex)); // 加密密码
+            appUserService.deleteUser(sysUser);
             log.info("设置新密码成功,userId:{}", id);
             return new ResultVo(200, "操作成功", null);
         } catch (Exception e) {
@@ -561,5 +565,37 @@ public class UserController {
         }
     }
 
+    /**
+     * 组织返回用户信息
+     */
+    @PreAuthorize("hasAuthority('back:user:query')")
+    @GetMapping("/users/getUsers")
+    public Map getUsersForGroup() {
+        List<SysUserResponse> users = appUserService.getUsers();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("code", 200);
+        map.put("msg", "操作成功!");
+        map.put("data", users);
+        return map;
+    }
 
+
+    /**
+     * 管理后台禁用
+     *
+     * @param appUser
+     */
+    @LogAnnotation(module = LogModule.UPDATE_USER)
+    @PreAuthorize("hasAuthority('back:user:update')")
+    @PutMapping("/deleteUser")
+    public ResultVo deleteUser(@RequestBody SysUser appUser) {
+        try {
+            appUserService.deleteUser(appUser);
+            log.info("禁用成功,id:{}", appUser.getId());
+            return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
+        } catch (Exception e) {
+            log.error("禁用出现异常", e);
+            return new ResultVo(500, ResponseStatus.RESPONSE_OPERATION_ERROR.message, null);
+        }
+    }
 }
