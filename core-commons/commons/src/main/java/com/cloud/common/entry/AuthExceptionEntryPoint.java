@@ -11,8 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created on 2018/5/24 0024.
  *
- * @author zlf
- * @email i@merryyou.cn
+ * @author lz
  * @since 1.0
  */
 public class AuthExceptionEntryPoint implements AuthenticationEntryPoint {

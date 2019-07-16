@@ -117,25 +117,25 @@ public class BlackIPController {
      * 添加黑名单ip
      *
      */
-    @LogAnnotation(module = LogModule.ADD_BLACK_IP)
-    @PreAuthorize("hasAuthority('ip:black:save')")
-    @PostMapping("/blackIPs")
-    public void save(@RequestBody BlackIP blackIP) {
-        blackIP.setCreateTime(new Date());
-
-        blackIPService.save(blackIP);
-    }
+//    @LogAnnotation(module = LogModule.ADD_BLACK_IP)
+//    @PreAuthorize("hasAuthority('ip:black:save')")
+//    @PostMapping("/blackIPs")
+//    public void save(@RequestBody BlackIP blackIP) {
+//        blackIP.setCreateTime(new Date());
+//
+//        blackIPService.save(blackIP);
+//    }
 
     /**
      * 删除黑名单ip
      *
      */
-    @LogAnnotation(module = LogModule.DELETE_BLACK_IP)
-    @PreAuthorize("hasAuthority('ip:black:delete')")
-    @DeleteMapping("/blackIPs")
-    public void delete(String ip) {
-        blackIPService.delete(ip);
-    }
+//    @LogAnnotation(module = LogModule.DELETE_BLACK_IP)
+//    @PreAuthorize("hasAuthority('ip:black:delete')")
+//    @DeleteMapping("/blackIPs")
+//    public void delete(String ip) {
+//        blackIPService.delete(ip);
+//    }
 
     /**
      * 查询黑名单
@@ -143,11 +143,11 @@ public class BlackIPController {
      * @param params
      * @return
      */
-    @PreAuthorize("hasAuthority('ip:black:query')")
-    @GetMapping("/blackIPs")
-    public Page<BlackIP> findBlackIPs(@RequestParam Map<String, Object> params) {
-        return blackIPService.findBlackIPs(params);
-    }
+//    @PreAuthorize("hasAuthority('ip:black:query')")
+//    @GetMapping("/blackIPs")
+//    public Page<BlackIP> findBlackIPs(@RequestParam Map<String, Object> params) {
+//        return blackIPService.findBlackIPs(params);
+//    }
 
     /**
      * 查询黑名单<br>
@@ -156,12 +156,12 @@ public class BlackIPController {
      * @param params
      * @return
      */
-    @GetMapping("/backend-anon/internal/blackIPs")
-    public Set<String> findAllBlackIPs(@RequestParam Map<String, Object> params) {
-        Page<BlackIP> page = blackIPService.findBlackIPs(params);
-        if (page.getTotal() > 0) {
-            return page.getData().stream().map(BlackIP::getIp).collect(Collectors.toSet());
-        }
-        return Collections.emptySet();
-    }
+//    @GetMapping("/backend-anon/internal/blackIPs")
+//    public Set<String> findAllBlackIPs(@RequestParam Map<String, Object> params) {
+//        Page<BlackIP> page = blackIPService.findBlackIPs(params);
+//        if (page.getTotal() > 0) {
+//            return page.getData().stream().map(BlackIP::getIp).collect(Collectors.toSet());
+//        }
+//        return Collections.emptySet();
+//    }
 }

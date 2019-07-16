@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * 自定义全局异常处理(@RestControllerAdvice + @ExceptionHandler)
+ */
 @RestControllerAdvice
 public class ExceptionHandlerAdvice {
 

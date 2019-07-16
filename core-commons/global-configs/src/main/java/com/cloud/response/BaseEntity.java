@@ -5,6 +5,10 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * 请求数据最外层封装对象
+ * @author user wp
+ */
 @Data
 @AllArgsConstructor
 public class BaseEntity implements Serializable {

@@ -1,6 +1,5 @@
 package com.cloud.dto;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 import lombok.Data;

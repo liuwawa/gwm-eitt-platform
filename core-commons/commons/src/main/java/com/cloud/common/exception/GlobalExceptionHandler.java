@@ -1,20 +1,18 @@
 package com.cloud.common.exception;
 
-import com.alibaba.fastjson.JSON;
 import com.cloud.common.vo.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
 import static com.cloud.common.enums.ResponseStatus.*;
 
-
+/**
+ * 全局异常处理
+ * @author lz
+ * @date 2018/8/14
+ */
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {

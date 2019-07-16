@@ -10,7 +10,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 /**
- * 在git自动刷新的时候老是报body错误，所有需要自定义一个filter进行body转换
+ * 自定义filter，进行body转换
  */
 @Component
 public class UrlFilter implements Filter {

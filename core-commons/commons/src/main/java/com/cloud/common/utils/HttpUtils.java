@@ -15,6 +15,9 @@ import static com.cloud.common.constants.Messages.*;
 import static com.cloud.enums.ResponseStatus.RESPONSE_CLIENT_ID_ERROR;
 import static com.cloud.enums.ResponseStatus.RESPONSE_LOGIN_ERROR;
 
+/**
+ * Created by lz on 2018/7/10.
+ */
 public class HttpUtils {
     public static void sendResponse(HttpServletResponse response, String msg, String type) throws ServletException {
         Map map = new HashMap();

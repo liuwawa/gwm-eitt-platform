@@ -49,17 +49,17 @@ public class BlackIPServiceImpl extends ServiceImpl<BlackIPDao, BlackIP> impleme
     }
 
 
-	@Override
-	public Page<BlackIP> findBlackIPs(Map<String, Object> params) {
-		int total = blackIPDao.count(params);
-		List<BlackIP> list = Collections.emptyList();
-		if (total > 0) {
-			PageUtil.pageParamConver(params, false);
-
-			list = blackIPDao.findData(params);
-		}
-		return new Page<>(total, list);
-	}
+//	@Override
+//	public Page<BlackIP> findBlackIPs(Map<String, Object> params) {
+//		int total = blackIPDao.count(params);
+//		List<BlackIP> list = Collections.emptyList();
+//		if (total > 0) {
+//			PageUtil.pageParamConver(params, false);
+//
+//			list = blackIPDao.findData(params);
+//		}
+//		return new Page<>(total, list);
+//	}
 
     @Override
     @Transactional

@@ -1,5 +1,8 @@
 package com.cloud.common.enums;
 
+/**
+ * 自定义响应状态信息
+ */
 public enum ResponseStatus {
     RESPONSE_SUCCESS(10000, "成功"),
     RESPONSE_VALIDATE_ERROR(10003, "校验失败"),

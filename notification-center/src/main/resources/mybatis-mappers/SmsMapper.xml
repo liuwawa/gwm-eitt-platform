@@ -3,30 +3,30 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cloud.notification.dao.SmsDao">
 
-	<update id="update">
-		update t_sms
-		<set>
-			<if test="signName != null and signName != ''">
-				signName = #{signName,jdbcType=VARCHAR},
-			</if>
-			<if test="templateCode != null and templateCode != ''">
-				templateCode = #{templateCode,jdbcType=VARCHAR},
-			</if>
-			<if test="bizId != null and bizId != ''">
-				bizId = #{bizId,jdbcType=VARCHAR},
-			</if>
-			<if test="code != null and code != ''">
-				code = #{code,jdbcType=VARCHAR},
-			</if>
-			<if test="message != null and message != ''">
-				message = #{message,jdbcType=VARCHAR},
-			</if>
-			<if test="updateTime != null">
-				updateTime = #{updateTime,jdbcType=TIMESTAMP},
-			</if>
-		</set>
-		where id = #{id,jdbcType=INTEGER}
-	</update>
+	<!--<update id="update">-->
+		<!--update t_sms-->
+		<!--<set>-->
+			<!--<if test="signName != null and signName != ''">-->
+				<!--signName = #{signName,jdbcType=VARCHAR},-->
+			<!--</if>-->
+			<!--<if test="templateCode != null and templateCode != ''">-->
+				<!--templateCode = #{templateCode,jdbcType=VARCHAR},-->
+			<!--</if>-->
+			<!--<if test="bizId != null and bizId != ''">-->
+				<!--bizId = #{bizId,jdbcType=VARCHAR},-->
+			<!--</if>-->
+			<!--<if test="code != null and code != ''">-->
+				<!--code = #{code,jdbcType=VARCHAR},-->
+			<!--</if>-->
+			<!--<if test="message != null and message != ''">-->
+				<!--message = #{message,jdbcType=VARCHAR},-->
+			<!--</if>-->
+			<!--<if test="updateTime != null">-->
+				<!--updateTime = #{updateTime,jdbcType=TIMESTAMP},-->
+			<!--</if>-->
+		<!--</set>-->
+		<!--where id = #{id,jdbcType=INTEGER}-->
+	<!--</update>-->
 	
 	<sql id="where">
 		<where>

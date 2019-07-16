@@ -18,7 +18,7 @@ public interface SmsService extends IService<Sms> {
 	 * @param id
 	 * @return
 	 */
-	Sms findById(Long id);
+//	Sms findById(Long id);
 
 	Page<Sms> findSms(Map<String, Object> params);
 

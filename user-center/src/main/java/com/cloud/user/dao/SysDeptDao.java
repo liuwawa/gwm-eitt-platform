@@ -9,17 +9,17 @@ import java.util.List;
 @Mapper
 public interface SysDeptDao extends BaseMapper<SysDept> {
 
-    @Options(useGeneratedKeys = true, keyProperty = "deptId")
-    @Insert("INSERT INTO  sys_dept(parent_id,dept_name,leader,phone,email,create_time) VALUES" +
-            "(#{parentId},#{deptName},#{leader},#{phone},#{email},#{createTime})")
-    int saveDept(SysDept sysDept);
-
-
-    /**
-     * 查询子级部门
-     */
-    @Select("SELECT * FROM sys_dept t WHERE t.parent_id =#{parentId}")
-    List<SysDept> selectByParentId(Long parentId);
+//    @Options(useGeneratedKeys = true, keyProperty = "deptId")
+//    @Insert("INSERT INTO  sys_dept(parent_id,dept_name,leader,phone,email,create_time) VALUES" +
+//            "(#{parentId},#{deptName},#{leader},#{phone},#{email},#{createTime})")
+//    int saveDept(SysDept sysDept);
+//
+//
+//    /**
+//     * 查询子级部门
+//     */
+//    @Select("SELECT * FROM sys_dept t WHERE t.parent_id =#{parentId}")
+//    List<SysDept> selectByParentId(Long parentId);
 
     /**
      * 多条件查询

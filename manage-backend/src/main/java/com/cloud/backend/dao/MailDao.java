@@ -29,6 +29,6 @@ public interface MailDao extends BaseMapper<Mail> {
     @Update("UPDATE t_mail SET isRead=1 where id = #{id}")
     void updateIsRead(Long id);
 
-    @Update("UPDATE t_mail SET isRead=1 where userId = #{userId}")
-    void updateIsReadByUserId(Long userId);
+//    @Update("UPDATE t_mail SET isRead=1 where userId = #{userId}")
+//    void updateIsReadByUserId(Long userId);
 }

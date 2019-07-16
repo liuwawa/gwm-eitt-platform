@@ -16,6 +16,10 @@ import java.util.Set;
 
 import static com.cloud.enums.ResponseStatus.RESPONSE_LOGIN_SIGNAL_ERROR;
 
+/**
+ * user filter
+ * @author user lz
+ */
 @Slf4j
 public class UserInterceptor implements HandlerInterceptor {
 

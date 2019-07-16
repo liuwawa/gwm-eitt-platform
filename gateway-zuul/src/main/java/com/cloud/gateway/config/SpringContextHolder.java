@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 /**
- * @Auther: fanxuebo
+ * @Auther: lz
  * @Description: 保存spring的ApplicationContext容器, 方便其他地方获取Bean
  */
 public class SpringContextHolder implements ApplicationContextAware {
@@ -18,7 +18,7 @@ public class SpringContextHolder implements ApplicationContextAware {
     }
 
     /**
-     * @Auther: fanxuebo
+     * @Auther: lz
      * @Description: 获取 ApplicationContext 容器
      */
     public static ApplicationContext getApplicationContext() {
@@ -26,7 +26,7 @@ public class SpringContextHolder implements ApplicationContextAware {
     }
 
     /**
-     * @Auther: fanxuebo
+     * @Auther: lz
      * @Description: 获取 bean
      */
     public static Object getBean(String name) {

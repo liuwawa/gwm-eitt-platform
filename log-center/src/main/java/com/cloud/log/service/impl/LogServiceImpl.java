@@ -32,11 +32,11 @@ public class LogServiceImpl extends ServiceImpl<LogDao,Log> implements LogServic
 	@Async
 	@Override
 	public void saveLog(Log log) {
-		if (log.getCreateTime() == null) {
-			log.setCreateTime(new Date());
-		}
 		if (log.getFlag() == null) {
 			log.setFlag(Boolean.TRUE);
+		}
+		if (log.getCreateTime() == null) {
+			log.setCreateTime(new Date());
 		}
 		if (log.getUserid() == null){
 			log.setUserid(0);
@@ -47,11 +47,10 @@ public class LogServiceImpl extends ServiceImpl<LogDao,Log> implements LogServic
 
 	@Override
 	public Page<Log> findLogs(Map<String, Object> params) {
-		int total = logDao.count(params);
 		List<Log> list = Collections.emptyList();
+		int total = logDao.count(params);
 		if (total > 0) {
 			PageUtil.pageParamConver(params, true);
-
 			list = logDao.findData(params);
 		}
 		return new Page<>(total, list);

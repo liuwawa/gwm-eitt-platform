@@ -15,20 +15,20 @@ public interface SysDeptService extends IService<SysDept> {
     /**
      * 查询子部门
      */
-    List<SysDept> selectByParentId(Long parentId);
+//    List<SysDept> selectByParentId(Long parentId);
 
     /**
      * 动态增加
      */
-    void insertDept(SysDept sysDept);
+//    void insertDept(SysDept sysDept);
 
     /**
      * 删除
      */
-    int deletById(Long id);
+//    int deletById(Long id);
 
     /**
      * 修改
      */
-    void updateSysDept(SysDept sysDept);
+//    void updateSysDept(SysDept sysDept);
 }

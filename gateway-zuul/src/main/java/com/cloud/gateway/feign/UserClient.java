@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Created with IntelliJ IDEA.
- * User: ll
  * Date: 31/1/2019
  * Time: 9:59 AM
  * @author liangzheng

@@ -18,11 +18,11 @@ public interface SysPermissionService extends IService<SysPermission> {
 	 */
 	Set<SysPermission> findByRoleIds(Set<Long> roleIds);
 
-	void saveSysPermission(SysPermission sysPermission);
+//	void saveSysPermission(SysPermission sysPermission);
 
 	void update(SysPermission sysPermission);
 
 	void delete(Long id);
 
-	Page<SysPermission> findPermissions(Map<String, Object> params);
+//	Page<SysPermission> findPermissions(Map<String, Object> params);
 }

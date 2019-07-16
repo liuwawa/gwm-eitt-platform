@@ -5,7 +5,9 @@ import com.cloud.enums.ResponseStatus;
 import com.cloud.gateway.feign.LogClient;
 import com.cloud.gateway.feign.Oauth2Client;
 import com.cloud.gateway.feign.UserClient;
-import com.cloud.gateway.utils.IPUtil;
+import com.cloud.common.utils.IPUtil;
+//import com.cloud.gateway.utils.SystemUtils;
+//import com.cloud.gateway.utils.IPUtil;
 import com.cloud.model.log.Log;
 import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.oauth.SystemClientInfo;
@@ -54,12 +56,12 @@ public class TokenController {
     /**
      * @return
      */
-    @GetMapping("/sys/code")
-    public Map<String, Object> getCode(@RequestParam Map<String, String> params) {
-        ModelAndView tokenInfo = oauth2Client.postCodeGrant(params);
-        System.out.println();
-        return null;
-    }
+//    @GetMapping("/sys/code")
+//    public Map<String, Object> getCode(@RequestParam Map<String, String> params) {
+//        ModelAndView tokenInfo = oauth2Client.postCodeGrant(params);
+//        System.out.println();
+//        return null;
+//    }
 
     /**
      * 系统登陆<br>
@@ -72,7 +74,7 @@ public class TokenController {
      */
     @PostMapping("/sys/login")
     public Map<String, Object> login(String username, String password, HttpServletRequest request, HttpServletResponse response) {
-        Map<String, String> parameters = new HashMap<>();
+//        Map<String, String> parameters = new HashMap<>();
         //如果需要踢出用户，先踢再登陆
         if ("1".equals(request.getParameter("out"))) {
             if (username != null) {
@@ -84,11 +86,12 @@ public class TokenController {
                 }
             }
         }
-        parameters.put(OAuth2Utils.GRANT_TYPE, "password");
-        parameters.put(OAuth2Utils.CLIENT_ID, SystemClientInfo.CLIENT_ID);
-        parameters.put("client_secret", SystemClientInfo.CLIENT_SECRET);
-        parameters.put(OAuth2Utils.SCOPE, SystemClientInfo.CLIENT_SCOPE);
+//        parameters.put(OAuth2Utils.GRANT_TYPE, "password");
+//        parameters.put(OAuth2Utils.CLIENT_ID, SystemClientInfo.CLIENT_ID);
+//        parameters.put("client_secret", SystemClientInfo.CLIENT_SECRET);
+//        parameters.put(OAuth2Utils.SCOPE, SystemClientInfo.CLIENT_SCOPE);
 //		parameters.put("username", username);
+        Map<String, String> parameters = initOauthParam();
         // 为了支持多类型登录，这里在username后拼装上登录类型
         parameters.put("username", username + "|" + CredentialType.USERNAME.name());
         parameters.put("password", password);
@@ -127,17 +130,9 @@ public class TokenController {
      */
     @PostMapping("/sys/login-sms")
     public Map<String, Object> smsLogin(String phone, String key, String code, HttpServletRequest request) {
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put(OAuth2Utils.GRANT_TYPE, "password");
-        parameters.put(OAuth2Utils.CLIENT_ID, SystemClientInfo.CLIENT_ID);
-        parameters.put("client_secret", SystemClientInfo.CLIENT_SECRET);
-        parameters.put(OAuth2Utils.SCOPE, SystemClientInfo.CLIENT_SCOPE);
+        Map<String, String> parameters = initOauthParam();
 
         SysUser appUser = userClient.findByPhone(phone);
-       /* if (appUser != null && StringUtils.isAllBlank(appUser.getPassword(),appUser.getUsername())){
-            parameters.put("username", appUser.getUsername() + "|" + CredentialType.USERNAME.name());
-            parameters.put("password", appUser.getPassword());
-        }*/
         // 为了支持多类型登录，这里在username后拼装上登录类型，同时为了校验短信验证码，我们也拼上code等
         parameters.put("username", appUser.getUsername() + "|" + CredentialType.PHONE.name() + "|" + key + "|" + code + "|"
                 + DigestUtils.md5Hex(key + code));
@@ -161,11 +156,7 @@ public class TokenController {
      */
     @PostMapping("/sys/login-wechat")
     public Map<String, Object> smsLogin(String openid, String tempCode, HttpServletRequest request) {
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put(OAuth2Utils.GRANT_TYPE, "password");
-        parameters.put(OAuth2Utils.CLIENT_ID, SystemClientInfo.CLIENT_ID);
-        parameters.put("client_secret", SystemClientInfo.CLIENT_SECRET);
-        parameters.put(OAuth2Utils.SCOPE, SystemClientInfo.CLIENT_SCOPE);
+        Map<String, String> parameters = initOauthParam();
         // 为了支持多类型登录，这里在username后拼装上登录类型，同时为了服务端校验，我们也拼上tempCode
         parameters.put("username", openid + "|" + CredentialType.WECHAT_OPENID.name() + "|" + tempCode);
         // 微信登录无需密码，但security底层有密码校验，我们这里将手机号作为密码，认证中心采用同样规则即可
@@ -178,6 +169,19 @@ public class TokenController {
         saveLoginLog(openid, "微信登陆", ipAddress);
 
         return tokenInfo;
+    }
+
+    /**
+     * 初始化 oauth认证基本参数
+     * @return
+     */
+    private Map<String, String> initOauthParam() {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(OAuth2Utils.GRANT_TYPE, "password");
+        parameters.put(OAuth2Utils.CLIENT_ID, SystemClientInfo.CLIENT_ID);
+        parameters.put("client_secret", SystemClientInfo.CLIENT_SECRET);
+        parameters.put(OAuth2Utils.SCOPE, SystemClientInfo.CLIENT_SCOPE);
+        return parameters;
     }
 
     /**

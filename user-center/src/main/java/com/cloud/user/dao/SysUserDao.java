@@ -22,8 +22,8 @@ public interface SysUserDao extends BaseMapper<SysUser> {
      * @param username
      * @return
      */
-    @Select("select * from sys_user t where t.username = #{username}")
-    SysUser findByUsername(String username);
+//    @Select("select * from sys_user t where t.username = #{username}")
+//    SysUser findByUsername(String username);
 
     @Select("select * from sys_user t where t.phone = #{phone}")
     SysUser findByPhone(String phone);

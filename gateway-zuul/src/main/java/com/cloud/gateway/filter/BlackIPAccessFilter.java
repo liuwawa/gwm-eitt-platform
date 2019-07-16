@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.cloud.common.utils.IPUtil;
+
 /**
  * 黑名单IP拦截<br>
  * 黑名单ip变化不会太频繁，<br>
@@ -41,7 +43,7 @@ public class BlackIPAccessFilter extends ZuulFilter {
 
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
-        String ip = getIpAddress(request);
+        String ip = IPUtil.getIpAddress(request);
 
         return blackIPs.contains(ip);// 判断ip是否在黑名单列表里
     }
@@ -86,24 +88,24 @@ public class BlackIPAccessFilter extends ZuulFilter {
      * @param request
      * @return
      */
-    public static String getIpAddress(HttpServletRequest request) {
-        String ip = request.getHeader("x-forwarded-for");
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        return ip;
-    }
+//    public static String getIpAddress(HttpServletRequest request) {
+//        String ip = request.getHeader("x-forwarded-for");
+//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+//            ip = request.getHeader("Proxy-Client-IP");
+//        }
+//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+//            ip = request.getHeader("WL-Proxy-Client-IP");
+//        }
+//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+//            ip = request.getHeader("HTTP_CLIENT_IP");
+//        }
+//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+//            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+//        }
+//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+//            ip = request.getRemoteAddr();
+//        }
+//        return ip;
+//    }
 
 }

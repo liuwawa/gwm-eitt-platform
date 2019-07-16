@@ -1,6 +1,5 @@
 package com.cloud.notification.controller;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.exception.SmsException;
@@ -10,7 +9,6 @@ import com.cloud.model.common.Page;
 import com.cloud.model.common.PageResult;
 import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
-import com.cloud.model.user.SysRole;
 import com.cloud.notification.model.Sms;
 import com.cloud.notification.model.VerificationCode;
 import com.cloud.notification.service.SmsService;
@@ -44,9 +42,7 @@ public class SmsController {
             throw new IllegalArgumentException("手机号格式不正确");
         }
 
-        VerificationCode verificationCode = verificationCodeService.generateCode(phone);
-
-        return verificationCode;
+        return verificationCodeService.generateCode(phone);
     }
 
     @PostMapping(value = "/notification-anon/sms/codes", params = {"phone"})
@@ -55,9 +51,7 @@ public class SmsController {
             throw new SmsException("手机号格式不正确");
         }
 
-        VerificationCode verificationCode = verificationCodeService.generateCode(phone);
-
-        return verificationCode;
+        return verificationCodeService.generateCode(phone);
     }
 
     /**

@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : localhost
-Source Server Version : 50624
-Source Host           : localhost:3306
-Source Database       : cloud_oauth
+Source Server         : 10.255.30.142
+Source Server Version : 80015
+Source Host           : 10.255.30.142:3306
+Source Database       : cloud_oauth2
 
 Target Server Type    : MYSQL
-Target Server Version : 50624
+Target Server Version : 80015
 File Encoding         : 65001
 
-Date: 2018-06-17 09:50:59
+Date: 2019-07-15 11:05:33
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -32,7 +32,7 @@ CREATE TABLE `oauth_client_details` (
   `additional_information` varchar(4096) DEFAULT NULL,
   `autoapprove` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`client_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='oauth2的client表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='oauth2的client表';
 
 -- ----------------------------
 -- Records of oauth_client_details
@@ -47,7 +47,7 @@ CREATE TABLE `oauth_code` (
   `code` varchar(128) NOT NULL COMMENT '临时code',
   `authentication` blob,
   PRIMARY KEY (`code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='授权码模式code表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='授权码模式code表';
 
 -- ----------------------------
 -- Records of oauth_code

@@ -21,10 +21,10 @@ public interface FileDao extends BaseMapper<FileInfo> {
 			+ "values(#{id}, #{name}, #{isImg}, #{contentType}, #{size}, #{path}, #{url}, #{source}, #{createTime})")
 	int save(FileInfo fileInfo);
 
-	@Delete("delete from file_info where id = #{id}")
-	int delete(String id);
-
-	int count(Map<String, Object> params);
-
-	List<FileInfo> findData(Map<String, Object> params);
+//	@Delete("delete from file_info where id = #{id}")
+//	int delete(String id);
+//
+//	int count(Map<String, Object> params);
+//
+//	List<FileInfo> findData(Map<String, Object> params);
 }

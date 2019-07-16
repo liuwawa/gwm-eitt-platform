@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import java.util.List;
 
 /**
- * Json工具类:fastjson版
+ * Json工具类:fast-json版
  */
 @Slf4j
 public class JsonUtils {

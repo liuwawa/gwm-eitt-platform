@@ -21,6 +21,6 @@ public interface FileService extends IService<FileInfo> {
 	 *
 	 * @param fileInfo
 	 */
-	void delete(FileInfo fileInfo);
+//	void delete(FileInfo fileInfo);
 
 }

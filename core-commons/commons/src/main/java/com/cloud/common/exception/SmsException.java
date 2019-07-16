@@ -1,6 +1,5 @@
 package com.cloud.common.exception;
 
-import com.cloud.common.enums.ResultEnum;
 import lombok.Getter;
 
 /**

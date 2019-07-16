@@ -55,12 +55,12 @@ public abstract class AbstractFileService extends ServiceImpl<FileDao, FileInfo>
 	 */
 	protected abstract void uploadFile(MultipartFile file, FileInfo fileInfo) throws Exception;
 
-	@Override
-	public void delete(FileInfo fileInfo) {
-		deleteFile(fileInfo);
-		getFileDao().delete(fileInfo.getId());
-		log.info("删除文件：{}", fileInfo);
-	}
+//	@Override
+//	public void delete(FileInfo fileInfo) {
+//		deleteFile(fileInfo);
+//		getFileDao().delete(fileInfo.getId());
+//		log.info("删除文件：{}", fileInfo);
+//	}
 
 	/**
 	 * 删除文件资源

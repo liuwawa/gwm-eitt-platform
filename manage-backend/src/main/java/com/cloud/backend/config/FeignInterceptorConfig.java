@@ -18,16 +18,16 @@ import feign.RequestTemplate;
  * 参数形式就是access_token=xxx<br>
  * header的话，是Authorization:Bearer xxx<br>
  * 我们默认放在header里
- * 
- * @author lz
  *
+ * @author lz
  */
 @Configuration
 public class FeignInterceptorConfig {
 
-	@Bean
-	public RequestInterceptor requestInterceptor() {
-		RequestInterceptor requestInterceptor = template -> {
+    @Bean
+    public RequestInterceptor requestInterceptor() {
+
+        return template -> {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication != null) {
                 if (authentication instanceof OAuth2Authentication) {
@@ -39,7 +39,5 @@ public class FeignInterceptorConfig {
 
             }
         };
-
-		return requestInterceptor;
-	}
+    }
 }

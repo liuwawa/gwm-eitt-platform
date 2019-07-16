@@ -105,16 +105,16 @@ public class UserController {
      *
      * @param appUser
      */
-    @LogAnnotation(module = LogModule.UPDATE_ME)
-    @PutMapping("/users/me")
-    public SysUser updateMe(@RequestBody SysUser appUser) {
-        SysUser user = AppUserUtil.getLoginAppUser();
-        appUser.setId(user.getId());
-
-        appUserService.updateAppUser(appUser);
-
-        return appUser;
-    }
+//    @LogAnnotation(module = LogModule.UPDATE_ME)
+//    @PutMapping("/users/me")
+//    public SysUser updateMe(@RequestBody SysUser appUser) {
+//        SysUser user = AppUserUtil.getLoginAppUser();
+//        appUser.setId(user.getId());
+//
+//        appUserService.updateAppUser(appUser);
+//
+//        return appUser;
+//    }
 
     /**
      * 修改自己的个人信息 (element ui)
@@ -143,19 +143,19 @@ public class UserController {
      * @param oldPassword 旧密码
      * @param newPassword 新密码
      */
-    @LogAnnotation(module = LogModule.UPDATE_PASSWORD)
-    @PutMapping(value = "/users/password", params = {"oldPassword", "newPassword"})
-    public void updatePassword(String oldPassword, String newPassword) {
-        if (StringUtils.isBlank(oldPassword)) {
-            throw new IllegalArgumentException("旧密码不能为空");
-        }
-        if (StringUtils.isBlank(newPassword)) {
-            throw new IllegalArgumentException("新密码不能为空");
-        }
-
-        SysUser user = AppUserUtil.getLoginAppUser();
-        appUserService.updatePassword(user.getId(), oldPassword, newPassword);
-    }
+//    @LogAnnotation(module = LogModule.UPDATE_PASSWORD)
+//    @PutMapping(value = "/users/password", params = {"oldPassword", "newPassword"})
+//    public void updatePassword(String oldPassword, String newPassword) {
+//        if (StringUtils.isBlank(oldPassword)) {
+//            throw new IllegalArgumentException("旧密码不能为空");
+//        }
+//        if (StringUtils.isBlank(newPassword)) {
+//            throw new IllegalArgumentException("新密码不能为空");
+//        }
+//
+//        SysUser user = AppUserUtil.getLoginAppUser();
+//        appUserService.updatePassword(user.getId(), oldPassword, newPassword);
+//    }
 
     /**
      * 修改密码(element ui)
@@ -241,34 +241,34 @@ public class UserController {
      * @param key
      * @param code
      */
-    @PostMapping(value = "/users/binding-phone")
-    public void bindingPhone(String phone, String key, String code) {
-        if (StringUtils.isBlank(phone)) {
-            throw new IllegalArgumentException("手机号不能为空");
-        }
-
-        if (StringUtils.isBlank(key)) {
-            throw new IllegalArgumentException("key不能为空");
-        }
-
-        if (StringUtils.isBlank(code)) {
-            throw new IllegalArgumentException("code不能为空");
-        }
-
-        LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
-        log.info("绑定手机号，key:{},code:{},username:{}", key, code, loginAppUser.getUsername());
-
-        String value = smsClient.matcheCodeAndGetPhone(key, code, false, 30);
-        if (value == null) {
-            throw new IllegalArgumentException("验证码错误");
-        }
-
-        if (phone.equals(value)) {
-            appUserService.bindingPhone(loginAppUser.getId(), phone);
-        } else {
-            throw new IllegalArgumentException("手机号不一致");
-        }
-    }
+//    @PostMapping(value = "/users/binding-phone")
+//    public void bindingPhone(String phone, String key, String code) {
+//        if (StringUtils.isBlank(phone)) {
+//            throw new IllegalArgumentException("手机号不能为空");
+//        }
+//
+//        if (StringUtils.isBlank(key)) {
+//            throw new IllegalArgumentException("key不能为空");
+//        }
+//
+//        if (StringUtils.isBlank(code)) {
+//            throw new IllegalArgumentException("code不能为空");
+//        }
+//
+//        LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+//        log.info("绑定手机号，key:{},code:{},username:{}", key, code, loginAppUser.getUsername());
+//
+//        String value = smsClient.matcheCodeAndGetPhone(key, code, false, 30);
+//        if (value == null) {
+//            throw new IllegalArgumentException("验证码错误");
+//        }
+//
+//        if (phone.equals(value)) {
+//            appUserService.bindingPhone(loginAppUser.getId(), phone);
+//        } else {
+//            throw new IllegalArgumentException("手机号不一致");
+//        }
+//    }
 
     /**
      * 绑定手机号(element ui)
@@ -317,54 +317,52 @@ public class UserController {
     /**
      * 验证码生成
      */
-    @PostMapping("/users/captcha")
-    public void captchaInit(HttpServletResponse response, Model model) {
-        // 生成验证码
-        String code = VerifyCodeUtils.generateVerifyCode(4);
-        log.info("验证码:{}", code);
-        // 存入model
-        model.addAttribute("captchaCode", code);
-        // 设置响应格式
-        response.setContentType("image/png");
-        // 输出流
-        OutputStream os = null;
-        try {
-            os = response.getOutputStream();
-            // 设置宽和高
-            int w = 200, h = 80;
-            // 将图片输出给浏览器
-            VerifyCodeUtils.outputImage(w, h, os, code);
-        } catch (IOException e) {
-            log.error("生成验证码出现异常!", e);
-            throw new IllegalArgumentException("验证码生成出现异常！");
-        } finally {
-            try {
-                os.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-    }
+//    @PostMapping("/users/captcha")
+//    public void captchaInit(HttpServletResponse response, Model model) {
+//        // 生成验证码
+//        String code = VerifyCodeUtils.generateVerifyCode(4);
+//        log.info("验证码:{}", code);
+//        // 存入model
+//        model.addAttribute("captchaCode", code);
+//        // 设置响应格式
+//        response.setContentType("image/png");
+//        // 输出流
+//        OutputStream os = null;
+//        try {
+//            os = response.getOutputStream();
+//            // 设置宽和高
+//            int w = 200, h = 80;
+//            // 将图片输出给浏览器
+//            VerifyCodeUtils.outputImage(w, h, os, code);
+//        } catch (IOException e) {
+//            log.error("生成验证码出现异常!", e);
+//            throw new IllegalArgumentException("验证码生成出现异常！");
+//        } finally {
+//            try {
+//                os.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     /**
      * @param code     前台传值
      * @param trueCode session中的值
      *                 判断验证码
      */
-    @GetMapping("/users/checkCaptcha/{code}")
-    public void checkCode(@PathVariable String code, @ModelAttribute("captchaCode") String trueCode) {
-        if (StringUtils.isBlank(code)) {
-            throw new IllegalArgumentException("请输入验证码！");
-        }
-        log.info("session中的,code:{}", trueCode);
-        log.info("输入的,code:{}", code);
-        if (!code.equalsIgnoreCase(trueCode)) {
-            throw new IllegalArgumentException("输入的验证码错误！");
-        }
-        log.info("验证码正确");
-    }
+//    @GetMapping("/users/checkCaptcha/{code}")
+//    public void checkCode(@PathVariable String code, @ModelAttribute("captchaCode") String trueCode) {
+//        if (StringUtils.isBlank(code)) {
+//            throw new IllegalArgumentException("请输入验证码！");
+//        }
+//        log.info("session中的,code:{}", trueCode);
+//        log.info("输入的,code:{}", code);
+//        if (!code.equalsIgnoreCase(trueCode)) {
+//            throw new IllegalArgumentException("输入的验证码错误！");
+//        }
+//        log.info("验证码正确");
+//    }
 
 
     /**

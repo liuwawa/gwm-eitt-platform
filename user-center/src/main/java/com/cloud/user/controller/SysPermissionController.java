@@ -40,24 +40,24 @@ public class SysPermissionController {
      * @param sysPermission
      * @return
      */
-    @LogAnnotation(module = LogModule.ADD_PERMISSION)
-    @PreAuthorize("hasAuthority('back:permission:save')")
-    @PostMapping("/permissions")
-    public SysPermission save(@RequestBody SysPermission sysPermission) {
-        if (StringUtils.isBlank(sysPermission.getPermission())) {
-            throw new IllegalArgumentException("权限标识不能为空");
-        }
-        if (StringUtils.isBlank(sysPermission.getName())) {
-            throw new IllegalArgumentException("权限名不能为空");
-        }
-
-        sysPermissionService.save(sysPermission);
-
-        return sysPermission;
-    }
+//    @LogAnnotation(module = LogModule.ADD_PERMISSION)
+//    @PreAuthorize("hasAuthority('back:permission:save')")
+//    @PostMapping("/permissions")
+//    public SysPermission save(@RequestBody SysPermission sysPermission) {
+//        if (StringUtils.isBlank(sysPermission.getPermission())) {
+//            throw new IllegalArgumentException("权限标识不能为空");
+//        }
+//        if (StringUtils.isBlank(sysPermission.getName())) {
+//            throw new IllegalArgumentException("权限名不能为空");
+//        }
+//
+//        sysPermissionService.save(sysPermission);
+//
+//        return sysPermission;
+//    }
 
     /**
-     * 管理后台添加权限(恩科 element ui)
+     * 管理后台添加权限( element ui)
      *
      * @param sysPermission
      * @return
@@ -92,21 +92,21 @@ public class SysPermissionController {
      *
      * @param sysPermission
      */
-    @LogAnnotation(module = LogModule.UPDATE_PERMISSION)
-    @PreAuthorize("hasAuthority('back:permission:update')")
-    @PutMapping("/permissions")
-    public SysPermission update(@RequestBody SysPermission sysPermission) {
-        if (StringUtils.isBlank(sysPermission.getName())) {
-            throw new IllegalArgumentException("权限名不能为空");
-        }
-
-        sysPermissionService.update(sysPermission);
-
-		return sysPermission;
-	}
+//    @LogAnnotation(module = LogModule.UPDATE_PERMISSION)
+//    @PreAuthorize("hasAuthority('back:permission:update')")
+//    @PutMapping("/permissions")
+//    public SysPermission update(@RequestBody SysPermission sysPermission) {
+//        if (StringUtils.isBlank(sysPermission.getName())) {
+//            throw new IllegalArgumentException("权限名不能为空");
+//        }
+//
+//        sysPermissionService.update(sysPermission);
+//
+//		return sysPermission;
+//	}
 
     /**
-     * 管理后台修改权限（恩科 element ui）
+     * 管理后台修改权限（ element ui）
      *
      * @param sysPermission
      */
@@ -138,15 +138,15 @@ public class SysPermissionController {
      *
      * @param id
      */
-    @LogAnnotation(module = LogModule.DELETE_PERMISSION)
-    @PreAuthorize("hasAuthority('back:permission:delete')")
-    @DeleteMapping("/permissions/{id}")
-    public void delete(@PathVariable Long id) {
-        sysPermissionService.delete(id);
-    }
+//    @LogAnnotation(module = LogModule.DELETE_PERMISSION)
+//    @PreAuthorize("hasAuthority('back:permission:delete')")
+//    @DeleteMapping("/permissions/{id}")
+//    public void delete(@PathVariable Long id) {
+//        sysPermissionService.delete(id);
+//    }
 
     /**
-     * 删除权限标识（恩科  element ui）
+     * 删除权限标识（  element ui）
      *
      * @param id
      */
@@ -168,14 +168,14 @@ public class SysPermissionController {
     /**
      * 查询所有的权限标识
      */
-    @PreAuthorize("hasAuthority('back:permission:query')")
-    @GetMapping("/permissions")
-    public Page<SysPermission> findPermissions(@RequestParam Map<String, Object> params) {
-        return sysPermissionService.findPermissions(params);
-    }
+//    @PreAuthorize("hasAuthority('back:permission:query')")
+//    @GetMapping("/permissions")
+//    public Page<SysPermission> findPermissions(@RequestParam Map<String, Object> params) {
+//        return sysPermissionService.findPermissions(params);
+//    }
 
     /**
-     * 分页查询所有的权限标识分（恩科 element ui）
+     * 分页查询所有的权限标识分（ element ui）
      */
     @PreAuthorize("hasAuthority('back:permission:query')")
     @PostMapping("/findPages")

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * swagger文档
+ * swagger文档配置
  * 
  * @author lz
  *

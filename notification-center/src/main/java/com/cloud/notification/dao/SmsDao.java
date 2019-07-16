@@ -17,8 +17,8 @@ public interface SmsDao extends BaseMapper<Sms> {
 			+ "values(#{phone}, #{signName}, #{templateCode}, #{params}, #{day}, #{createTime}, #{updateTime})")
 	int save(Sms sms);
 
-	@Select("select * from t_sms t where t.id = #{id}")
-	Sms findById(Long id);
+//	@Select("select * from t_sms t where t.id = #{id}")
+//	Sms findById(Long id);
 
 	int update(Sms sms);
 

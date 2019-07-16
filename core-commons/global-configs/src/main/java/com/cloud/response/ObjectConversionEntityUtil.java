@@ -3,6 +3,10 @@ package com.cloud.response;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * entity -> 实体
+ * @author user wp
+ */
 @Slf4j
 public class ObjectConversionEntityUtil {
 

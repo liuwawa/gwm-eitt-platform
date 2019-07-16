@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+/**
+ * 响应状态信息枚举
+ */
 public enum ResponseStatus {
     RESPONSE_SUCCESS(10000, "成功"),
     RESPONSE_VALIDATE_ERROR(10003, "校验失败"),

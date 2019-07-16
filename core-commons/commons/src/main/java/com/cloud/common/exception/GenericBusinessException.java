@@ -2,6 +2,11 @@ package com.cloud.common.exception;
 
 import lombok.Data;
 
+/**
+ * 自定义异常处理
+ * @author lz
+ * @date 2018/8/14
+ */
 @Data
 public class GenericBusinessException extends Exception {
     //错误状态码

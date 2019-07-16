@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.cloud.common.constants.SysConstants;
 import com.cloud.common.vo.Response;
 import com.cloud.common.vo.ResultVo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +21,7 @@ import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.user.LoginAppUser;
 import com.cloud.model.user.SysRole;
-
+@Slf4j
 @RestController
 @RequestMapping("/menus")
 public class MenuController {
@@ -33,25 +34,25 @@ public class MenuController {
      *
      * @return
      */
-    @GetMapping("/me")
-    public List<Menu> findMyMenu() {
-        LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
-        Set<SysRole> roles = loginAppUser.getSysRoles();
-        if (CollectionUtils.isEmpty(roles)) {
-            return Collections.emptyList();
-        }
-
-        List<Menu> menus = menuService
-                .findByRoles(roles.parallelStream().map(SysRole::getId).collect(Collectors.toSet()));
-
-        List<Menu> firstLevelMenus = menus.stream().filter(m -> m.getParentId().equals(0L))
-                .collect(Collectors.toList());
-        firstLevelMenus.forEach(m -> {
-            setChild(m, menus);
-        });
-
-        return firstLevelMenus;
-    }
+//    @GetMapping("/me")
+//    public List<Menu> findMyMenu() {
+//        LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+//        Set<SysRole> roles = loginAppUser.getSysRoles();
+//        if (CollectionUtils.isEmpty(roles)) {
+//            return Collections.emptyList();
+//        }
+//
+//        List<Menu> menus = menuService
+//                .findByRoles(roles.parallelStream().map(SysRole::getId).collect(Collectors.toSet()));
+//
+//        List<Menu> firstLevelMenus = menus.stream().filter(m -> m.getParentId().equals(0L))
+//                .collect(Collectors.toList());
+//        firstLevelMenus.forEach(m -> {
+//            setChild(m, menus);
+//        });
+//
+//        return firstLevelMenus;
+//    }
 
     /**
      * 当前登录用户的菜单(element ui)
@@ -117,18 +118,18 @@ public class MenuController {
      * @param menu
      * @param menus
      */
-    private void setChild(Menu menu, List<Menu> menus) {
-        List<Menu> child = menus.stream().filter(m -> m.getParentId().equals(menu.getId()))
-                .collect(Collectors.toList());
-        if (!CollectionUtils.isEmpty(child)) {
-            menu.setChild(child);
-//			menu.setChildren(child);
-            //递归设置子元素，多级菜单支持
-            child.parallelStream().forEach(c -> {
-                setChild(c, menus);
-            });
-        }
-    }
+//    private void setChild(Menu menu, List<Menu> menus) {
+//        List<Menu> child = menus.stream().filter(m -> m.getParentId().equals(menu.getId()))
+//                .collect(Collectors.toList());
+//        if (!CollectionUtils.isEmpty(child)) {
+//            menu.setChild(child);
+////			menu.setChildren(child);
+//            //递归设置子元素，多级菜单支持
+//            child.parallelStream().forEach(c -> {
+//                setChild(c, menus);
+//            });
+//        }
+//    }
 
     /**
      * element  ui  数据
@@ -154,12 +155,12 @@ public class MenuController {
      * @param roleId  角色id
      * @param menuIds 菜单ids
      */
-    @LogAnnotation(module = LogModule.SET_MENU_ROLE)
-    @PreAuthorize("hasAuthority('back:menu:set2role')")
-    @PostMapping("/toRole")
-    public void setMenuToRole(Long roleId, @RequestBody Set<Long> menuIds) {
-        menuService.setMenuToRole(roleId, menuIds);
-    }
+//    @LogAnnotation(module = LogModule.SET_MENU_ROLE)
+//    @PreAuthorize("hasAuthority('back:menu:set2role')")
+//    @PostMapping("/toRole")
+//    public void setMenuToRole(Long roleId, @RequestBody Set<Long> menuIds) {
+//        menuService.setMenuToRole(roleId, menuIds);
+//    }
 
     /**
      * 给角色分配菜单(element ui)
@@ -167,23 +168,29 @@ public class MenuController {
     @LogAnnotation(module = LogModule.SET_MENU_ROLE)
     @PreAuthorize("hasAuthority('back:menu:set2role')")
     @PostMapping("/setMenusToRole")
-    public void setMenusToRole(@RequestBody Map<String, Object> params) {
-        Long roleId = Long.valueOf(params.get("roleId").toString());
-        HashSet<Long> menuIds = new HashSet<>(JSONArray.parseArray(params.get("menuIds").toString(), Long.class));
-        menuService.setMenuToRole(roleId, menuIds);
+    public ResultVo setMenusToRole(@RequestBody Map<String, Object> params) {
+        try {
+            Long roleId = Long.valueOf(params.get("roleId").toString());
+            HashSet<Long> menuIds = new HashSet<>(JSONArray.parseArray(params.get("menuIds").toString(), Long.class));
+            menuService.setMenuToRole(roleId, menuIds);
+            return ResultVo.builder().code(200).build();
+        }catch (Exception e){
+            log.info(e + "");
+            return ResultVo.builder().code(5000).msg("请联系管理员!").build();
+        }
     }
 
     /**
      * 菜单树ztree (lay ui)
      */
-    @PreAuthorize("hasAnyAuthority('back:menu:set2role','back:menu:query')")
-    @GetMapping("/tree")
-    public List<Menu> findMenuTree() {
-        List<Menu> all = menuService.findAll();
-        List<Menu> list = new ArrayList<>();
-        setMenuTree(0L, all, list);
-        return list;
-    }
+//    @PreAuthorize("hasAnyAuthority('back:menu:set2role','back:menu:query')")
+//    @GetMapping("/tree")
+//    public List<Menu> findMenuTree() {
+//        List<Menu> all = menuService.findAll();
+//        List<Menu> list = new ArrayList<>();
+//        setMenuTree(0L, all, list);
+//        return list;
+//    }
 
     /**
      * 菜单树ztree (element ui)
@@ -204,18 +211,18 @@ public class MenuController {
      * @param all
      * @param list
      */
-    private void setMenuTree(Long parentId, List<Menu> all, List<Menu> list) {
-        all.forEach(menu -> {
-            if (parentId.equals(menu.getParentId())) {
-                list.add(menu);
-
-                List<Menu> child = new ArrayList<>();
-                menu.setChild(child);
-//				menu.setChildren(child);
-                setMenuTree(menu.getId(), all, child);
-            }
-        });
-    }
+//    private void setMenuTree(Long parentId, List<Menu> all, List<Menu> list) {
+//        all.forEach(menu -> {
+//            if (parentId.equals(menu.getParentId())) {
+//                list.add(menu);
+//
+//                List<Menu> child = new ArrayList<>();
+//                menu.setChild(child);
+////				menu.setChildren(child);
+//                setMenuTree(menu.getId(), all, child);
+//            }
+//        });
+//    }
 
     /**
      * 菜单树 （element ui）
@@ -232,7 +239,7 @@ public class MenuController {
                 List<Menu> child = new ArrayList<>();
 //				menu.setChild(child);
                 menu.setChildren(child);
-                setMenuTree(menu.getId(), all, child);
+                setMenuTree2(menu.getId(), all, child);
             }
         });
     }
@@ -242,11 +249,11 @@ public class MenuController {
      *
      * @param roleId
      */
-    @PreAuthorize("hasAnyAuthority('back:menu:set2role','menu:byroleid')")
-    @GetMapping(params = "roleId")
-    public Set<Long> findMenuIdsByRoleId(Long roleId) {
-        return menuService.findMenuIdsByRoleId(roleId);
-    }
+//    @PreAuthorize("hasAnyAuthority('back:menu:set2role','menu:byroleid')")
+//    @GetMapping(params = "roleId")
+//    public Set<Long> findMenuIdsByRoleId(Long roleId) {
+//        return menuService.findMenuIdsByRoleId(roleId);
+//    }
 
     /**
      * 获取角色的菜单(element ui)
@@ -281,14 +288,14 @@ public class MenuController {
      *
      * @param menu
      */
-    @LogAnnotation(module = LogModule.ADD_MENU)
-    @PreAuthorize("hasAuthority('back:menu:save')")
-    @PostMapping
-    public Menu save(@RequestBody Menu menu) {
-        menuService.save(menu);
-
-        return menu;
-    }
+//    @LogAnnotation(module = LogModule.ADD_MENU)
+//    @PreAuthorize("hasAuthority('back:menu:save')")
+//    @PostMapping
+//    public Menu save(@RequestBody Menu menu) {
+//        menuService.save(menu);
+//
+//        return menu;
+//    }
 
     /**
      * 修改菜单

@@ -6,7 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-//Spring boot集成mybatis-plus分页插件配置
+/**
+ * MybatisPlus 配置类
+ */
 @EnableTransactionManagement(proxyTargetClass = true)
 @Configuration
 public class MybatisPlusConfig {

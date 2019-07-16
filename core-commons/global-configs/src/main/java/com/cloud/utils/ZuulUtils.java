@@ -4,6 +4,9 @@ import com.cloud.enums.ResponseStatus;
 
 import java.util.Map;
 
+/**
+ * zuul 工具类
+ */
 public class ZuulUtils {
     /**
      * token生成后也要加入errorCode

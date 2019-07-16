@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * 响应数据最外层对象
+ */
 @Data
 public class Response implements Serializable {
     private static final long serialVersionUID = 8348742053960354809L;

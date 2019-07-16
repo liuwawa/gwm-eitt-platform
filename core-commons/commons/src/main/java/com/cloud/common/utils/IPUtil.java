@@ -17,12 +17,7 @@ public class IPUtil {
 
         String ip = request.getHeader("X-Forwarded-For");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-                ip = request.getHeader("Proxy-Client-IP");
-            }
-            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-                ip = request.getHeader("WL-Proxy-Client-IP");
-            }
+            ip = getString(request, ip);
             if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
                 ip = request.getHeader("HTTP_CLIENT_IP");
             }
@@ -45,6 +40,16 @@ public class IPUtil {
         return ip;
     }
 
+    private static String getString(HttpServletRequest request, String ip) {
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        return ip;
+    }
+
     /**
      * 获取当前网络ip
      *
@@ -53,12 +58,7 @@ public class IPUtil {
      */
     public static String getIpAddr(HttpServletRequest request) {
         String ipAddress = request.getHeader("x-forwarded-for");
-        if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
-            ipAddress = request.getHeader("Proxy-Client-IP");
-        }
-        if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
-            ipAddress = request.getHeader("WL-Proxy-Client-IP");
-        }
+        ipAddress = getString(request, ipAddress);
         if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
             ipAddress = request.getRemoteAddr();
             if (ipAddress.equals("127.0.0.1") || ipAddress.equals("0:0:0:0:0:0:0:1")) {
@@ -80,7 +80,4 @@ public class IPUtil {
         }
         return ipAddress;
     }
-
-
-
 }

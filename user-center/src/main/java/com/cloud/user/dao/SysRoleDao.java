@@ -26,8 +26,8 @@ public interface SysRoleDao extends BaseMapper<SysRole> {
 	@Select("select * from sys_role t where t.id = #{id}")
 	SysRole findById(Long id);
 
-	@Select("select * from sys_role t where t.code = #{code}")
-	SysRole findByCode(String code);
+//	@Select("select * from sys_role t where t.code = #{code}")
+//	SysRole findByCode(String code);
 
 	@Delete("delete from sys_role where id = #{id}")
 	int delete(Long id);

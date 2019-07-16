@@ -118,21 +118,19 @@ public class SmsServiceImpl extends ServiceImpl<SmsDao, Sms>  implements SmsServ
         smsDao.update(sms);
     }
 
-    @Override
-    public Sms findById(Long id) {
-        return smsDao.findById(id);
-    }
+//    @Override
+//    public Sms findById(Long id) {
+//        return smsDao.findById(id);
+//    }
 
     @Override
     public Page<Sms> findSms(Map<String, Object> params) {
+        List<Sms> smsList = Collections.emptyList();
         int total = smsDao.count(params);
-        List<Sms> list = Collections.emptyList();
         if (total > 0) {
             PageUtil.pageParamConver(params, true);
-
-            list = smsDao.findData(params);
+            smsList = smsDao.findData(params);
         }
-        return new Page<>(total, list);
+        return new Page<>(total, smsList);
     }
-
 }

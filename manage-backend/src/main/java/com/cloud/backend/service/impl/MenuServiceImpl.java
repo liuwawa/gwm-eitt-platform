@@ -92,10 +92,10 @@ public class MenuServiceImpl implements MenuService {
 		return menuDao.findById(id);
 	}
 
-	@Override
-	public Set<Long> findMenuIdsByRoleId(Long roleId) {
-		return roleMenuDao.findMenuIdsByRoleId(roleId);
-	}
+//	@Override
+//	public Set<Long> findMenuIdsByRoleId(Long roleId) {
+//		return roleMenuDao.findMenuIdsByRoleId(roleId);
+//	}
 
 	@Override
 	public List<Menu> findMenusByRoleId(Long roleId) {

@@ -19,6 +19,9 @@ import java.net.ConnectException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * Created by lz on 2018/7/10.
+ */
 @Slf4j
 public class JSONHttpClient {
     private static final AtomicBoolean isSwitch = new AtomicBoolean(false);

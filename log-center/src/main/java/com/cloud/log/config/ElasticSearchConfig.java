@@ -16,6 +16,9 @@ import org.springframework.context.annotation.Configuration;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * ES配置
+ */
 @Getter
 @Setter
 @Configuration

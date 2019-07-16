@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageRequest;
 
 public interface SysRoleService extends IService<SysRole> {
 
-	void saveSysRole(SysRole sysRole);
+//	void saveSysRole(SysRole sysRole);
 
 	void update(SysRole sysRole);
 

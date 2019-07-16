@@ -30,9 +30,7 @@ public class RabbitmqConfig {
 	 */
 	@Bean
 	public Queue roleDeleteQueue() {
-		Queue queue = new Queue(ROLE_DELETE_QUEUE);
-
-		return queue;
+		return new Queue(ROLE_DELETE_QUEUE);
 	}
 
 	@Bean
@@ -47,8 +45,7 @@ public class RabbitmqConfig {
 	 */
 	@Bean
 	public Binding bindingRoleDelete() {
-		Binding binding = BindingBuilder.bind(roleDeleteQueue()).to(userTopicExchange())
+		return BindingBuilder.bind(roleDeleteQueue()).to(userTopicExchange())
 				.with(UserCenterMq.ROUTING_KEY_ROLE_DELETE);
-		return binding;
 	}
 }

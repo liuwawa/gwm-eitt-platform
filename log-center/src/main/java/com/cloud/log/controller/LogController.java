@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.log.service.LogService;
-import com.cloud.model.common.Page;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cloud.model.common.PageResult;
 import com.cloud.model.log.Log;
 import com.cloud.model.log.LogAnnotation;
@@ -43,11 +43,11 @@ public class LogController {
      * @param params
      * @return
      */
-    @PreAuthorize("hasAuthority('log:query')")
-    @GetMapping("/logs")
-    public Page<Log> findLogs(@RequestParam Map<String, Object> params) {
-        return logService.findLogs(params);
-    }
+//    @PreAuthorize("hasAuthority('log:query')")
+//    @GetMapping("/logs")
+//    public Page<Log> findLogs(@RequestParam Map<String, Object> params) {
+//        return logService.findLogs(params);
+//    }
     /**
      * 日志分页查询
      *
@@ -62,7 +62,7 @@ public class LogController {
         String userName = String.valueOf(params.get("userName").toString());
         QueryWrapper<Log> queryWrapper = new QueryWrapper<>();
         queryWrapper.like("username",userName).orderByDesc("id");
-        IPage<Log> pageLogs = logService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageNum,pageSize),queryWrapper);
+        IPage<Log> pageLogs = logService.page(new Page<>(pageNum,pageSize),queryWrapper);
 
         return PageResult.builder().content(pageLogs.getRecords()).
                 pageNum(pageLogs.getCurrent()).
