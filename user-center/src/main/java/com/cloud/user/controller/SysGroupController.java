@@ -176,7 +176,10 @@ public class SysGroupController {
             SysGroupExpand sysGroupExpand = SysGroupExpand.builder().build();
             SysGroupExpand expand = sysGroupExpand.selectOne(new QueryWrapper<SysGroupExpand>().lambda()
                     .eq(SysGroupExpand::getGroupId, sysGroup.getId()));
-            sysGroup.setGroupExpand(expand);
+            // 设置前台需要的拓展属性
+            sysGroup.setGDirectLeader(expand.getGDirectLeader());
+            sysGroup.setGDeptopLeader(expand.getGDeptopLeader());
+            sysGroup.setGUnittopLeader(expand.getGUnittopLeader());
         }
         reslut.put("code", 200);
         reslut.put("msg", null);

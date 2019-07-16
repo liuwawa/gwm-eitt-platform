@@ -7,7 +7,6 @@ import com.cloud.model.user.SysRole;
 import com.cloud.model.user.SysUser;
 import com.cloud.model.user.constants.SysUserResponse;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,5 +38,5 @@ public interface SysUserService extends IService<SysUser> {
 
     void deleteUser(SysUser user);
 
-    List<SysUserResponse> getUsers();
+    SysUserResponse getUsers(String personnelID);
 }

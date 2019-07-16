@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @TableName(value = "sys_user")//表名
@@ -43,6 +44,19 @@ public class SysUser implements Serializable {
      */
     @TableField(exist = false)
     private SysGroup group;
+
+    /**
+     * 用户可以看到的分组的id集合
+     */
+    @TableField(exist = false)
+    private List<Integer> groupingIds;
+
+    /**
+     * 用户可以看到的所有分组
+     */
+    @TableField(exist = false)
+    private List<SysGrouping> groupingsList;
+
     /**
      * 工号
      */

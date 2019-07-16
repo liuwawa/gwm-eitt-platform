@@ -148,11 +148,24 @@ public class SysGroup extends Model<SysGroup> {
     @TableField(exist = false)
     private List<SysGroup> children;
 
+
     /**
-     * 组织的拓展数据
+     * 当前组织直接领导工号
      */
     @TableField(exist = false)
-    private SysGroupExpand groupExpand;
+    private String gDirectLeader;
+
+    /**
+     * 部门最高领导工号
+     */
+    @TableField(exist = false)
+    private String gDeptopLeader;
+
+    /**
+     * gUnittopLeader
+     */
+    @TableField(exist = false)
+    private String gUnittopLeader;
 
     /**
      * 指定主键

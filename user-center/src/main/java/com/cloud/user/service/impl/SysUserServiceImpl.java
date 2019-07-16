@@ -2,6 +2,7 @@ package com.cloud.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cloud.common.exception.ResultException;
 import com.cloud.common.utils.PageUtil;
 import com.cloud.common.utils.PhoneUtil;
 import com.cloud.enums.ResponseStatus;
@@ -339,21 +340,24 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     }
 
     @Override
-    public List<SysUserResponse> getUsers() {
-        List<SysUser> userList = appUserDao.selectList(new QueryWrapper<>());
-        SysGroup sysGroup = SysGroup.builder().build();
-        List<SysUserResponse> list = new ArrayList<>();
+    public SysUserResponse getUsers(String personnelID) {
+        SysUser sysUser = appUserDao.selectOne(new QueryWrapper<SysUser>().lambda()
+                .eq(SysUser::getPersonnelID, personnelID));
+        if (sysUser == null) {
+            throw new ResultException(500, "查无此人");
+        }
+        SysGroup sysGroup = SysGroup.builder().id(sysUser.getGroupId()).build();
+        SysGroup group = sysGroup.selectById();
+        SysUserResponse userResponse = SysUserResponse.builder()
+                .duties(sysUser.getDuties())
+                .personnelID(personnelID)
+                .nickname(sysUser.getNickname()).build();
+        if (group == null) {
+            userResponse.setGroupName(null);
+        } else {
+            userResponse.setGroupName(group.getLabel());
+        }
+        return userResponse;
 
-        userList.forEach(i -> {
-            SysGroup group = sysGroup.selectById(i.getGroupId());
-            SysUserResponse userResponse = SysUserResponse.builder()
-                    .nickname(i.getNickname())
-                    .duties(i.getDuties())
-                    .personnelID(i.getPersonnelID())
-                    .groupName(group.getLabel())
-                    .build();
-            list.add(userResponse);
-        });
-        return list;
     }
 }

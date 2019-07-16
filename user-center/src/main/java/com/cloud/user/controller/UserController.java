@@ -12,10 +12,7 @@ import com.cloud.model.common.Page;
 import com.cloud.model.common.PageResult;
 import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
-import com.cloud.model.user.LoginAppUser;
-import com.cloud.model.user.SysGroup;
-import com.cloud.model.user.SysRole;
-import com.cloud.model.user.SysUser;
+import com.cloud.model.user.*;
 import com.cloud.model.user.constants.SysUserResponse;
 import com.cloud.user.feign.SmsClient;
 import com.cloud.user.service.SysRoleService;
@@ -389,12 +386,29 @@ public class UserController {
         IPage<SysUser> userPage = getPage(username, nickname, sex, enabled, pageIndex, pageSize);
         List<SysUser> sysUsers = userPage.getRecords();
         SysGroup sysGroup = SysGroup.builder().build();
-        //  查找并设置每个用户所在的分组
+        SysUserGrouping userGrouping = SysUserGrouping.builder().build();
+        SysGrouping grouping = SysGrouping.builder().build();
+        //  查找并设置每个用户所在的分组和可以查看的分组
         sysUsers.forEach(i -> {
             SysGroup group = sysGroup.selectOne(new QueryWrapper<SysGroup>().lambda()
                     .eq(SysGroup::getId, i.getGroupId()));
             i.setGroup(group);
+            List<SysUserGrouping> userGroupings = userGrouping.selectList(new QueryWrapper<SysUserGrouping>().lambda()
+                    .eq(SysUserGrouping::getUserId, i.getId()));
+            List<Integer> groupingIds = new ArrayList<>();
+            for (SysUserGrouping sysUserGrouping : userGroupings) {
+                groupingIds.add(sysUserGrouping.getGroupingId());
+            }
+            i.setGroupingIds(groupingIds);
+
+            if (groupingIds.size() != 0 && groupingIds != null) {
+                List<SysGrouping> sysGroupings = grouping.selectList(new QueryWrapper<SysGrouping>().lambda().in(SysGrouping::getGroupingId, groupingIds));
+                i.setGroupingsList(sysGroupings);
+            }
+
         });
+
+
         // 封装结果
         return PageResult.builder().content(sysUsers).
                 pageNum(userPage.getCurrent()).
@@ -567,14 +581,16 @@ public class UserController {
      * 组织返回用户信息
      */
     @PreAuthorize("hasAuthority('back:user:query')")
-    @GetMapping("/users/getUsers")
-    public Map getUsersForGroup() {
-        List<SysUserResponse> users = appUserService.getUsers();
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("code", 200);
-        map.put("msg", "操作成功!");
-        map.put("data", users);
-        return map;
+    @GetMapping(value = "/users/getUser", params = "personnelID")
+    public ResultVo getUsersForGroup(String personnelID) {
+        try {
+            SysUserResponse user = appUserService.getUsers(personnelID);
+            return new ResultVo(200, "操作成功", user);
+        } catch (Exception e) {
+            log.info("根据工号查找用户出现错误", e);
+            return new ResultVo(500, e.getMessage(), null);
+        }
+
     }
 
 

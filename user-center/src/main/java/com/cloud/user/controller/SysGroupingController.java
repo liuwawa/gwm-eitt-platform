@@ -124,6 +124,7 @@ public class SysGroupingController {
      * @return 总个数和结果
      * 查询所有的分组数据
      */
+    @PreAuthorize("hasAuthority('back:group:query')")
     @GetMapping(value = "/allGrouping")
     public Page<SysGrouping> selectAllGrouping() {
         int count = sysGroupingService.count();
