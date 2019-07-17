@@ -41,24 +41,7 @@ public class GroupingTest {
         }
     }
 
-    @Test
-    public void testSave() {
 
-        SysGrouping sysGrouping = SysGrouping.builder()
-                .groupNumber(0).groupingRemark("这个是测试的").createBy("liuek")
-                .createTime(new Date()).build();
-        sysGrouping.setLoginAdminName("刘恩科");
-        ResultVo resultVo = sysGroupingController.saveGrouping(sysGrouping);
-        System.out.println(resultVo);
-    }
-
-    @Test
-    public void testSelectById() {
-        ResultVo<SysGrouping> detail = sysGroupingController.getGroupingDetailById(8);
-        System.out.println(detail);
-        SysGrouping data = detail.getData();
-        System.out.println(data);
-    }
 
     @Test
     public void testS() {
@@ -76,23 +59,7 @@ public class GroupingTest {
         System.out.println(save);
     }
 
-    @Test
-    public void testUpdateGrouping(){
-        SysGrouping sysGrouping = SysGrouping.builder()
-                .groupNumber(0).groupingRemark("这测试真难搞")
-                .groupingId(8).build();
-        sysGrouping.setLoginAdminName("liuenke");
-        ResultVo resultVo = sysGroupingController.updateGroupingById(sysGrouping);
-        System.out.println(resultVo);
-    }
 
-    @Test
-    public void testSelectGroupingByPage(){
-        Page<SysGrouping> sysGroupingPage = sysGroupingController.selectGroupingByPage(1, null);
-        System.out.println(sysGroupingPage);
-        List<SysGrouping> data = sysGroupingPage.getData();
-        data.forEach(System.out::println);
-    }
 
     @Test
     public void testSelectAllGrouping(){
@@ -101,13 +68,7 @@ public class GroupingTest {
         List<SysGrouping> data = sysGroupingPage.getData();
         data.forEach(System.out::println);
     }
-    @Test
-    public void testDeleteGrouping(){
-        SysGrouping build = SysGrouping.builder().build();
-        build.setLoginAdminName("liuenke");
-        ResultVo resultVo = sysGroupingController.deleteGrouping(build);
-        System.out.println(resultVo);
-    }
+
     @Test
     public void testDeleteGroupings(){
         List<Integer> groupingIds = Arrays.asList(2,3,4,5,6,7);

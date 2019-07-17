@@ -140,13 +140,7 @@ public class GroupTest {
         sysGroupService.saveGroupAndGroupExpand(sysGroup,new SysGroupExpand());
 
     }
-    @Test
-    public void testFindSysGroupById(){
-        ResultVo<GroupWithExpand> groupById = controller.findGroupById(260);
-        GroupWithExpand data = groupById.getData();
-        System.out.println(data);
-        System.out.println(groupById);
-    }
+
 
     @Test
     public void testGetAllGroup(){
@@ -160,11 +154,7 @@ public class GroupTest {
         System.out.println(stringBuilder);
     }
 
-    @Test
-    public void testFindGroupsByGroupId(){
-        ResultVo<SysGroup> groupsByGroupId = controller.getGroupsByGroupId(337);
-        System.out.println(groupsByGroupId);
-    }
+
 
     @Test
     public void testSelectUserGrouping(){
@@ -176,13 +166,5 @@ public class GroupTest {
         }
     }
 
-    @Test
-    public void testSelectGroupGrouping(){
-        ResultVo<List<SysGroup>> groupsByGroupingId = groupGroupingController.getGroupsByGroupingId(10);
-        System.out.println(groupsByGroupingId);
-        List<SysGroup> data = groupsByGroupingId.getData();
-        for (SysGroup datum : data) {
-            System.out.println(datum);
-        }
-    }
+
 }
