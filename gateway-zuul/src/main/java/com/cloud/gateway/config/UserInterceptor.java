@@ -26,6 +26,7 @@ import static com.cloud.enums.ResponseStatus.RESPONSE_LOGIN_SIGNAL_ERROR;
 public class UserInterceptor implements HandlerInterceptor {
 
     public static final String USER_CODE = "userCode|";
+    public static final String SYS_LOGOUT = "/sys/logout";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
@@ -45,7 +46,7 @@ public class UserInterceptor implements HandlerInterceptor {
             return true;
         }
         //如果是退出登录直接放行
-        if (StringUtils.equalsIgnoreCase("/sys/logout",request.getRequestURI())){
+        if (StringUtils.equalsIgnoreCase(SYS_LOGOUT,request.getRequestURI())){
             return true;
         }
         Response result = new Response();

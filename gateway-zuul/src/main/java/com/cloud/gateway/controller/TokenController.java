@@ -1,13 +1,11 @@
 package com.cloud.gateway.controller;
 
+import com.cloud.common.utils.IPUtil;
 import com.cloud.common.utils.RedisUtils;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.gateway.feign.LogClient;
 import com.cloud.gateway.feign.Oauth2Client;
 import com.cloud.gateway.feign.UserClient;
-import com.cloud.common.utils.IPUtil;
-//import com.cloud.gateway.utils.SystemUtils;
-//import com.cloud.gateway.utils.IPUtil;
 import com.cloud.model.log.Log;
 import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.oauth.SystemClientInfo;
@@ -20,8 +18,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.util.OAuth2Utils;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +35,9 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.cloud.common.constants.SysConstants.PAST;
 import static com.cloud.gateway.config.UserInterceptor.USER_CODE;
+
+//import com.cloud.gateway.utils.SystemUtils;
+//import com.cloud.gateway.utils.IPUtil;
 
 /**
  * 登陆、刷新token、退出
@@ -74,26 +77,8 @@ public class TokenController {
      */
     @PostMapping("/sys/login")
     public Map<String, Object> login(String username, String password, HttpServletRequest request, HttpServletResponse response) {
-//        Map<String, String> parameters = new HashMap<>();
-        //如果需要踢出用户，先踢再登陆
-        if ("1".equals(request.getParameter("out"))) {
-            if (username != null) {
-                String tok = (String) redisUtils.get(USER_CODE + username);
-                String[] split = tok.split("@");
-                if (split != null && split.length == 4){
-                if (redisUtils.get(PAST + username) != null){
-                    redisUtils.del(PAST + username);
-                }
-                    redisUtils.set(PAST + username, split[3]);
-                    oauth2Client.removeToken(split[3]);
-                }
-            }
-        }
-//        parameters.put(OAuth2Utils.GRANT_TYPE, "password");
-//        parameters.put(OAuth2Utils.CLIENT_ID, SystemClientInfo.CLIENT_ID);
-//        parameters.put("client_secret", SystemClientInfo.CLIENT_SECRET);
-//        parameters.put(OAuth2Utils.SCOPE, SystemClientInfo.CLIENT_SCOPE);
-//		parameters.put("username", username);
+        getOut(username, request);
+
         Map<String, String> parameters = initOauthParam();
         // 为了支持多类型登录，这里在username后拼装上登录类型
         parameters.put("username", username + "|" + CredentialType.USERNAME.name());
@@ -106,6 +91,20 @@ public class TokenController {
         //加入errorCode和message
         ZuulUtils.initZuulResponseForCode(tokenInfo, ResponseStatus.RESPONSE_SUCCESS);
 
+        initTokenCookie(username, request, response, tokenInfo);
+
+        return tokenInfo;
+    }
+
+    /**
+     * 加入一个登陆后的token
+     *
+     * @param username
+     * @param request
+     * @param response
+     * @param tokenInfo
+     */
+    private void initTokenCookie(String username, HttpServletRequest request, HttpServletResponse response, Map<String, Object> tokenInfo) {
         if ("10000".equals(String.valueOf(tokenInfo.get("errorCode")))) {
             // 验证用户是否是登陆状态
             String token = UUID.randomUUID().toString().replace("-", "");
@@ -119,8 +118,29 @@ public class TokenController {
             cookie.setPath("/");
             response.addCookie(cookie);
         }
+    }
 
-        return tokenInfo;
+    /**
+     * 查看用户是不是2次登陆的
+     *
+     * @param username
+     * @param request
+     */
+    private void getOut(String username, HttpServletRequest request) {
+        //如果需要踢出用户，先踢再登陆
+        if ("1".equals(request.getParameter("out"))) {
+            if (username != null) {
+                String tok = (String) redisUtils.get(USER_CODE + username);
+                String[] split = tok.split("@");
+                if (split != null && split.length == 4) {
+                    if (redisUtils.get(PAST + username) != null) {
+                        redisUtils.del(PAST + username);
+                    }
+                    redisUtils.set(PAST + username, split[3]);
+                    oauth2Client.removeToken(split[3]);
+                }
+            }
+        }
     }
 
     /**
@@ -132,10 +152,12 @@ public class TokenController {
      * @return
      */
     @PostMapping("/sys/login-sms")
-    public Map<String, Object> smsLogin(String phone, String key, String code, HttpServletRequest request) {
+    public Map<String, Object> smsLogin(String phone, String key, String code, HttpServletRequest request, HttpServletResponse response) {
         Map<String, String> parameters = initOauthParam();
 
         SysUser appUser = userClient.findByPhone(phone);
+
+        getOut(appUser.getUsername(), request);
         // 为了支持多类型登录，这里在username后拼装上登录类型，同时为了校验短信验证码，我们也拼上code等
         parameters.put("username", appUser.getUsername() + "|" + CredentialType.PHONE.name() + "|" + key + "|" + code + "|"
                 + DigestUtils.md5Hex(key + code));
@@ -149,6 +171,7 @@ public class TokenController {
         saveLoginLog(phone, "手机号短信登陆", ipAddress);
         //加入errorCode和message
         ZuulUtils.initZuulResponseForCode(tokenInfo, ResponseStatus.RESPONSE_SUCCESS);
+        initTokenCookie(appUser.getUsername(), request, response, tokenInfo);
         return tokenInfo;
     }
 
@@ -176,6 +199,7 @@ public class TokenController {
 
     /**
      * 初始化 oauth认证基本参数
+     *
      * @return
      */
     private Map<String, String> initOauthParam() {
