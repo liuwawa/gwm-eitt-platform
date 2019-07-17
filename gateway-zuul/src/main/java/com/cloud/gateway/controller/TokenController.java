@@ -12,6 +12,9 @@ import com.cloud.model.oauth.SystemClientInfo;
 import com.cloud.model.user.SysUser;
 import com.cloud.model.user.constants.CredentialType;
 import com.cloud.utils.ZuulUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +49,7 @@ import static com.cloud.gateway.config.UserInterceptor.USER_CODE;
  */
 @Slf4j
 @RestController
+@Api(value = "登陆、刷新token、退出", tags = {"登陆、刷新token、退出 TokenController"})
 public class TokenController {
     @Autowired
     private Oauth2Client oauth2Client;
@@ -76,7 +80,8 @@ public class TokenController {
      * @return
      */
     @PostMapping("/sys/login")
-    public Map<String, Object> login(String username, String password, HttpServletRequest request, HttpServletResponse response) {
+    @ApiOperation(value = "根据用户名登录")
+    public Map<String, Object> login(@ApiParam(value = "用户名",required = true) String username,@ApiParam(value = "密码",required = true) String password, HttpServletRequest request, HttpServletResponse response) {
         getOut(username, request);
 
         Map<String, String> parameters = initOauthParam();
@@ -152,7 +157,8 @@ public class TokenController {
      * @return
      */
     @PostMapping("/sys/login-sms")
-    public Map<String, Object> smsLogin(String phone, String key, String code, HttpServletRequest request, HttpServletResponse response) {
+    @ApiOperation(value = "短信登录")
+    public Map<String, Object> smsLogin(@ApiParam(value = "手机号",required = true) String phone, @ApiParam(value = "验证码redis key",required = true)String key, @ApiParam(value = "验证码",required = true)String code, HttpServletRequest request, HttpServletResponse response) {
         Map<String, String> parameters = initOauthParam();
 
         SysUser appUser = userClient.findByPhone(phone);
@@ -238,6 +244,7 @@ public class TokenController {
      * @return
      */
     @PostMapping("/sys/refresh_token")
+    @ApiOperation(value = "系统刷新refresh_token")
     public Map<String, Object> refresh_token(String refresh_token) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(OAuth2Utils.GRANT_TYPE, "refresh_token");
@@ -255,7 +262,8 @@ public class TokenController {
      * @param access_token
      */
     @GetMapping("/sys/logout")
-    public void logout(String access_token, String username, @RequestHeader(required = false, value = "Authorization") String token) {
+    @ApiOperation(value = "登出")
+    public void logout(@ApiParam(value = "access_token",required = true) String access_token, @ApiParam(value = "username",required = true)String username, @RequestHeader(required = false, value = "Authorization") String token) {
         if (StringUtils.isBlank(access_token)) {
             if (StringUtils.isNoneBlank(token)) {
                 access_token = token.substring(OAuth2AccessToken.BEARER_TYPE.length() + 1);
