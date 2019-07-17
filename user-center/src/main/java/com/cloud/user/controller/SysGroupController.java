@@ -12,6 +12,8 @@ import com.cloud.response.BaseEntity;
 import com.cloud.response.ObjectConversionEntityUtil;
 import com.cloud.user.service.SysGroupService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,7 +37,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/group")
 @Slf4j
-@Api(value = "部门", tags = {"groupController"})
+@Api(value = "部门", tags = {"部门操作接口 SysGroupController"})
 public class SysGroupController {
     @Autowired
     private SysGroupService sysGroupService;
@@ -48,6 +50,7 @@ public class SysGroupController {
     @LogAnnotation(module = LogModule.ADD_GROUP)
     @PreAuthorize("hasAuthority('back:group:save')")
     @PostMapping("/saveGroup")
+    @ApiOperation(value = "添加部门")
     public ResultVo saveGroup(@RequestBody BaseEntity baseEntity) {
         SysGroup sysGroup = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroup.class);
         SysGroupExpand sysGroupExpand = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroupExpand.class);
@@ -73,6 +76,7 @@ public class SysGroupController {
     @LogAnnotation(module = LogModule.UPDATE_GROUP)
     @PreAuthorize("hasAuthority('back:group:update')")
     @PutMapping("/updateGroup")
+    @ApiOperation(value = "修改部门")
     public ResultVo updateGroup(@RequestBody BaseEntity baseEntity) {
         SysGroup sysGroup = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroup.class);
         SysGroupExpand sysGroupExpand = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroupExpand.class);
@@ -101,6 +105,7 @@ public class SysGroupController {
     @LogAnnotation(module = LogModule.DELETE_GROUP)
     @PreAuthorize("hasAuthority('back:group:delete')")
     @DeleteMapping("/deleteGroups")
+    @ApiOperation(value = "批量删除部门",notes = "参数：（数组）groupIds，loginAdminName")
     public ResultVo deleteGroups(@RequestBody Map map) {
         List<Integer> groupIds = (List<Integer>) map.get("groupIds");
         String loginAdminName = (String) map.get("loginAdminName");
@@ -120,6 +125,7 @@ public class SysGroupController {
      */
     @PreAuthorize("hasAuthority('back:group:query')")
     @GetMapping("/getAllGroup")
+    @ApiOperation(value = "获取全部部门")
     public Map getAllGroup() {
 
         List<SysGroup> groupList = sysGroupService.list(new QueryWrapper<SysGroup>().lambda()
@@ -170,6 +176,7 @@ public class SysGroupController {
      */
     @PreAuthorize("hasAuthority('back:group:query')")
     @GetMapping("/getAll")
+    @ApiOperation(value = "按节点获取全部部门")
     public ResultVo<List<SysGroup>> getAll() {
         SysGroup sysGroup = SysGroup.builder().build();
         List<SysGroup> groups = sysGroup.selectAll();
@@ -183,6 +190,7 @@ public class SysGroupController {
     @LogAnnotation(module = LogModule.UPDATE_GROUP)
     @PreAuthorize("hasAuthority('back:group:update')")
     @PutMapping("/changeGroup")
+    @ApiOperation(value = "修改部门",notes = "参数：parentId，（数组）groupIds")
     public ResultVo changeGroupStructure(Map map) {
         Integer parentId = Integer.valueOf(map.get("parentId").toString());
         List<Integer> groupIds = (List<Integer>) map.get("groupIds");

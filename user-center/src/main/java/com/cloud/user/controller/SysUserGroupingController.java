@@ -5,6 +5,8 @@ import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.user.SysGrouping;
 import com.cloud.user.service.SysUserGroupingService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +28,7 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("/userGrouping")
 @Slf4j
+@Api(value = "用户分组", tags = {"用户分组接口 SysUserGroupingController"})
 public class SysUserGroupingController {
     @Autowired
     private SysUserGroupingService sysUserGroupingService;
@@ -36,6 +39,7 @@ public class SysUserGroupingController {
      * 添加用户的可以查看的分组
      */
     @PostMapping("/addUserCheck")
+    @ApiOperation(value = "添加用户的可以查看的分组",notes = "参数：groupingIds（组织id集合）,userId")
     public ResultVo addUserGroupingCheck(@RequestBody Map map) {
         List<Integer> groupingIds = (List<Integer>) map.get("groupingIds");
         Integer userId = (Integer) map.get("userId");
@@ -58,6 +62,7 @@ public class SysUserGroupingController {
      * 根据userId查找该用户可以查看的分组
      */
     @GetMapping("/getGroupings/{userId}")
+    @ApiOperation(value = "根据userId查找该用户可以查看的分组")
     public ResultVo<List<SysGrouping>> getGroupingsByUserId(@PathVariable Integer userId) {
 
         List<SysGrouping> groupings = sysUserGroupingService.getGroupingsByUserId(userId);

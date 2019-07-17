@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.utils.AppUserUtil;
-import com.cloud.common.utils.VerifyCodeUtils;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.common.Page;
@@ -18,23 +17,21 @@ import com.cloud.user.feign.SmsClient;
 import com.cloud.user.service.SysRoleService;
 import com.cloud.user.service.SysUserService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.ui.Model;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.*;
 
 @Slf4j
 @RestController
-@Api(value = "用户操作", tags = {"userController"})
+@Api(value = "用户操作", tags = {"用户操作接口 UserController"})
 @SessionAttributes("captchaCode")
 public class UserController {
 
@@ -50,6 +47,7 @@ public class UserController {
      * 当前登录用户 LoginAppUser
      */
     @GetMapping("/users/current")
+    @ApiOperation(value = "获取登录用户信息")
     public LoginAppUser getLoginAppUser() {
         LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
         loginAppUser.setPassword(null);
@@ -57,12 +55,14 @@ public class UserController {
     }
 
     @GetMapping(value = "/users-anon/internal", params = "username")
-    public LoginAppUser findByUsername(String username) {
+    @ApiOperation(value = "根据用户名查找用户信息")
+    public LoginAppUser findByUsername(@ApiParam(value = "用户名",required =true ) String username) {
         return appUserService.findByUsername(username);
     }
 
     @GetMapping(value = "/phone-anon/internal", params = "phone")
-    public SysUser findByPhone(String phone) {
+    @ApiOperation(value = "根据手机号查找用户信息")
+    public SysUser findByPhone(@ApiParam(value = "用户手机号",required =true )String phone) {
         return appUserService.findByPhone(phone);
     }
 
@@ -73,12 +73,14 @@ public class UserController {
      */
     @PreAuthorize("hasAuthority('back:user:query')")
     @GetMapping("/users")
+    @ApiOperation(value = "分页查找用户")
     public Page<SysUser> findUsers(@RequestParam Map<String, Object> params) {
         return appUserService.findUsers(params);
     }
 
     @PreAuthorize("hasAuthority('back:user:query')")
     @GetMapping("/users/{id}")
+    @ApiOperation(value = "根据id查找")
     public SysUser findUserById(@PathVariable Long id) {
         return appUserService.findById(id);
     }
@@ -89,6 +91,7 @@ public class UserController {
      * @param appUser
      */
     @PostMapping("/users-anon/register")
+    @ApiOperation(value = "添加用户")
     public SysUser register(@RequestBody SysUser appUser) {
         // 用户名等信息的判断逻辑挪到service了
         appUserService.addAppUser(appUser);
@@ -121,7 +124,8 @@ public class UserController {
      */
     @LogAnnotation(module = LogModule.UPDATE_ME)
     @PostMapping("/users/modifyMineInfo")
-    public ResultVo modifyMineInfo(@RequestBody SysUser appUser) {
+    @ApiOperation(value = "修改用户信息")
+    public ResultVo modifyMineInfo(@ApiParam(value = "SysUser对象")@RequestBody SysUser appUser) {
         SysUser user = AppUserUtil.getLoginAppUser();
         appUser.setId(user.getId());
 
@@ -162,7 +166,8 @@ public class UserController {
      */
     @LogAnnotation(module = LogModule.UPDATE_PASSWORD)
     @PostMapping(value = "/users/modifyPassword")
-    public ResultVo modifyPassword(@RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword) {
+    @ApiOperation(value = "修改密码")
+    public ResultVo modifyPassword(@ApiParam(value ="旧密码",required = true)@RequestParam("oldPassword") String oldPassword, @ApiParam(value ="新密码",required = true)@RequestParam("newPassword") String newPassword) {
         try {
             SysUser user = AppUserUtil.getLoginAppUser();
             appUserService.updatePassword(user.getId(), oldPassword, newPassword);
@@ -188,7 +193,8 @@ public class UserController {
     @LogAnnotation(module = LogModule.RESET_PASSWORD)
     @PreAuthorize("hasAuthority('back:user:password')")
     @PutMapping(value = "/users/{id}/password", params = {"newPassword"})
-    public void resetPassword(@PathVariable Long id, String newPassword) {
+    @ApiOperation(value = "重置密码")
+    public void resetPassword(@ApiParam(value = "用户id",required = true)@PathVariable Long id, @ApiParam(value ="新密码",required = true) String newPassword) {
         appUserService.updatePassword(id, null, newPassword);
     }
 
@@ -200,7 +206,8 @@ public class UserController {
     @LogAnnotation(module = LogModule.UPDATE_USER)
     @PreAuthorize("hasAuthority('back:user:update')")
     @PutMapping("/users")
-    public void updateAppUser(@RequestBody SysUser appUser) {
+    @ApiOperation(value = "修改用户")
+    public void updateAppUser(@ApiParam(value = "用户", required = true)@RequestBody SysUser appUser) {
         appUserService.updateAppUser(appUser);
     }
 
@@ -213,7 +220,8 @@ public class UserController {
     @LogAnnotation(module = LogModule.SET_ROLE)
     @PreAuthorize("hasAuthority('back:user:role:set')")
     @PostMapping("/users/{id}/roles")
-    public void setRoleToUser(@PathVariable Long id, @RequestBody Set<Long> roleIds) {
+    @ApiOperation(value = "用户分配角色")
+    public void setRoleToUser(@ApiParam(value = "用户id", required = true)@PathVariable Long id, @RequestBody Set<Long> roleIds) {
         appUserService.setRoleToUser(id, roleIds);
     }
 
@@ -224,6 +232,7 @@ public class UserController {
      */
     @PreAuthorize("hasAnyAuthority('back:user:role:set','user:role:byuid')")
     @GetMapping("/users/{id}/roles")
+    @ApiOperation(value ="根据用户id查询用户角色")
     public Set<SysRole> findRolesByUserId(@PathVariable Long id) {
         return appUserService.findRolesByUserId(id);
     }
@@ -275,7 +284,8 @@ public class UserController {
      * @param code
      */
     @PostMapping(value = "/users/bindPhone")
-    public ResultVo bindPhone(String phone, String key, String code) {
+    @ApiOperation(value = "绑定手机号")
+    public ResultVo bindPhone(@ApiParam(value = "手机号", required = true)String phone,@ApiParam(value = "redis 中的key值，根据key取值去与验证码对比", required = true) String key, @ApiParam(value = "验证码", required = true)String code) {
 
         if (StringUtils.isBlank(phone)) {
             return ResultVo.builder().code(50001).data(null).msg("手机号不能为空!").build();
@@ -369,12 +379,16 @@ public class UserController {
      */
     @PreAuthorize("hasAuthority('back:user:query')")
     @PostMapping("/users/findPages")
+    @ApiOperation(value = "分页，多条件查询全部用户",notes = "参数：pageNum（必填），pageSize（必填），username，nickname，sex，enabled")
     public PageResult findUsersByPages(@RequestBody Map<String, Object> params) {
         // 取值判空
         Long pageIndex = Long.valueOf(params.get("pageNum").toString());
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
         String username = params.get("username").toString();
         String nickname = params.get("nickname").toString();
+        String personnelID = params.get("personnelID").toString();
+        String duties = params.get("duties").toString();
+
         String sex = null;
         String enabled = null;
         if (params.get("sex") != "") {
@@ -383,7 +397,7 @@ public class UserController {
         if (params.get("enabled") != "") {
             enabled = params.get("enabled").toString();
         }
-        IPage<SysUser> userPage = getPage(username, nickname, sex, enabled, pageIndex, pageSize);
+        IPage<SysUser> userPage = getPage(username, nickname, sex, enabled, personnelID, duties, pageIndex, pageSize);
         List<SysUser> sysUsers = userPage.getRecords();
         SysGroup sysGroup = SysGroup.builder().build();
         SysUserGrouping userGrouping = SysUserGrouping.builder().build();
@@ -418,7 +432,7 @@ public class UserController {
     }
 
     // 获取分页的结果
-    public IPage<SysUser> getPage(String username, String nickname, String sex, String enabled, Long
+    public IPage<SysUser> getPage(String username, String nickname, String sex, String enabled, String personnelID, String duties, Long
             pageIndex, Long pageSize) {
         IPage<SysUser> userPage = null;
         if (sex == null && enabled != null) {
@@ -426,17 +440,23 @@ public class UserController {
                     new QueryWrapper<SysUser>().lambda()
                             .eq(SysUser::getEnabled, enabled)
                             .like(SysUser::getUsername, username)
+                            .like(SysUser::getDuties, duties)
+                            .like(SysUser::getPersonnelID, personnelID)
                             .like(SysUser::getNickname, nickname));
         } else if (enabled == null && sex != null) {
             userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
                     new QueryWrapper<SysUser>().lambda()
                             .eq(SysUser::getSex, sex)
                             .like(SysUser::getUsername, username)
+                            .like(SysUser::getDuties, duties)
+                            .like(SysUser::getPersonnelID, personnelID)
                             .like(SysUser::getNickname, nickname));
         } else if (sex == null && enabled == null) {
             userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
                     new QueryWrapper<SysUser>().lambda()
                             .like(SysUser::getUsername, username)
+                            .like(SysUser::getDuties, duties)
+                            .like(SysUser::getPersonnelID, personnelID)
                             .like(SysUser::getNickname, nickname));
         } else {
             userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
@@ -444,6 +464,8 @@ public class UserController {
                             .eq(SysUser::getSex, sex)
                             .eq(SysUser::getEnabled, enabled)
                             .like(SysUser::getUsername, username)
+                            .like(SysUser::getDuties, duties)
+                            .like(SysUser::getPersonnelID, personnelID)
                             .like(SysUser::getNickname, nickname));
         }
         return userPage;
@@ -457,6 +479,7 @@ public class UserController {
     @LogAnnotation(module = LogModule.UPDATE_USER)
     @PreAuthorize("hasAuthority('back:user:update')")
     @PutMapping("/editUser")
+    @ApiOperation(value = "修改用户")
     public ResultVo updateUser(@RequestBody SysUser appUser) {
         try {
             // 设置该用户所在的组织
@@ -474,7 +497,7 @@ public class UserController {
             return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
         } catch (Exception e) {
             log.error("修改出现异常", e);
-            return new ResultVo(500, ResponseStatus.RESPONSE_OPERATION_ERROR.message, null);
+            return new ResultVo(500, e.getMessage(), null);
         }
     }
 
@@ -486,6 +509,7 @@ public class UserController {
     @LogAnnotation(module = LogModule.SET_ROLE)
     @PreAuthorize("hasAuthority('back:user:role:set')")
     @PostMapping("/users/setRoles")
+    @ApiOperation(value = "用户设置角色",notes = "必填参数： userId,roleIds（数组）")
     public ResultVo setRoleForUser(@RequestBody Map map) {
         try {
             Long id = Long.valueOf(map.get("userId").toString());
@@ -508,6 +532,7 @@ public class UserController {
      */
     @PreAuthorize("hasAuthority('back:user:save')")
     @PostMapping("/user/saveUser")
+    @ApiOperation(value = "添加用户")
     public ResultVo saveUser(@RequestBody SysUser appUser) {
         try {
             // 设置该用户所在的组织
@@ -539,7 +564,8 @@ public class UserController {
      */
     @PreAuthorize("hasAnyAuthority('back:user:role:set','user:role:byuid')")
     @PostMapping("/queryRolesByUserId")
-    public ResultVo findRolesById(Long id) {
+    @ApiOperation(value = "查看用户角色")
+    public ResultVo findRolesById(@ApiParam(value = "用户id", required = true)Long id) {
         Set<SysRole> rolesByUserId = appUserService.findRolesByUserId(id);
         List<SysRole> list = sysRoleService.list();
         list.forEach(i -> {
@@ -558,6 +584,7 @@ public class UserController {
     @LogAnnotation(module = LogModule.RESET_PASSWORD)
     @PreAuthorize("hasAuthority('back:user:password')")
     @PostMapping(value = "/users/{id}/reSetPassword")
+    @ApiOperation(value = "用户重置密码")
     public ResultVo resetPasswordBackend(@PathVariable Long id) {
         try {
             if (null == id) {
@@ -582,7 +609,8 @@ public class UserController {
      */
     @PreAuthorize("hasAuthority('back:user:query')")
     @GetMapping(value = "/users/getUser", params = "personnelID")
-    public ResultVo getUsersForGroup(String personnelID) {
+    @ApiOperation(value = "根据工号查找员工信息")
+    public ResultVo getUsersForGroup(@ApiParam(value = "员工工号", required = true)String personnelID) {
         try {
             SysUserResponse user = appUserService.getUsers(personnelID);
             return new ResultVo(200, "操作成功", user);
@@ -602,6 +630,7 @@ public class UserController {
     @LogAnnotation(module = LogModule.UPDATE_USER)
     @PreAuthorize("hasAuthority('back:user:update')")
     @PutMapping("/deleteUser")
+    @ApiOperation(value = "逻辑删除用户")
     public ResultVo deleteUser(@RequestBody SysUser appUser) {
         try {
             appUserService.deleteUser(appUser);
