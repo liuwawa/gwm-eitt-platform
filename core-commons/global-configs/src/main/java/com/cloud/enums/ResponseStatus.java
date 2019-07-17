@@ -107,7 +107,7 @@ public enum ResponseStatus {
     RESPONSE_GROUP_HANDLE_ERROR(110, "操作出现异常!"),
 
     RESPONSE_LOGIN_SIGNAL_ERROR(19000, "此用户已经登陆，请退出后再登陆!"),
-    RESPONSE_LOGOUT_SIGNAL_ERROR(19001, "已过期重新登陆！");
+    RESPONSE_LOGOUT_SIGNAL_ERROR(19001, "账号在其他地方登陆，请确定是否登陆正常！");
     public final int code;
     public final String message;
 
