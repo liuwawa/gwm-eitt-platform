@@ -10,6 +10,9 @@ import com.cloud.model.common.Page;
 import com.cloud.model.common.PageResult;
 import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
+@Api(value = "黑名单", tags = {"黑名单操作接口 BlackIPController"})
 public class BlackIPController {
 
     @Autowired
@@ -34,7 +38,8 @@ public class BlackIPController {
     @LogAnnotation(module = LogModule.ADD_BLACK_IP)
     @PreAuthorize("hasAuthority('ip:black:save')")
     @PostMapping("/saveBlackIP")
-    public ResultVo saveBlackIP(@RequestBody BlackIP blackIP) {
+    @ApiOperation(value = "添加黑名单ip")
+    public ResultVo saveBlackIP(@ApiParam(value = "BlackIP",required = true) @RequestBody BlackIP blackIP) {
         try {
             blackIP.setCreateTime(new Date());
             BlackIP blackIP1 = blackIPService.getOne(new QueryWrapper<BlackIP>().lambda()
@@ -58,7 +63,8 @@ public class BlackIPController {
     @LogAnnotation(module = LogModule.DELETE_BLACK_IP)
     @PreAuthorize("hasAuthority('ip:black:delete')")
     @DeleteMapping("/deleteIp")
-    public ResultVo deleteIp(@RequestParam Integer id) {
+    @ApiOperation(value = "删除黑名单ip")
+    public ResultVo deleteIp(@ApiParam(value = "id",required = true)@RequestParam Integer id) {
         try {
             blackIPService.delete(id);
             log.info("删除成功,id:{}", id);
@@ -77,6 +83,7 @@ public class BlackIPController {
      */
     @PreAuthorize("hasAuthority('ip:black:query')")
     @PostMapping("/findPage")
+    @ApiOperation(value = "分页，多条件查询黑名单",notes = "参数：pageNum（必填），pageSize（必填），ip(对象)")
     public PageResult findBlackIPsByPage(@RequestBody Map<String, Object> params) {
         Long pageIndex = Long.valueOf(params.get("pageNum").toString());
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
@@ -101,6 +108,7 @@ public class BlackIPController {
     @LogAnnotation(module = LogModule.DELETE_BLACK_IP)
     @PreAuthorize("hasAuthority('ip:black:deleteall')")
     @GetMapping("/deleteAll")
+    @ApiOperation(value = "一键删除所有黑名单ip")
     public ResultVo deleteAllBlackIp() {
         try {
             blackIPService.deleteAll();

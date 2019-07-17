@@ -57,16 +57,6 @@ public class TokenController {
     private RedisUtils redisUtils;
 
     /**
-     * @return
-     */
-//    @GetMapping("/sys/code")
-//    public Map<String, Object> getCode(@RequestParam Map<String, String> params) {
-//        ModelAndView tokenInfo = oauth2Client.postCodeGrant(params);
-//        System.out.println();
-//        return null;
-//    }
-
-    /**
      * 系统登陆<br>
      * 根据用户名登录<br>
      * 采用oauth2密码模式获取access_token和refresh_token

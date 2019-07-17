@@ -11,6 +11,9 @@ import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.mail.Mail;
 import com.cloud.model.user.LoginAppUser;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +24,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/mails")
+@Api(value = "邮件", tags = {"邮件操作接口 MailController"})
 public class MailController {
 
     @Autowired
@@ -28,6 +32,7 @@ public class MailController {
 
     @PreAuthorize("hasAuthority('mail:query')")
     @GetMapping("/{id}")
+    @ApiOperation(value = "查询邮件")
     public Mail findById(@PathVariable Long id) {
         return mailService.findById(id);
     }
@@ -48,7 +53,8 @@ public class MailController {
     @LogAnnotation(module = LogModule.ADD_MAIL)
     @PreAuthorize("hasAuthority('mail:save')")
     @PostMapping
-    public Mail save(@RequestBody Mail mail, Boolean send) {
+    @ApiOperation(value = "保存邮件")
+    public Mail save(@RequestBody Mail mail,@ApiParam(value = "是否发送邮件 boolean",required = true) Boolean send) {
         mailService.saveMail(mail);
         if (Boolean.TRUE.equals(send)) {
             mailService.sendMail(mail);
@@ -66,8 +72,9 @@ public class MailController {
      */
     @LogAnnotation(module = LogModule.UPDATE_MAIL)
     @PreAuthorize("hasAuthority('mail:update')")
+    @ApiOperation(value = "修改邮件")
     @PutMapping
-    public Mail update(@RequestBody Mail mail, Boolean send) {
+    public Mail update(@RequestBody Mail mail, @ApiParam(value = "是否发送邮件 boolean",required = true) Boolean send) {
         mailService.updateMail(mail);
         if (Boolean.TRUE.equals(send)) {
             mailService.sendMail(mail);
@@ -78,6 +85,7 @@ public class MailController {
 
     @PreAuthorize("hasAuthority('mail:query')")
     @PostMapping("/findPage")
+    @ApiOperation(value = "分页，多条件查询邮件",notes = "参数：pageNum（必填），pageSize（必填），username,toMail")
     public PageResult findPage(@RequestBody Map<String, Object> params) {
         Long pageIndex = Long.valueOf(params.get("pageNum").toString());
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
@@ -101,6 +109,7 @@ public class MailController {
     @LogAnnotation(module = LogModule.DELETE_ROLE)
     @PreAuthorize("hasAuthority('back:mail:delete')")
     @DeleteMapping("/delBatch/{ids}")
+    @ApiOperation(value ="批量删除" ,notes = "以,拼接的id字符串 ")
     public ResultVo deleteBatchMail(@PathVariable String ids) {
         List<Integer> list = new ArrayList<>();
         try {
@@ -119,6 +128,7 @@ public class MailController {
 
 
     @PostMapping("/findNoRead")
+    @ApiOperation(value ="查找未阅读的邮件")
     public List<Mail> findNoRead() {
         LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
         List<Mail> noRead = mailService.findNoRead(loginAppUser.getId());
@@ -126,6 +136,7 @@ public class MailController {
     }
 
     @PostMapping("/batchRead")
+    @ApiOperation(value ="批量阅读邮件")
     public ResultVo batchRead() {
         LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
         Mail mail = new Mail();
@@ -143,6 +154,7 @@ public class MailController {
 
 
     @PostMapping("/alreadyRead/{id}")
+    @ApiOperation(value ="改变阅读状态")
     public ResultVo alreadyRead(@PathVariable Long id) {
         try {
             mailService.updateIsRead(id);
