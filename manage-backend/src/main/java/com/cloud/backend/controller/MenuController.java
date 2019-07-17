@@ -7,6 +7,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.cloud.common.constants.SysConstants;
 import com.cloud.common.vo.Response;
 import com.cloud.common.vo.ResultVo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,7 @@ import com.cloud.model.user.SysRole;
 @Slf4j
 @RestController
 @RequestMapping("/menus")
+@Api(value = "后台侧边栏菜单", tags = {"后台侧边栏菜单接口 MenuController"})
 public class MenuController {
 
     @Autowired
@@ -60,6 +64,7 @@ public class MenuController {
      * @return
      */
     @PostMapping("/me2")
+    @ApiOperation(value = "当前登录用户的菜单")
     public Map findMyMenu2() {
         LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
         assert loginAppUser != null;
@@ -168,6 +173,7 @@ public class MenuController {
     @LogAnnotation(module = LogModule.SET_MENU_ROLE)
     @PreAuthorize("hasAuthority('back:menu:set2role')")
     @PostMapping("/setMenusToRole")
+    @ApiOperation(value = "给角色分配菜单",notes = "参数：roleId，menuIds（数组）")
     public ResultVo setMenusToRole(@RequestBody Map<String, Object> params) {
         try {
             Long roleId = Long.valueOf(params.get("roleId").toString());
@@ -197,6 +203,7 @@ public class MenuController {
      */
     @PreAuthorize("hasAnyAuthority('back:menu:set2role','back:menu:query')")
     @GetMapping("/tree2")
+    @ApiOperation(value = "菜单树ztree")
     public List<Menu> findMenuTree2() {
         List<Menu> all = menuService.findAll();
         List<Menu> list = new ArrayList<>();
@@ -251,6 +258,7 @@ public class MenuController {
      */
     @PreAuthorize("hasAnyAuthority('back:menu:set2role','menu:byroleid')")
     @GetMapping(params = "roleId")
+    @ApiOperation(value = "获取角色的菜单")
     public Set<Long> findMenuIdsByRoleId(Long roleId) {
         return menuService.findMenuIdsByRoleId(roleId);
     }
@@ -262,7 +270,8 @@ public class MenuController {
      */
     @PreAuthorize("hasAnyAuthority('back:menu:set2role','menu:byroleid')")
     @PostMapping("findMenusByRoleId")
-    public List<Menu> findMenusByRoleId(@RequestParam("roleId") Long roleId) {
+    @ApiOperation(value = "获取角色的菜单")
+    public List<Menu> findMenusByRoleId(@ApiParam(value = "roleId",required = true) @RequestParam("roleId") Long roleId) {
         List<Menu> menusByRoleId = menuService.findMenusByRoleId(roleId);
         return menusByRoleId;
     }
@@ -275,6 +284,7 @@ public class MenuController {
     @LogAnnotation(module = LogModule.ADD_MENU)
     @PreAuthorize("hasAuthority('back:menu:save')")
     @PostMapping("/saveOrUpdate")
+    @ApiOperation(value = "添加/修改菜单")
     public ResultVo saveOrUpdate(@RequestBody Menu menu) {
         if (menu.getId() != null && menu.getId() != 0) {
             menuService.update(menu);
@@ -306,6 +316,7 @@ public class MenuController {
     @LogAnnotation(module = LogModule.UPDATE_MENU)
     @PreAuthorize("hasAuthority('back:menu:update')")
     @PutMapping
+    @ApiOperation(value = "修改菜单")
     public Menu update(@RequestBody Menu menu) {
         menuService.update(menu);
 
@@ -320,6 +331,7 @@ public class MenuController {
     @LogAnnotation(module = LogModule.DELETE_MENU)
     @PreAuthorize("hasAuthority('back:menu:delete')")
     @DeleteMapping("/{id}")
+    @ApiOperation(value = "删除菜单")
     public void delete(@PathVariable Long id) {
         menuService.delete(id);
     }
@@ -332,6 +344,7 @@ public class MenuController {
     @LogAnnotation(module = LogModule.DELETE_MENU)
     @PreAuthorize("hasAuthority('back:menu:delete')")
     @PostMapping("/delete2")
+    @ApiOperation(value = "删除菜单")
     public void delete2(@RequestBody List<Map<String, Long>> ids) {
         for (Map<String, Long> id : ids) {
             menuService.delete(id.get("id"));
@@ -343,6 +356,7 @@ public class MenuController {
      */
     @PreAuthorize("hasAuthority('back:menu:query')")
     @GetMapping("/all")
+    @ApiOperation(value = "查询所有菜单")
     public List<Menu> findAll() {
         List<Menu> all = menuService.findAll();
         List<Menu> list = new ArrayList<>();
