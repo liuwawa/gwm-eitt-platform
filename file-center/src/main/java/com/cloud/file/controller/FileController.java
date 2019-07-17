@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.model.common.PageResult;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,7 @@ import javax.annotation.Resource;
 
 @RestController
 @RequestMapping("/files")
+@Api(value = "文件", tags = {"文件操作接口 FileController"})
 public class FileController {
 
 	@Autowired
@@ -46,6 +49,7 @@ public class FileController {
 	 */
 	@LogAnnotation(module = LogModule.FILE_UPLOAD, recordParam = false)
 	@PostMapping
+	@ApiOperation(value = "文件上传")
 	public FileInfo upload(@RequestParam("file") MultipartFile file, String fileSource) throws Exception {
 		FileService fileService = fileServiceFactory.getFileService(fileSource);
 		return fileService.upload(file);
@@ -119,6 +123,7 @@ public class FileController {
 	 */
 	@PreAuthorize("hasAuthority('file:query')")
 	@PostMapping("/findPages")
+	@ApiOperation(value = "分页多条件查询文件记录",notes = "参数，pageNum，pageSize，fileName")
 	public PageResult findPage(@RequestBody Map<String, Object> params) {
 		Long pageIndex = Long.valueOf(params.get("pageNum").toString());
 		Long pageSize = Long.valueOf(params.get("pageSize").toString());
@@ -144,6 +149,7 @@ public class FileController {
 	@LogAnnotation(module = LogModule.FILE_DELETE)
 	@PreAuthorize("hasAuthority('file:del')")
 	@DeleteMapping("/delBatch/{ids}")
+	@ApiOperation(value = "批量删除",notes = "传入以，拼接的id字符串")
 	public ResultVo<Object> deleteFile(@PathVariable String ids){
 		List<Integer> list = new ArrayList<>();
 		String[] idList = ids.split(",");
