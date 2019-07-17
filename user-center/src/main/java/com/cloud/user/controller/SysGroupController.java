@@ -66,24 +66,6 @@ public class SysGroupController {
     }
 
     /**
-     * @param groupId 组织id
-     * @return 查询结果
-     * 根据组织id查询详细数据
-     */
-    @PreAuthorize("hasAuthority('back:group:query')")
-    @GetMapping("/findGroup/{groupId}")
-    public ResultVo<GroupWithExpand> findGroupById(@PathVariable Integer groupId) {
-        try {
-            GroupWithExpand groupWithExpand = sysGroupService.selectByGroupId(groupId);
-            log.info("根据id查找组织成功，查找id:{}", groupId);
-            return new ResultVo<GroupWithExpand>(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, groupWithExpand);
-        } catch (Exception e) {
-            log.error("根据id查询组织，出现异常！", e);
-            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.message, null);
-        }
-    }
-
-    /**
      * @param baseEntity 主表和拓展表的数据
      * @return 修改结果
      * 修改组织和其拓展信息
@@ -108,29 +90,6 @@ public class SysGroupController {
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.message, null);
         }
         log.info("操作成功，修改的组织名称:{}", sysGroup.getLabel());
-        return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
-    }
-
-    /**
-     * @param baseEntity 需要删除的组织
-     * @return 操作结果
-     * 组织单删(逻辑删除)
-     */
-    @LogAnnotation(module = LogModule.DELETE_GROUP)
-    @PreAuthorize("hasAuthority('back:group:delete')")
-    @DeleteMapping("/deleteGroup")
-    public ResultVo deleteGroup(@RequestBody BaseEntity baseEntity) {
-        SysGroup sysGroup = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroup.class);
-        try {
-            if (!sysGroupService.updateById(sysGroup)) {
-                log.info("操作失败，删除的组织id:{}", sysGroup.getId());
-                return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.code, ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.message, null);
-            }
-        } catch (Exception e) {
-            log.error("删除组织，出现异常！", e);
-            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.message, null);
-        }
-        log.info("操作成功，删除的组织id:{}", sysGroup.getId());
         return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
     }
 
@@ -205,22 +164,6 @@ public class SysGroupController {
         }
     }
 
-    /**
-     * @param groupId 组织的id
-     * @return 查询结果
-     * 根据组织的id查询其下属组织
-     */
-    @PreAuthorize("hasAuthority('back:group:query')")
-    @GetMapping("/getGroupsByGroupId/{groupId}")
-    public ResultVo<SysGroup> getGroupsByGroupId(@PathVariable Integer groupId) {
-        List<SysGroup> list = sysGroupService.list(new QueryWrapper<SysGroup>().lambda()
-                .select(SysGroup::getId, SysGroup::getLabel)
-                .eq(SysGroup::getIsDel, "0")
-                .eq(SysGroup::getParentid, groupId)
-                .orderByAsc(SysGroup::getGroupShowOrder));
-        return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, list);
-
-    }
 
     /**
      * 获取所有组织
@@ -235,7 +178,7 @@ public class SysGroupController {
 
 
     /**
-     * 修改组织接口的接口
+     * 修改组织结构的接口
      */
     @LogAnnotation(module = LogModule.UPDATE_GROUP)
     @PreAuthorize("hasAuthority('back:group:update')")

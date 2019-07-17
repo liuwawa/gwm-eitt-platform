@@ -54,18 +54,6 @@ public class SysGroupGroupingController {
         }
     }
 
-    /**
-     * @param groupingId 查找分组的id
-     * @return 查找结果
-     * 查找出该分组下的组织
-     */
-    @GetMapping("/getGroupsInGrouping/{groupingId}")
-    public ResultVo<List<SysGroup>> getGroupsByGroupingId(@PathVariable Integer groupingId) {
-        List<SysGroup> groupList = sysGroupGroupingService.selectGroupsByGroupingId(groupingId);
-        log.info("根据groupingId查找该分组下的所有group,分组的id:{}", groupingId);
-        return new ResultVo<List<SysGroup>>(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, groupList);
-
-    }
 
 }
 

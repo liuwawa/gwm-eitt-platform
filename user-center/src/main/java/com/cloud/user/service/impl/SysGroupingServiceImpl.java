@@ -10,7 +10,6 @@ import com.cloud.model.user.SysUserGrouping;
 import com.cloud.user.dao.SysGroupingDao;
 import com.cloud.user.service.SysGroupingService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,34 +28,6 @@ import java.util.List;
 @Slf4j
 public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGrouping> implements SysGroupingService {
 
-    @Override
-    @Transactional
-    public boolean save(SysGrouping sysGrouping) {
-        // 非空验证
-        if (StringUtils.isBlank(sysGrouping.getGroupingName())) {
-            log.error("添加分组,获取到的分组名为空值");
-            throw new ResultException(ResultEnum.GROUPINGNAME_NULL.getCode(),
-                    ResultEnum.GROUPINGNAME_NULL.getMessage());
-        }
-        // 设置创建时间
-        sysGrouping.setCreateTime(new Date());
-        sysGrouping.setCreateBy(sysGrouping.getLoginAdminName());
-
-        return sysGrouping.insert();
-    }
-
-    @Override
-    @Transactional
-    public boolean updateById(SysGrouping sysGrouping) {
-
-        // 非空验证
-        if (null == sysGrouping.getGroupingId()) {
-            log.error("编辑分组,获取到的分组id为空值");
-            throw new ResultException(ResultEnum.GROUPINGID_NULL.getCode(),
-                    ResultEnum.GROUPINGID_NULL.getMessage());
-        }
-        return sysGrouping.updateById();
-    }
 
     @Override
     @Transactional
@@ -68,12 +39,13 @@ public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGroup
                     ResultEnum.GROUPINGID_NULL.getMessage());
         }
 
-        /*SysUserGrouping userGrouping = SysUserGrouping.builder().build();
+        //  查看是否有用户使用分组
+        SysUserGrouping userGrouping = SysUserGrouping.builder().build();
         List<SysUserGrouping> userGroupings = userGrouping.selectList(new QueryWrapper<SysUserGrouping>().lambda()
                 .in(SysUserGrouping::getGroupingId, groupingIds));
         if (userGroupings != null || userGroupings.size() != 0) {
             throw new ResultException(500, "用户使用分组中，请先解除关系");
-        }*/
+        }
         // 构建对象
         SysGrouping sysGrouping = SysGrouping.builder().isDel("1")
                 .deleteBy(loginAdminName).deleteTime(new Date()).build();

@@ -24,10 +24,4 @@ public interface SysGroupGroupingService extends IService<SysGroupGrouping> {
      */
     boolean saveGroupToGrouping(List<Integer> groupIds, Integer groupingId, String groupingName, String groupingRemark, String loginAdminName);
 
-    /**
-     * @param groupingId 分组的id
-     * @return 该分组下的所有组织
-     * 根据分组的id查找该分组下的所有组织
-     */
-    List<SysGroup> selectGroupsByGroupingId(Integer groupingId);
 }

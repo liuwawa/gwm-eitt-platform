@@ -24,12 +24,6 @@ public interface SysGroupService extends IService<SysGroup> {
      */
     boolean saveGroupAndGroupExpand(SysGroup sysGroup, SysGroupExpand sysGroupExpand);
 
-    /**
-     * @param groupId 组织的主键
-     * @return 组织的完整信息
-     * 根据id查找出整个组织的详细信息
-     */
-    GroupWithExpand selectByGroupId(Integer groupId);
 
     /**
      * @param sysGroup       组织主表数据

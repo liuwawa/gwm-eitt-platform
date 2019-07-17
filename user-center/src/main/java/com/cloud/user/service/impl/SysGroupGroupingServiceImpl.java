@@ -68,26 +68,5 @@ public class SysGroupGroupingServiceImpl extends ServiceImpl<SysGroupGroupingDao
         return true;
     }
 
-    @Override
-    public List<SysGroup> selectGroupsByGroupingId(Integer groupingId) {
-        // 非空验证
-        if (null == groupingId) {
-            log.error("查看该分组下的组织,获取到的分组id为空值");
-            throw new ResultException(ResultEnum.GROUPINGID_NULL.getCode(),
-                    ResultEnum.GROUPINGID_NULL.getMessage());
-        }
-        // 构建对象
-        SysGroupGrouping sysGroupGrouping = SysGroupGrouping.builder().build();
-        // 根据groupingId查找所有的groupgrouping对象
-        List<SysGroupGrouping> sysGroupGroupings = sysGroupGrouping.selectList(new QueryWrapper<SysGroupGrouping>().lambda()
-                .eq(SysGroupGrouping::getGroupingId, groupingId));
-        // 根据groupId查找出所有的group
-        List<Integer> groupIds = new ArrayList<>();
-        for (SysGroupGrouping groupGrouping : sysGroupGroupings) {
-            groupIds.add(groupGrouping.getGroupId());
-        }
-        SysGroup sysGroup = SysGroup.builder().build();
-        List<SysGroup> groupList = sysGroup.selectList(new QueryWrapper<SysGroup>().lambda().in(SysGroup::getId, groupIds));
-        return groupList;
-    }
+
 }

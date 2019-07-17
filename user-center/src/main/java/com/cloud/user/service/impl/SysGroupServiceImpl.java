@@ -183,40 +183,7 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         return groupSave && groupExpandSave;
     }
 
-    @Override
-    @Transactional
-    public GroupWithExpand selectByGroupId(Integer groupId) {
-        // 非空验证
-        if (null == groupId) {
-            log.error("根据id查找组织时，传入了空的id值");
-            throw new ResultException(ResultEnum.GROUPID_NULL.getCode(),
-                    ResultEnum.GROUPID_NULL.getMessage());
-        }
-        // 构建组织主表对象，填充数据
-        SysGroup sysGroup = SysGroup.builder().build();
-        SysGroup group = sysGroup.selectOne(new QueryWrapper<SysGroup>().lambda()
-                .eq(SysGroup::getIsDel, 0)
-                .eq(SysGroup::getId, groupId));
-        // 判断是否存在该组织
-        if (null == group) {
-            log.error("根据id查找组织时，组织主表中不存在该id的组织，或者已经删除，id:{}", groupId);
-            throw new ResultException(ResultEnum.GROUP_NOT_EXIST.getCode(),
-                    ResultEnum.GROUP_NOT_EXIST.getMessage());
-        }
-        // 计算子节点
-        Integer childCount = sysGroup.selectCount(new QueryWrapper<SysGroup>().lambda().
-                eq(SysGroup::getIsDel, "0")
-                .eq(SysGroup::getParentid, group.getId()));
-        group.setGroupChildCount(childCount);
-        // 每次查询对子节点数量进行更新
-        group.updateById();
-        // 构建组织拓展对象，填充数据
-        SysGroupExpand sysGroupExpand = SysGroupExpand.builder().build();
-        SysGroupExpand groupExpand = sysGroupExpand.selectOne(new QueryWrapper<SysGroupExpand>().eq("groupId", groupId));
 
-        // 构建组织对象，并返回
-        return new GroupWithExpand(group, groupExpand);
-    }
 
     @Override
     @Transactional
@@ -373,20 +340,5 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
     }
 
 
-    @Override
-    @Transactional
-    public boolean updateById(SysGroup sysGroup) {
-        // 非空验证
-        if (null == sysGroup.getId()) {
-            log.error("删除组织,获取到的组织id为空值");
-            throw new ResultException(ResultEnum.GROUPID_NULL.getCode(),
-                    ResultEnum.GROUPID_NULL.getMessage());
-        }
-        // 赋值删除人，删除时间，删除标识
-        sysGroup.setDeleteTime(new Date());
-        sysGroup.setDeleteBy(sysGroup.getLoginAdminName());
-        sysGroup.setIsDel("1");
 
-        return sysGroup.updateById();
-    }
 }
