@@ -81,6 +81,9 @@ public class TokenController {
                 String tok = (String) redisUtils.get(USER_CODE + username);
                 String[] split = tok.split("@");
                 if (split != null && split.length == 4){
+                if (redisUtils.get(PAST + username) != null){
+                    redisUtils.del(PAST + username);
+                }
                     redisUtils.set(PAST + username, split[3]);
                     oauth2Client.removeToken(split[3]);
                 }

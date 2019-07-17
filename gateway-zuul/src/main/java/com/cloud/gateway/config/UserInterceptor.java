@@ -3,8 +3,10 @@ package com.cloud.gateway.config;
 import com.cloud.common.utils.RedisUtils;
 import com.cloud.model.common.Response;
 import com.cloud.utils.JsonUtils;
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -42,7 +44,10 @@ public class UserInterceptor implements HandlerInterceptor {
         if (getCookies(redisUtils, cookies)) {
             return true;
         }
-
+        //如果是退出登录直接放行
+        if (StringUtils.equalsIgnoreCase("/sys/logout",request.getRequestURI())){
+            return true;
+        }
         Response result = new Response();
         result.setMessage(RESPONSE_LOGIN_SIGNAL_ERROR.message);
         result.setErrorCode(RESPONSE_LOGIN_SIGNAL_ERROR.code);
