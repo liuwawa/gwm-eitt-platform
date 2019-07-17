@@ -27,6 +27,8 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -239,6 +241,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Override
     public void addUser(SysUser appUser) {
         String username = appUser.getUsername();
+        if (isContainsChinese(username)) {
+            throw new ResultException(500, "用户名不能含有中文字符");
+        }
         if (StringUtils.isBlank(username)) {
             throw new IllegalArgumentException("用户名不能为空");
         }
@@ -292,6 +297,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         }
 
         appUserDao.insert(appUser);
+        int userId = appUser.getId().intValue();
+        SysUserGrouping sysUserGrouping = SysUserGrouping.builder().userId(userId).build();
+        // 先进行删除
+        sysUserGrouping.delete(new QueryWrapper<SysUserGrouping>().lambda().eq(SysUserGrouping::getUserId, userId));
+        // 如果传来的不是空 在做add操作
+        if (appUser.getGroupingIds().size() != 0 && appUser.getGroupingIds() != null) {
+            // 添加
+            for (Integer groupingId : appUser.getGroupingIds()) {
+                sysUserGrouping.setGroupingId(groupingId);
+                sysUserGrouping.insert();
+            }
+        }
+
         userCredentialsDao
                 .save(new UserCredential(appUser.getUsername(), CredentialType.USERNAME.name(), appUser.getId()));
         log.info("添加用户：{}", appUser);
@@ -316,7 +334,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Transactional
     @Override
     public void updateUser(SysUser appUser) {
-
+        if (isContainsChinese(appUser.getUsername())) {
+            throw new ResultException(500, "用户名不能含有中文字符");
+        }
         appUserDao.updateById(appUser);
         QueryWrapper<UserCredential> deleteWrapper = new QueryWrapper<>();
         deleteWrapper.eq("userId", appUser.getId())
@@ -325,9 +345,32 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
                 );
         userCredentialsDao.delete(deleteWrapper);
 
+        int userId = appUser.getId().intValue();
+        SysUserGrouping sysUserGrouping = SysUserGrouping.builder().userId(userId).build();
+        // 先进行删除
+        sysUserGrouping.delete(new QueryWrapper<SysUserGrouping>().lambda().eq(SysUserGrouping::getUserId, userId));
+        // 如果传来的不是空 在做add操作
+        if (appUser.getGroupingIds().size() != 0 && appUser.getGroupingIds() != null) {
+            // 添加
+            for (Integer groupingId : appUser.getGroupingIds()) {
+                sysUserGrouping.setGroupingId(groupingId);
+                sysUserGrouping.insert();
+            }
+        }
 
         userCredentialsDao.save(new UserCredential(appUser.getUsername(), CredentialType.USERNAME.name(), appUser.getId()));
         log.info("修改用户：{}", appUser);
+    }
+
+    //  验证是否含有中文
+    public static boolean isContainsChinese(String str) {
+        Pattern pat = Pattern.compile("[\u4e00-\u9fa5]");
+        Matcher matcher = pat.matcher(str);
+        boolean flg = false;
+        if (matcher.find()) {
+            flg = true;
+        }
+        return flg;
     }
 
     @Transactional

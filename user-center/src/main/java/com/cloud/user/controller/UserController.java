@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.utils.AppUserUtil;
-import com.cloud.common.utils.VerifyCodeUtils;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.common.Page;
@@ -25,13 +24,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.ui.Model;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.*;
 
 @Slf4j
@@ -391,6 +386,9 @@ public class UserController {
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
         String username = params.get("username").toString();
         String nickname = params.get("nickname").toString();
+        String personnelID = params.get("personnelID").toString();
+        String duties = params.get("duties").toString();
+
         String sex = null;
         String enabled = null;
         if (params.get("sex") != "") {
@@ -399,7 +397,7 @@ public class UserController {
         if (params.get("enabled") != "") {
             enabled = params.get("enabled").toString();
         }
-        IPage<SysUser> userPage = getPage(username, nickname, sex, enabled, pageIndex, pageSize);
+        IPage<SysUser> userPage = getPage(username, nickname, sex, enabled, personnelID, duties, pageIndex, pageSize);
         List<SysUser> sysUsers = userPage.getRecords();
         SysGroup sysGroup = SysGroup.builder().build();
         SysUserGrouping userGrouping = SysUserGrouping.builder().build();
@@ -434,7 +432,7 @@ public class UserController {
     }
 
     // 获取分页的结果
-    public IPage<SysUser> getPage(String username, String nickname, String sex, String enabled, Long
+    public IPage<SysUser> getPage(String username, String nickname, String sex, String enabled, String personnelID, String duties, Long
             pageIndex, Long pageSize) {
         IPage<SysUser> userPage = null;
         if (sex == null && enabled != null) {
@@ -442,17 +440,23 @@ public class UserController {
                     new QueryWrapper<SysUser>().lambda()
                             .eq(SysUser::getEnabled, enabled)
                             .like(SysUser::getUsername, username)
+                            .like(SysUser::getDuties, duties)
+                            .like(SysUser::getPersonnelID, personnelID)
                             .like(SysUser::getNickname, nickname));
         } else if (enabled == null && sex != null) {
             userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
                     new QueryWrapper<SysUser>().lambda()
                             .eq(SysUser::getSex, sex)
                             .like(SysUser::getUsername, username)
+                            .like(SysUser::getDuties, duties)
+                            .like(SysUser::getPersonnelID, personnelID)
                             .like(SysUser::getNickname, nickname));
         } else if (sex == null && enabled == null) {
             userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
                     new QueryWrapper<SysUser>().lambda()
                             .like(SysUser::getUsername, username)
+                            .like(SysUser::getDuties, duties)
+                            .like(SysUser::getPersonnelID, personnelID)
                             .like(SysUser::getNickname, nickname));
         } else {
             userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
@@ -460,6 +464,8 @@ public class UserController {
                             .eq(SysUser::getSex, sex)
                             .eq(SysUser::getEnabled, enabled)
                             .like(SysUser::getUsername, username)
+                            .like(SysUser::getDuties, duties)
+                            .like(SysUser::getPersonnelID, personnelID)
                             .like(SysUser::getNickname, nickname));
         }
         return userPage;
@@ -491,7 +497,7 @@ public class UserController {
             return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
         } catch (Exception e) {
             log.error("修改出现异常", e);
-            return new ResultVo(500, ResponseStatus.RESPONSE_OPERATION_ERROR.message, null);
+            return new ResultVo(500, e.getMessage(), null);
         }
     }
 
