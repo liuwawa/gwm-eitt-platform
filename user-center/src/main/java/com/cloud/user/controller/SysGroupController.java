@@ -5,7 +5,6 @@ import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
-import com.cloud.model.user.GroupWithExpand;
 import com.cloud.model.user.SysGroup;
 import com.cloud.model.user.SysGroupExpand;
 import com.cloud.response.BaseEntity;
@@ -13,7 +12,6 @@ import com.cloud.response.ObjectConversionEntityUtil;
 import com.cloud.user.service.SysGroupService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -105,7 +103,7 @@ public class SysGroupController {
     @LogAnnotation(module = LogModule.DELETE_GROUP)
     @PreAuthorize("hasAuthority('back:group:delete')")
     @DeleteMapping("/deleteGroups")
-    @ApiOperation(value = "批量删除部门",notes = "参数：（数组）groupIds，loginAdminName")
+    @ApiOperation(value = "批量删除部门", notes = "参数：（数组）groupIds，loginAdminName")
     public ResultVo deleteGroups(@RequestBody Map map) {
         List<Integer> groupIds = (List<Integer>) map.get("groupIds");
         String loginAdminName = (String) map.get("loginAdminName");
@@ -145,6 +143,8 @@ public class SysGroupController {
             sysGroup.setGDirectLeader(expand.getGDirectLeader());
             sysGroup.setGDeptopLeader(expand.getGDeptopLeader());
             sysGroup.setGUnittopLeader(expand.getGUnittopLeader());
+            sysGroup.setGModule(expand.getGModule());
+            sysGroup.setSubModule(expand.getSubModule());
         }
         reslut.put("code", 200);
         reslut.put("msg", null);
@@ -189,9 +189,9 @@ public class SysGroupController {
      */
     @LogAnnotation(module = LogModule.UPDATE_GROUP)
     @PreAuthorize("hasAuthority('back:group:update')")
-    @PutMapping("/changeGroup")
-    @ApiOperation(value = "修改部门",notes = "参数：parentId，（数组）groupIds")
-    public ResultVo changeGroupStructure(Map map) {
+    @PostMapping("/changeGroup")
+    @ApiOperation(value = "修改部门", notes = "参数：parentId，（数组）groupIds")
+    public ResultVo changeGroupStructure(@RequestBody Map map) {
         Integer parentId = Integer.valueOf(map.get("parentId").toString());
         List<Integer> groupIds = (List<Integer>) map.get("groupIds");
         try {

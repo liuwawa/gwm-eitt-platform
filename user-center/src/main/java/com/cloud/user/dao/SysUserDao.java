@@ -19,7 +19,7 @@ public interface SysUserDao extends BaseMapper<SysUser> {
     int save(SysUser appUser);
 
     /**
-     * @param username
+     * @param
      * @return
      */
 //    @Select("select * from sys_user t where t.username = #{username}")

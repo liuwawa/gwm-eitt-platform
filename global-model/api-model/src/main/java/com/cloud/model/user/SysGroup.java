@@ -162,10 +162,23 @@ public class SysGroup extends Model<SysGroup> {
     private String gDeptopLeader;
 
     /**
-     * gUnittopLeader
+     * 单位最高领导工号
      */
     @TableField(exist = false)
     private String gUnittopLeader;
+
+    /**
+     * 模块
+     */
+    @TableField(exist = false)
+    private String gModule;
+
+
+    /**
+     * 子模块
+     */
+    @TableField(exist = false)
+    private String subModule;
 
     /**
      * 指定主键
