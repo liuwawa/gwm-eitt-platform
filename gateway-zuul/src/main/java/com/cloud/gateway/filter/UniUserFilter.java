@@ -15,6 +15,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PatternMatchUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +24,7 @@ import java.io.IOException;
 
 import static com.cloud.common.constants.SysConstants.PAST;
 import static com.cloud.enums.ResponseStatus.RESPONSE_LOGOUT_SIGNAL_ERROR;
+import static com.cloud.gateway.config.UserInterceptor.USER_CODE;
 
 /**
  * 过滤uri<br>
@@ -44,7 +47,6 @@ public class UniUserFilter extends ZuulFilter {
 
     @Autowired
     private RedisUtils redisUtils;
-
     @Override
     public Object run() {
         try {
@@ -67,6 +69,10 @@ public class UniUserFilter extends ZuulFilter {
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
 
+        boolean match = PatternMatchUtils.simpleMatch(new String[]{"*-anon/internal*","/app-anon/**","*-anon/codes"}, request.getRequestURI());
+        if (match){
+            return true;
+        }
         String authentication = request.getHeader("Authorization");
         authentication = authentication.substring(OAuth2AccessToken.BEARER_TYPE.length() + 1);
         //针对多个用户登陆暂时做的处理
@@ -75,16 +81,17 @@ public class UniUserFilter extends ZuulFilter {
             String past = (String) redisUtils.get(PAST + my);
             if (past != null && past.equals(authentication)) {
                 redisUtils.del(PAST + my);
-                requestContext.getResponse().setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-                Response result = new Response();
-                result.setMessage(RESPONSE_LOGOUT_SIGNAL_ERROR.message);
-                result.setErrorCode(RESPONSE_LOGOUT_SIGNAL_ERROR.code);
-                try {
-                    requestContext.getResponse().getWriter().write(JsonUtils.toJson(result));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                sendResponse(requestContext);
                 return false;
+            }else if (past == null){
+                String tok = (String) redisUtils.get(USER_CODE + my);
+                String[] split = tok.split("@");
+                if (split != null && split.length == 4) {
+                    if (!split[3].equals(authentication)){
+                        redisUtils.set(PAST + my, split[3]);
+                        sendResponse(requestContext);
+                    }
+                }
             }
         }
 
@@ -93,6 +100,18 @@ public class UniUserFilter extends ZuulFilter {
             return true;
         }
         return false;
+    }
+
+    private void sendResponse(RequestContext requestContext) {
+        requestContext.getResponse().setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        Response result = new Response();
+        result.setMessage(RESPONSE_LOGOUT_SIGNAL_ERROR.message);
+        result.setErrorCode(RESPONSE_LOGOUT_SIGNAL_ERROR.code);
+        try {
+            requestContext.getResponse().getWriter().write(JsonUtils.toJson(result));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

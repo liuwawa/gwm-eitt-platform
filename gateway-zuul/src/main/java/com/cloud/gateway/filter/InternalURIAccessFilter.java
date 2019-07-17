@@ -3,6 +3,7 @@ package com.cloud.gateway.filter;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.PatternMatchUtils;
@@ -22,6 +23,7 @@ import com.netflix.zuul.context.RequestContext;
  *
  */
 @Component
+@Order(1)
 public class InternalURIAccessFilter extends ZuulFilter {
 
 	@Override
