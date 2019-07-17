@@ -249,11 +249,11 @@ public class MenuController {
      *
      * @param roleId
      */
-//    @PreAuthorize("hasAnyAuthority('back:menu:set2role','menu:byroleid')")
-//    @GetMapping(params = "roleId")
-//    public Set<Long> findMenuIdsByRoleId(Long roleId) {
-//        return menuService.findMenuIdsByRoleId(roleId);
-//    }
+    @PreAuthorize("hasAnyAuthority('back:menu:set2role','menu:byroleid')")
+    @GetMapping(params = "roleId")
+    public Set<Long> findMenuIdsByRoleId(Long roleId) {
+        return menuService.findMenuIdsByRoleId(roleId);
+    }
 
     /**
      * 获取角色的菜单(element ui)
@@ -263,7 +263,8 @@ public class MenuController {
     @PreAuthorize("hasAnyAuthority('back:menu:set2role','menu:byroleid')")
     @PostMapping("findMenusByRoleId")
     public List<Menu> findMenusByRoleId(@RequestParam("roleId") Long roleId) {
-        return menuService.findMenusByRoleId(roleId);
+        List<Menu> menusByRoleId = menuService.findMenusByRoleId(roleId);
+        return menusByRoleId;
     }
 
     /**

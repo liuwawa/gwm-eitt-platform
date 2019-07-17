@@ -21,7 +21,7 @@ public interface MenuService {
 
 	Menu findById(Long id);
 
-//	Set<Long> findMenuIdsByRoleId(Long roleId);
+	Set<Long> findMenuIdsByRoleId(Long roleId);
 
 	List<Menu> findMenusByRoleId(Long roleId);
 }

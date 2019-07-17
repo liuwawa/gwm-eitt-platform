@@ -1,9 +1,6 @@
 package com.cloud.backend.service.impl;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.cloud.common.constants.SysConstants;
@@ -92,21 +89,22 @@ public class MenuServiceImpl implements MenuService {
 		return menuDao.findById(id);
 	}
 
-//	@Override
-//	public Set<Long> findMenuIdsByRoleId(Long roleId) {
-//		return roleMenuDao.findMenuIdsByRoleId(roleId);
-//	}
+	@Override
+	public Set<Long> findMenuIdsByRoleId(Long roleId) {
+		return roleMenuDao.findMenuIdsByRoleId(roleId);
+	}
 
 	@Override
 	public List<Menu> findMenusByRoleId(Long roleId) {
 		if (SysConstants.ADMIN_ROLE_ID.equals(roleId)){//超级管理员,拥有所有菜单
 			return menuDao.findAll();
 		}
-		Set<Long> menuIdsByRoleId = roleMenuDao.findMenuIdsByRoleId(roleId);
-		if (menuIdsByRoleId.size() == 0){
+		Set<Long> roleIds = new HashSet<>();
+		roleIds.add(roleId);
+		if (roleIds.size() == 0){
 			return Collections.emptyList();
 		}
-		return roleMenuDao.findMenusByRoleIds(menuIdsByRoleId);
+		return roleMenuDao.findMenusByRoleIds(roleIds);
 	}
 
 }
