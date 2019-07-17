@@ -13,6 +13,9 @@ import com.cloud.notification.model.Sms;
 import com.cloud.notification.model.VerificationCode;
 import com.cloud.notification.service.SmsService;
 import com.cloud.notification.service.VerificationCodeService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +25,7 @@ import java.util.Map;
 
 @RestController
 @Slf4j
+@Api(value = "短信", tags = {"短信操作接口 SmsController"})
 public class SmsController {
 
     @Autowired
@@ -37,7 +41,8 @@ public class SmsController {
      * @return
      */
     @PostMapping(value = "/notification-anon/codes", params = {"phone"})
-    public VerificationCode sendSmsVerificationCode(String phone) {
+    @ApiOperation(value = "发送短信验证码")
+    public VerificationCode sendSmsVerificationCode(@ApiParam(value = "phone",required = true) String phone) {
         if (!PhoneUtil.checkPhone(phone)) {
             throw new IllegalArgumentException("手机号格式不正确");
         }
@@ -46,7 +51,8 @@ public class SmsController {
     }
 
     @PostMapping(value = "/notification-anon/sms/codes", params = {"phone"})
-    public VerificationCode sendSmsLoginVerificationCode(String phone) {
+    @ApiOperation(value = "发送短信验证码")
+    public VerificationCode sendSmsLoginVerificationCode(@ApiParam(value = "phone",required = true)String phone) {
         if (!PhoneUtil.checkPhone(phone)) {
             throw new SmsException("手机号格式不正确");
         }
@@ -64,6 +70,7 @@ public class SmsController {
      * @return
      */
     @GetMapping(value = "/notification-anon/internal/phone", params = {"key", "code"})
+    @ApiOperation(value = "根据验证码和key获取手机号")
     public String matcheCodeAndGetPhone(String key, String code, Boolean delete, Integer second) {
         return verificationCodeService.matcheCodeAndGetPhone(key, code, delete, second);
     }
@@ -77,12 +84,14 @@ public class SmsController {
      */
     @PreAuthorize("hasAuthority('sms:query')")
     @GetMapping("/sms")
+    @ApiOperation(value = "查询短信发送记录")
     public Page<Sms> findSms(@RequestParam Map<String, Object> params) {
         return smsService.findSms(params);
     }
 
     @PreAuthorize("hasAuthority('sms:query')")
     @PostMapping("/findSmsPage")
+    @ApiOperation(value = "分页多条件查询短信记录",notes = "参数，pageNum，pageSize，condition（手机号）")
     public PageResult findPage(@RequestBody Map<String, Object> params) {
         Long pageIndex = Long.valueOf(params.get("pageNum").toString());
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
@@ -105,6 +114,7 @@ public class SmsController {
     @LogAnnotation(module = LogModule.DELETE_ROLE)
     @PreAuthorize("hasAuthority('back:sms:delete')")
     @DeleteMapping("/delSms/{id}")
+    @ApiOperation(value = "根据id删除短信信息记录")
     public ResultVo deleteSms(@PathVariable Long id) {
         try {
             smsService.removeById(id);
@@ -118,6 +128,7 @@ public class SmsController {
     @LogAnnotation(module = LogModule.DELETE_ROLE)
     @PreAuthorize("hasAuthority('back:sms:delete')")
     @DeleteMapping("/delAll")
+    @ApiOperation(value = "删除全部短信记录")
     public ResultVo deleteAll() {
         try {
             smsService.delAllSms();
