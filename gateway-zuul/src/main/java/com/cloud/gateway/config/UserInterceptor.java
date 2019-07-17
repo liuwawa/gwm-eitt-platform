@@ -1,44 +1,56 @@
 package com.cloud.gateway.config;
 
 import com.cloud.common.utils.RedisUtils;
+import com.cloud.gateway.feign.UserClient;
 import com.cloud.model.common.Response;
+import com.cloud.model.user.SysUser;
 import com.cloud.utils.JsonUtils;
-import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.Set;
 
 import static com.cloud.enums.ResponseStatus.RESPONSE_LOGIN_SIGNAL_ERROR;
 
 /**
  * user filter
+ *
  * @author user lz
  */
 @Slf4j
+@Component
 public class UserInterceptor implements HandlerInterceptor {
-
     public static final String USER_CODE = "userCode|";
     public static final String SYS_LOGOUT = "/sys/logout";
+    @Autowired
+    private UserClient userClient;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
         RedisUtils redisUtils = (RedisUtils) SpringContextHolder.getBean("redisUtils");
         Cookie[] cookies = request.getCookies();
-        //第一次登录直接忽略
-        if (redisUtils.get(USER_CODE + request.getParameter("username")) == null){
-            return true;
+
+        if (request.getParameter("phone") != null) {
+            SysUser sysUser = userClient.findByPhone(request.getParameter("phone"));
+            if (redisUtils.get(USER_CODE + sysUser.getUsername()) == null) {
+                return true;
+            }
+        } else {
+            //第一次登录直接忽略
+            if (redisUtils.get(USER_CODE + request.getParameter("username")) == null) {
+                return true;
+            }
         }
+
         //是否允许被其他用户踢掉
         String out = request.getParameter("out");
-        if (out != null && "1".equals(out)){
+        if (out != null && "1".equals(out)) {
             return true;
         }
         //此用户已经登陆过
@@ -46,7 +58,7 @@ public class UserInterceptor implements HandlerInterceptor {
             return true;
         }
         //如果是退出登录直接放行
-        if (StringUtils.equalsIgnoreCase(SYS_LOGOUT,request.getRequestURI())){
+        if (StringUtils.equalsIgnoreCase(SYS_LOGOUT, request.getRequestURI())) {
             return true;
         }
         Response result = new Response();
@@ -59,6 +71,7 @@ public class UserInterceptor implements HandlerInterceptor {
 
     /**
      * 校验cookie
+     *
      * @param redisUtils
      * @param cookies
      * @return
