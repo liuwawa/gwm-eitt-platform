@@ -5,6 +5,8 @@ import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.user.SysGroup;
 import com.cloud.user.service.SysGroupGroupingService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +26,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/groupGrouping")
 @Slf4j
+@Api(value = "部门分组", tags = {"部门分组接口 SysGroupGroupingController"})
 public class SysGroupGroupingController {
     @Autowired
     private SysGroupGroupingService sysGroupGroupingService;
@@ -35,6 +38,7 @@ public class SysGroupGroupingController {
      */
     @PreAuthorize("hasAnyAuthority('back:group:delete','back:group:save','back:group:update')")
     @PostMapping("/updateGrouping")
+    @ApiOperation(value = "添加部门分组",notes = "参数名称：（数组）groupIds，groupingId，groupingName，groupingRemark，loginAdminName")
     public ResultVo addGroupToGrouping(@RequestBody Map map) {
         List<Integer> groupIds = (List<Integer>) map.get("groupIds");
         Integer groupingId = (Integer) map.get("groupingId");

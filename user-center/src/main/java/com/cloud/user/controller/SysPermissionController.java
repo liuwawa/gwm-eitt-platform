@@ -3,6 +3,9 @@ package com.cloud.user.controller;
 import java.util.*;
 
 import com.cloud.common.utils.AppUserUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
+@Api(value = "权限接口", tags = {"权限操作接口 SysPermissionController"})
 public class SysPermissionController {
 
     @Autowired
@@ -65,7 +69,8 @@ public class SysPermissionController {
     @LogAnnotation(module = LogModule.ADD_PERMISSION)
     @PreAuthorize("hasAuthority('back:permission:save')")
     @PostMapping("/permissions2")
-    public ResultVo save2(@RequestBody SysPermission sysPermission) {
+    @ApiOperation(value = "添加权限")
+    public ResultVo save2(@ApiParam(value ="SysPermission对象" ,required = true) @RequestBody SysPermission sysPermission) {
         try {
             if (StringUtils.isBlank(sysPermission.getPermission())) {
                 return new ResultVo(500, "权限标识不能为空", null);
@@ -113,6 +118,7 @@ public class SysPermissionController {
     @LogAnnotation(module = LogModule.UPDATE_PERMISSION)
     @PreAuthorize("hasAuthority('back:permission:update')")
     @PutMapping("/permissions2")
+    @ApiOperation(value = "修改权限")
     public ResultVo update2(@RequestBody SysPermission sysPermission) {
         try {
             if (StringUtils.isBlank(sysPermission.getName())) {
@@ -153,6 +159,7 @@ public class SysPermissionController {
     @LogAnnotation(module = LogModule.DELETE_PERMISSION)
     @PreAuthorize("hasAuthority('back:permission:delete')")
     @DeleteMapping("/permissions2/{id}")
+    @ApiOperation(value = "删除权限标识")
     public ResultVo delete2(@PathVariable Long id) {
         try {
             sysPermissionService.delete(id);
@@ -179,6 +186,7 @@ public class SysPermissionController {
      */
     @PreAuthorize("hasAuthority('back:permission:query')")
     @PostMapping("/findPages")
+    @ApiOperation(value = "分页多条件查询",notes = "参数：pageNum，pageSize，name，permission（对象）")
     public PageResult findPermissionsPage(@RequestBody Map<String, Object> params) {
         Long pageIndex = Long.valueOf(params.get("pageNum").toString());
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
@@ -200,6 +208,7 @@ public class SysPermissionController {
      */
     @PreAuthorize("hasAuthority('back:permission:query')")
     @PostMapping("/findAllPermissions")
+    @ApiOperation(value = "查询所有的权限标识")
     public List<SysPermission> findAllPermissions() {
         //		for (SysPermission sysPermission : list) {
 //		}
@@ -218,6 +227,7 @@ public class SysPermissionController {
      */
     @PreAuthorize("hasAuthority('back:permission:query')")
     @PostMapping("/findUserPermissions")
+    @ApiOperation(value = "查询所有的权限标识")
     public List<SysPermission> findUserPermissions() {
 //		List<SysPermission> list = sysPermissionService.list();
 //		for (SysPermission sysPermission : list) {

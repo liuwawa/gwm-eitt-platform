@@ -10,6 +10,7 @@ import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.user.SysGrouping;
 import com.cloud.user.service.SysGroupingService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,7 +31,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/grouping")
 @Slf4j
-@Api(value = "组织分组", tags = {"groupingController"})
+@Api(value = "组织分组", tags = {"分组操作接口 SysGroupingController"})
 public class SysGroupingController {
     @Autowired
     private SysGroupingService sysGroupingService;
@@ -41,6 +42,7 @@ public class SysGroupingController {
      */
     @PreAuthorize("hasAuthority('back:group:query')")
     @GetMapping(value = "/allGrouping")
+    @ApiOperation(value = "分页获取全部分组")
     public Page<SysGrouping> selectAllGrouping() {
         int count = sysGroupingService.count();
         log.info("总条数:{}", count);
@@ -58,6 +60,7 @@ public class SysGroupingController {
     @LogAnnotation(module = LogModule.DELETE_GROUPING)
     @PreAuthorize("hasAuthority('back:group:delete')")
     @DeleteMapping(value = "/deleteGroupings")
+    @ApiOperation(value = "批量删除(逻辑删除)",notes = "参数：groupingIds（数组），loginAdminName")
     public ResultVo deleteGroupings(@RequestBody Map map) {
         // 获取数据
         List<Integer> groupingIds = (List<Integer>) map.get("groupingIds");
@@ -81,6 +84,7 @@ public class SysGroupingController {
     @LogAnnotation(module = LogModule.ADD_GROUPING)
     @PreAuthorize("hasAuthority('back:group:save')")
     @PostMapping("/initGroupingSaveGroup")
+    @ApiOperation(value = "生成一个分组的同时把组织添加到这个分组里",notes = "参数：ids（数组），name，remark，userName")
     public ResultVo initGroupingSaveGroup(@RequestBody Map map) {
         List<Integer> groupIds = (List<Integer>) map.get("ids");
         String gorupingName = map.get("name").toString();

@@ -8,6 +8,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.model.common.PageResult;
 import com.cloud.user.service.SysPermissionService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,7 @@ import com.cloud.user.service.SysRoleService;
 
 @RestController
 @Slf4j
+@Api(value = "角色", tags = {"角色操作接口 SysRoleController"})
 public class SysRoleController {
 
 	@Autowired
@@ -58,6 +62,7 @@ public class SysRoleController {
 	@LogAnnotation(module = LogModule.ADD_ROLE)
 	@PreAuthorize("hasAuthority('back:role:save')")
 	@PostMapping("/roles2")
+	@ApiOperation(value = "管理后台添加角色")
 	public ResultVo save2(@RequestBody SysRole sysRole) {
 		saveRole(sysRole);
 		return ResultVo.builder().data(sysRole).code(200).msg("添加成功!").build();
@@ -98,6 +103,7 @@ public class SysRoleController {
 	@LogAnnotation(module = LogModule.DELETE_ROLE)
 	@PreAuthorize("hasAuthority('back:role:delete')")
 	@DeleteMapping("/roles2/{id}")
+	@ApiOperation(value = "管理后台删除角色")
 	public ResultVo deleteRole2(@PathVariable Long id) {
 		try {
 			sysRoleService.deleteRole(id);
@@ -115,6 +121,7 @@ public class SysRoleController {
 	@LogAnnotation(module = LogModule.UPDATE_ROLE)
 	@PreAuthorize("hasAuthority('back:role:update')")
 	@PutMapping("/roles")
+	@ApiOperation(value = "管理后台修改角色")
 	public SysRole update(@RequestBody SysRole sysRole) {
 		if (StringUtils.isBlank(sysRole.getName())) {
 			throw new IllegalArgumentException("角色名不能为空");
@@ -146,6 +153,7 @@ public class SysRoleController {
 	@LogAnnotation(module = LogModule.SET_PERMISSION)
 	@PreAuthorize("hasAuthority('back:role:permission:set')")
 	@PostMapping("/setPermission2Role")
+	@ApiOperation(value = "管理后台给角色分配权限",notes = "参数：roleId,permissions（权限id数组）")
 	public ResultVo setPermission2Role(@RequestBody Map<String,Object> map) {
 		try {
 			Long roleId = Long.valueOf(map.get("roleId").toString());
@@ -177,7 +185,8 @@ public class SysRoleController {
 	 */
 	@PreAuthorize("hasAnyAuthority('back:role:permission:set','role:permission:byroleid')")
 	@PostMapping("/queryPermissionsByRoleId")
-	public ResultVo queryPermissionsByRoleId(Long id) {
+	@ApiOperation(value = "获取角色的权限")
+	public ResultVo queryPermissionsByRoleId(@ApiParam(value ="角色id" ,required = true) Long id) {
 		Set<SysPermission> permissionsOfRole = sysRoleService.findPermissionsByRoleId(id);
 		List<SysPermission> list = sysPermissionService.list();
 		list.forEach(i->{
@@ -201,6 +210,7 @@ public class SysRoleController {
 	 */
 	@PreAuthorize("hasAuthority('back:role:query')")
 	@GetMapping("/roles")
+	@ApiOperation(value = "搜索角色")
 	public Page<SysRole> findRoles(@RequestParam Map<String, Object> params) {
 		return sysRoleService.findRoles(params);
 	}
@@ -212,6 +222,7 @@ public class SysRoleController {
 	 */
 	@PreAuthorize("hasAuthority('back:role:query')")
 	@PostMapping("/findPage")
+	@ApiOperation(value = "分页多条件查询",notes = "参数：pageNum，pageSize，condition（SysRole的name）")
 	public PageResult findPage(@RequestBody Map<String, Object> params) {
 		Long pageIndex = Long.valueOf(params.get("pageNum").toString());
 		Long pageSize = Long.valueOf(params.get("pageSize").toString());
