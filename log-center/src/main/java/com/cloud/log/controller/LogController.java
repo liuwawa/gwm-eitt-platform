@@ -9,6 +9,8 @@ import com.cloud.model.common.PageResult;
 import com.cloud.model.log.Log;
 import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +18,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
+@Api(value = "日志", tags = {"日志操作接口 LogController"})
 public class LogController {
 
     @Autowired
     private LogService logService;
 
     @PostMapping("/logs-anon/internal")
+    @ApiOperation(value = "存入日志")
     public void saveLog(@RequestBody Log log) {
         logService.saveLog(log);
     }
@@ -33,6 +37,7 @@ public class LogController {
      */
     @PreAuthorize("hasAuthority('log:query')")
     @GetMapping("/logs-modules")
+    @ApiOperation(value = "日志模块")
     public Map<String, String> logModule() {
         return LogModule.MODULES;
     }
@@ -56,6 +61,7 @@ public class LogController {
      */
     @PreAuthorize("hasAuthority('log:query')")
     @PostMapping("/findPage")
+    @ApiOperation(value = "分页多条件查询日志记录",notes = "参数，pageNum，pageSize，userName")
     public PageResult findLogsPage(@RequestBody Map<String, Object> params) {
         Long pageNum = Long.valueOf(params.get("pageNum").toString());
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
@@ -74,6 +80,7 @@ public class LogController {
     @LogAnnotation(module = LogModule.DELETE_ROLE)
     @PreAuthorize("hasAuthority('back:sms:delete')")
     @DeleteMapping("/delAll")
+    @ApiOperation(value = "删除全部日志")
     public ResultVo deleteAll() {
         try {
             logService.delAllLog();
