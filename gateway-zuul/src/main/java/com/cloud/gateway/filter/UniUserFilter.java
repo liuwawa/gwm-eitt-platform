@@ -69,7 +69,7 @@ public class UniUserFilter extends ZuulFilter {
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
 
-        boolean match = PatternMatchUtils.simpleMatch(new String[]{"*-anon/internal*","/app-anon/**","*-anon/codes"}, request.getRequestURI());
+        boolean match = PatternMatchUtils.simpleMatch(new String[]{"*-anon/internal*","/app-anon/**","*-anon/codes","*-anon/captcha","*-anon/checkCaptcha/**"}, request.getRequestURI());
         if (match){
             return true;
         }

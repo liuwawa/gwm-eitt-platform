@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.utils.AppUserUtil;
+import com.cloud.common.utils.VerifyCodeUtils;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.common.Page;
@@ -24,9 +25,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.ui.Model;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
 
 @Slf4j
@@ -324,52 +329,53 @@ public class UserController {
     /**
      * 验证码生成
      */
-//    @PostMapping("/users/captcha")
-//    public void captchaInit(HttpServletResponse response, Model model) {
-//        // 生成验证码
-//        String code = VerifyCodeUtils.generateVerifyCode(4);
-//        log.info("验证码:{}", code);
-//        // 存入model
-//        model.addAttribute("captchaCode", code);
-//        // 设置响应格式
-//        response.setContentType("image/png");
-//        // 输出流
-//        OutputStream os = null;
-//        try {
-//            os = response.getOutputStream();
-//            // 设置宽和高
-//            int w = 200, h = 80;
-//            // 将图片输出给浏览器
-//            VerifyCodeUtils.outputImage(w, h, os, code);
-//        } catch (IOException e) {
-//            log.error("生成验证码出现异常!", e);
-//            throw new IllegalArgumentException("验证码生成出现异常！");
-//        } finally {
-//            try {
-//                os.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+    @GetMapping("/users-anon/captcha")
+    public void captchaInit(HttpServletResponse response, Model model) {
+        // 生成验证码
+        String code = VerifyCodeUtils.generateVerifyCode(4);
+        log.info("验证码:{}", code);
+        // 存入model
+        model.addAttribute("captchaCode", code);
+        // 设置响应格式
+        response.setContentType("image/png");
+        // 输出流
+        OutputStream os = null;
+        try {
+            os = response.getOutputStream();
+            // 设置宽和高
+            int w = 200, h = 80;
+            // 将图片输出给浏览器
+            VerifyCodeUtils.outputImage(w, h, os, code);
+        } catch (IOException e) {
+            log.error("生成验证码出现异常!", e);
+            throw new IllegalArgumentException("验证码生成出现异常！");
+        } finally {
+            try {
+                os.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     /**
      * @param code     前台传值
      * @param trueCode session中的值
      *                 判断验证码
      */
-//    @GetMapping("/users/checkCaptcha/{code}")
-//    public void checkCode(@PathVariable String code, @ModelAttribute("captchaCode") String trueCode) {
-//        if (StringUtils.isBlank(code)) {
-//            throw new IllegalArgumentException("请输入验证码！");
-//        }
-//        log.info("session中的,code:{}", trueCode);
-//        log.info("输入的,code:{}", code);
-//        if (!code.equalsIgnoreCase(trueCode)) {
-//            throw new IllegalArgumentException("输入的验证码错误！");
-//        }
-//        log.info("验证码正确");
-//    }
+    @GetMapping("/users-anon/checkCaptcha/{code}")
+    public ResultVo checkCode(@PathVariable String code, @ModelAttribute("captchaCode") String trueCode) {
+        if (StringUtils.isBlank(code)) {
+            throw new IllegalArgumentException("请输入验证码！");
+        }
+        log.info("session中的,code:{}", trueCode);
+        log.info("输入的,code:{}", code);
+        if (!code.equalsIgnoreCase(trueCode)) {
+            throw new IllegalArgumentException("输入的验证码错误！");
+        }
+        log.info("验证码正确");
+        return ResultVo.builder().code(20000).msg("验证码校验成功!").data(null).build();
+    }
 
 
     /**
