@@ -170,7 +170,7 @@ public class UserController {
     public ResultVo modifyPassword(@ApiParam(value ="旧密码",required = true)@RequestParam("oldPassword") String oldPassword, @ApiParam(value ="新密码",required = true)@RequestParam("newPassword") String newPassword) {
         try {
             SysUser user = AppUserUtil.getLoginAppUser();
-            appUserService.updatePassword(user.getId(), oldPassword, newPassword);
+            appUserService.updatePassword2(user, oldPassword, newPassword);
             return ResultVo.builder().code(200).msg("操作成功!").data(null).build();
         } catch (Exception e) {
             log.info(e + "");

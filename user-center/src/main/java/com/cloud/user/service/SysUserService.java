@@ -29,6 +29,7 @@ public interface SysUserService extends IService<SysUser> {
     void setRoleToUser(Long id, Set<Long> roleIds);
 
     void updatePassword(Long id, String oldPassword, String newPassword);
+    void updatePassword2(SysUser user, String oldPassword, String newPassword);
 
     Page<SysUser> findUsers(Map<String, Object> params);
 
