@@ -2,6 +2,8 @@ package com.cloud.user.controller;
 
 
 import com.alibaba.fastjson.JSONArray;
+import com.cloud.common.plugins.ApiJsonObject;
+import com.cloud.common.plugins.ApiJsonProperty;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.utils.AppUserUtil;
@@ -399,7 +401,18 @@ public class UserController {
     @PreAuthorize("hasAuthority('back:user:query')")
     @PostMapping("/users/findPages")
     @ApiOperation(value = "分页，多条件查询全部用户",notes = "参数：pageNum（必填），pageSize（必填），username，nickname，sex，enabled")
-    public PageResult findUsersByPages(@RequestBody Map<String, Object> params) {
+    public PageResult findUsersByPages(
+            @ApiJsonObject(name = "分页，多条件查询全部用户", value = {
+                    @ApiJsonProperty(key = "pageNum", example = "1", description = "pageNum"),
+                    @ApiJsonProperty(key = "pageSize", example = "10", description = "pageSize"),
+                    @ApiJsonProperty(key = "username", example = "username", description = "username"),
+                    @ApiJsonProperty(key = "nickname", example = "nickname", description = "nickname"),
+                    @ApiJsonProperty(key = "personnelID", example = "0", description = "personnelID"),
+                    @ApiJsonProperty(key = "duties", example = "duties", description = "duties"),
+                    @ApiJsonProperty(key = "sex", example = "0", description = "性别 0:女1:男"),
+                    @ApiJsonProperty(key = "enabled", example = "false", description = "enabled")
+            })
+            @RequestBody Map<String, Object> params) {
         // 取值判空
         Long pageIndex = Long.valueOf(params.get("pageNum").toString());
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
@@ -529,7 +542,11 @@ public class UserController {
     @PreAuthorize("hasAuthority('back:user:role:set')")
     @PostMapping("/users/setRoles")
     @ApiOperation(value = "用户设置角色",notes = "必填参数： userId,roleIds（数组）")
-    public ResultVo setRoleForUser(@RequestBody Map map) {
+    public ResultVo setRoleForUser(
+            @ApiJsonObject(name = "用户设置角色", value = {
+                    @ApiJsonProperty(key = "roleIds", example = "[]", description = "roleIds"),
+                    @ApiJsonProperty(key = "userId", example = "0", description = "userId")})
+            @RequestBody Map map) {
         try {
             Long id = Long.valueOf(map.get("userId").toString());
             HashSet<Long> roleIds = new HashSet<>(JSONArray.parseArray(map.get("roleIds").toString(), Long.class));
