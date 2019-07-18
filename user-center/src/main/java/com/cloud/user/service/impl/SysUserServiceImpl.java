@@ -198,6 +198,29 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         log.info("修改密码：{}", user);
     }
 
+    /**
+     * 修改密码(element ui)
+     *
+     * @param user
+     * @param oldPassword
+     * @param newPassword
+     */
+    @Transactional
+    @Override
+    public void updatePassword2(SysUser user, String oldPassword, String newPassword) throws IllegalArgumentException {
+        SysUser appUser = appUserDao.findById(user.getId());
+        if (StringUtils.isNoneBlank(oldPassword)) {
+            if (!passwordEncoder.matches(oldPassword, appUser.getPassword())) { // 旧密码校验
+                throw new IllegalArgumentException("旧密码错误");
+            }
+        }
+
+        appUser.setPassword(passwordEncoder.encode(newPassword)); // 加密密码
+
+        appUserDao.updateById(appUser);
+        log.info("修改密码：{}", user);
+    }
+
     @Override
     public Page<SysUser> findUsers(Map<String, Object> params) {
         int total = appUserDao.count(params);
@@ -229,7 +252,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         SysUser appUser = appUserDao.findById(userId);
         appUser.setPhone(phone);
 
-        updateAppUser(appUser);
+        appUserDao.updateById(appUser);
         log.info("绑定手机号成功,username:{}，phone:{}", appUser.getUsername(), phone);
 
         // 绑定成功后，将手机号存到用户凭证表，后续可通过手机号+密码或者手机号+短信验证码登陆

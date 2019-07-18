@@ -170,7 +170,7 @@ public class UserController {
     public ResultVo modifyPassword(@ApiParam(value ="旧密码",required = true)@RequestParam("oldPassword") String oldPassword, @ApiParam(value ="新密码",required = true)@RequestParam("newPassword") String newPassword) {
         try {
             SysUser user = AppUserUtil.getLoginAppUser();
-            appUserService.updatePassword(user.getId(), oldPassword, newPassword);
+            appUserService.updatePassword2(user, oldPassword, newPassword);
             return ResultVo.builder().code(200).msg("操作成功!").data(null).build();
         } catch (Exception e) {
             log.info(e + "");
@@ -314,7 +314,7 @@ public class UserController {
                 return ResultVo.builder().code(200).data(null).msg("绑定成功!").build();
             } catch (Exception e) {
                 log.info(e + "");
-                return ResultVo.builder().code(50003).data(null).msg(e.getMessage()).build();
+                return ResultVo.builder().code(50003).data(null).msg("请联系管理员!").build();
             }
         } else {
             return ResultVo.builder().code(50003).data(null).msg("手机号不一致!").build();
