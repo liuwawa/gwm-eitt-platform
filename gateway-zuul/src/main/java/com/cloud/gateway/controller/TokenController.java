@@ -71,7 +71,7 @@ public class TokenController {
      */
     @PostMapping("/sys/login")
     @ApiOperation(value = "根据用户名登录")
-    public Map<String, Object> login(@ApiParam(value = "用户名",required = true) String username,@ApiParam(value = "密码",required = true) String password, HttpServletRequest request, HttpServletResponse response) {
+    public Map<String, Object> login(@ApiParam(value = "用户名", required = true) String username, @ApiParam(value = "密码", required = true) String password, HttpServletRequest request, HttpServletResponse response) {
         getOut(username, request);
 
         Map<String, String> parameters = initOauthParam();
@@ -148,7 +148,7 @@ public class TokenController {
      */
     @PostMapping("/sys/login-sms")
     @ApiOperation(value = "短信登录")
-    public Map<String, Object> smsLogin(@ApiParam(value = "手机号",required = true) String phone, @ApiParam(value = "验证码redis key",required = true)String key, @ApiParam(value = "验证码",required = true)String code, HttpServletRequest request, HttpServletResponse response) {
+    public Map<String, Object> smsLogin(@ApiParam(value = "手机号", required = true) String phone, @ApiParam(value = "验证码redis key", required = true) String key, @ApiParam(value = "验证码", required = true) String code, HttpServletRequest request, HttpServletResponse response) {
         Map<String, String> parameters = initOauthParam();
 
         SysUser appUser = userClient.findByPhone(phone);
@@ -253,7 +253,7 @@ public class TokenController {
      */
     @GetMapping("/sys/logout")
     @ApiOperation(value = "登出")
-    public void logout(@ApiParam(value = "access_token",required = true) String access_token, @ApiParam(value = "username",required = true)String username, @RequestHeader(required = false, value = "Authorization") String token) {
+    public void logout(@ApiParam(value = "access_token", required = true) String access_token, @ApiParam(value = "username", required = true) String username, @RequestHeader(required = false, value = "Authorization") String token) {
         if (StringUtils.isBlank(access_token)) {
             if (StringUtils.isNoneBlank(token)) {
                 access_token = token.substring(OAuth2AccessToken.BEARER_TYPE.length() + 1);
@@ -261,6 +261,7 @@ public class TokenController {
         }
         if (username != null) {
             redisUtils.del(USER_CODE + username);
+            redisUtils.del(PAST + username);
         }
         oauth2Client.removeToken(access_token);
     }

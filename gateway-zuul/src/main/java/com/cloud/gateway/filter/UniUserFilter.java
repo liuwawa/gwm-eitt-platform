@@ -83,15 +83,6 @@ public class UniUserFilter extends ZuulFilter {
                 redisUtils.del(PAST + my);
                 sendResponse(requestContext);
                 return false;
-            }else if (past == null){
-                String tok = (String) redisUtils.get(USER_CODE + my);
-                String[] split = tok.split("@");
-                if (split != null && split.length == 4) {
-                    if (!split[3].equals(authentication)){
-                        redisUtils.set(PAST + my, split[3]);
-                        sendResponse(requestContext);
-                    }
-                }
             }
         }
 
