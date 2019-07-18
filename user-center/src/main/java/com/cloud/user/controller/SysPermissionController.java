@@ -3,6 +3,8 @@ package com.cloud.user.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.enums.ResponseStatus;
+import com.cloud.common.plugins.ApiJsonObject;
+import com.cloud.common.plugins.ApiJsonProperty;
 import com.cloud.common.utils.AppUserUtil;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.model.common.PageResult;
@@ -109,18 +111,18 @@ public class SysPermissionController {
     @LogAnnotation(module = LogModule.UPDATE_PERMISSION)
     @PreAuthorize("hasAuthority('back:permission:update')")
     @PutMapping("/permissions2")
-    @ApiOperation(value = "修改权限")
+    @ApiOperation(value = "管理后台修改权限")
     public ResultVo update2(@RequestBody SysPermission sysPermission) {
         try {
             if (StringUtils.isBlank(sysPermission.getName())) {
-                return new ResultVo(500, "权限名不能为空", null);
+                throw new IllegalArgumentException("权限名不能为空");
             }
             sysPermissionService.update(sysPermission);
             log.info("编辑成功，权限id:{}", sysPermission.getId());
             return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
         } catch (Exception e) {
             log.error("编辑出现异常", e);
-            return new ResultVo(500, "已经存在权限标识:" + sysPermission.getPermission(), null);
+            return new ResultVo(500, ResponseStatus.RESPONSE_OPERATION_ERROR.message, null);
         }
 
     }
@@ -173,7 +175,14 @@ public class SysPermissionController {
     @PreAuthorize("hasAuthority('back:permission:query')")
     @PostMapping("/findPages")
     @ApiOperation(value = "分页多条件查询", notes = "参数：pageNum，pageSize，name，permission（对象）")
-    public PageResult findPermissionsPage(@RequestBody Map<String, Object> params) {
+    public PageResult findPermissionsPage(
+            @ApiJsonObject(name = "分页多条件查询权限", value = {
+                    @ApiJsonProperty(key = "pageNum", example = "1", description = "pageNum"),
+                    @ApiJsonProperty(key = "pageSize", example = "10", description = "pageSize"),
+                    @ApiJsonProperty(key = "name", example = "name", description = "name"),
+                    @ApiJsonProperty(key = "permission", example = "permission", description = "permission")
+            })
+            @RequestBody Map<String, Object> params) {
         Long pageIndex = Long.valueOf(params.get("pageNum").toString());
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
         String name = String.valueOf(params.get("name").toString());

@@ -1,6 +1,8 @@
 package com.cloud.user.controller;
 
 
+import com.cloud.common.plugins.ApiJsonObject;
+import com.cloud.common.plugins.ApiJsonProperty;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.user.SysGrouping;
@@ -40,7 +42,12 @@ public class SysUserGroupingController {
      */
     @PostMapping("/addUserCheck")
     @ApiOperation(value = "添加用户的可以查看的分组",notes = "参数：groupingIds（组织id集合）,userId")
-    public ResultVo addUserGroupingCheck(@RequestBody Map map) {
+    public ResultVo addUserGroupingCheck(
+            @ApiJsonObject(name = "添加用户的可以查看的分组", value = {
+                    @ApiJsonProperty(key = "groupingIds", example = "[]", description = "groupingIds"),
+                    @ApiJsonProperty(key = "userId", example = "0", description = "userId")
+            })
+            @RequestBody Map map) {
         List<Integer> groupingIds = (List<Integer>) map.get("groupingIds");
         Integer userId = (Integer) map.get("userId");
         try {

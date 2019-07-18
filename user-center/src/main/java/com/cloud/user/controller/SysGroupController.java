@@ -1,6 +1,8 @@
 package com.cloud.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.cloud.common.plugins.ApiJsonObject;
+import com.cloud.common.plugins.ApiJsonProperty;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.log.LogAnnotation;
@@ -10,8 +12,7 @@ import com.cloud.model.user.SysGroupExpand;
 import com.cloud.response.BaseEntity;
 import com.cloud.response.ObjectConversionEntityUtil;
 import com.cloud.user.service.SysGroupService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -104,7 +105,10 @@ public class SysGroupController {
     @PreAuthorize("hasAuthority('back:group:delete')")
     @DeleteMapping("/deleteGroups")
     @ApiOperation(value = "批量删除部门", notes = "参数：（数组）groupIds，loginAdminName")
-    public ResultVo deleteGroups(@RequestBody Map map) {
+    public ResultVo deleteGroups(@ApiJsonObject(name = "批量删除部门", value = {
+            @ApiJsonProperty(key = "groupIds", example = "[]", description = "groupIds"),
+            @ApiJsonProperty(key = "loginAdminName", example = "", description = "loginAdminName")
+    }) @RequestBody Map map) {
         List<Integer> groupIds = (List<Integer>) map.get("groupIds");
         String loginAdminName = (String) map.get("loginAdminName");
         try {
@@ -116,7 +120,6 @@ public class SysGroupController {
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, e.getMessage(), null);
         }
     }
-
 
     /**
      * @return 获取所有组织
@@ -191,7 +194,12 @@ public class SysGroupController {
     @PreAuthorize("hasAuthority('back:group:update')")
     @PostMapping("/changeGroup")
     @ApiOperation(value = "修改部门", notes = "参数：parentId，（数组）groupIds")
-    public ResultVo changeGroupStructure(@RequestBody Map map) {
+    public ResultVo changeGroupStructure(
+            @ApiJsonObject(name = "修改组织结构的接口", value = {
+                    @ApiJsonProperty(key = "parentId", example = "1", description = "parentId"),
+                    @ApiJsonProperty(key = "groupIds", example = "[]", description = "groupIds数组")
+            })
+            @RequestBody Map map) {
         Integer parentId = Integer.valueOf(map.get("parentId").toString());
         List<Integer> groupIds = (List<Integer>) map.get("groupIds");
         try {

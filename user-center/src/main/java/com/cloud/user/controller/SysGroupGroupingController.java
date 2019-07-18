@@ -1,6 +1,8 @@
 package com.cloud.user.controller;
 
 
+import com.cloud.common.plugins.ApiJsonObject;
+import com.cloud.common.plugins.ApiJsonProperty;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.user.SysGroup;
@@ -39,7 +41,15 @@ public class SysGroupGroupingController {
     @PreAuthorize("hasAnyAuthority('back:group:delete','back:group:save','back:group:update')")
     @PostMapping("/updateGrouping")
     @ApiOperation(value = "添加部门分组",notes = "参数名称：（数组）groupIds，groupingId，groupingName，groupingRemark，loginAdminName")
-    public ResultVo addGroupToGrouping(@RequestBody Map map) {
+    public ResultVo addGroupToGrouping(
+            @ApiJsonObject(name = "添加部门分组", value = {
+                    @ApiJsonProperty(key = "groupingId", example = "1", description = "groupingId"),
+                    @ApiJsonProperty(key = "groupIds", example = "[]", description = "groupIds数组"),
+                    @ApiJsonProperty(key = "groupingName", example = "groupingName", description = "groupingName"),
+                    @ApiJsonProperty(key = "groupingRemark", example = "groupingRemark", description = "groupingRemark"),
+                    @ApiJsonProperty(key = "loginAdminName", example = "loginAdminName", description = "loginAdminName"),
+            })
+            @RequestBody Map map) {
         List<Integer> groupIds = (List<Integer>) map.get("groupIds");
         Integer groupingId = (Integer) map.get("groupingId");
         String groupingName = map.get("groupingName").toString();

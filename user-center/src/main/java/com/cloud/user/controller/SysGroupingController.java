@@ -2,6 +2,8 @@ package com.cloud.user.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.cloud.common.plugins.ApiJsonObject;
+import com.cloud.common.plugins.ApiJsonProperty;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.common.Page;
@@ -61,7 +63,12 @@ public class SysGroupingController {
     @PreAuthorize("hasAuthority('back:group:delete')")
     @DeleteMapping(value = "/deleteGroupings")
     @ApiOperation(value = "批量删除(逻辑删除)",notes = "参数：groupingIds（数组），loginAdminName")
-    public ResultVo deleteGroupings(@RequestBody Map map) {
+    public ResultVo deleteGroupings(
+            @ApiJsonObject(name = "批量删除分组", value = {
+                    @ApiJsonProperty(key = "groupingIds", example = "[]", description = "groupingIds"),
+                    @ApiJsonProperty(key = "loginAdminName", example = "", description = "loginAdminName")
+            })
+            @RequestBody Map map) {
         // 获取数据
         List<Integer> groupingIds = (List<Integer>) map.get("groupingIds");
         String loginAdminName = map.get("loginAdminName").toString();
@@ -85,7 +92,14 @@ public class SysGroupingController {
     @PreAuthorize("hasAuthority('back:group:save')")
     @PostMapping("/initGroupingSaveGroup")
     @ApiOperation(value = "生成一个分组的同时把组织添加到这个分组里",notes = "参数：ids（数组），name，remark，userName")
-    public ResultVo initGroupingSaveGroup(@RequestBody Map map) {
+    public ResultVo initGroupingSaveGroup(
+            @ApiJsonObject(name = "生成一个分组的同时把组织添加到这个分组里", value = {
+                    @ApiJsonProperty(key = "ids", example = "[]", description = "ids"),
+                    @ApiJsonProperty(key = "name", example = "name", description = "name"),
+                    @ApiJsonProperty(key = "remark", example = "remark", description = "remark"),
+                    @ApiJsonProperty(key = "userName", example = "userName", description = "userName")
+            })
+            @RequestBody Map map) {
         List<Integer> groupIds = (List<Integer>) map.get("ids");
         String gorupingName = map.get("name").toString();
         String groupingRemark = map.get("remark").toString();
