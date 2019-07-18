@@ -4,8 +4,9 @@ package com.cloud.user.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.cloud.common.plugins.ApiJsonObject;
+import com.cloud.common.plugins.ApiJsonProperty;
 import com.cloud.common.utils.AppUserUtil;
-import com.cloud.common.utils.VerifyCodeUtils;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.common.Page;
@@ -25,17 +26,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.social.connect.web.HttpSessionSessionStrategy;
-import org.springframework.social.connect.web.SessionStrategy;
-import org.springframework.ui.Model;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.ServletWebRequest;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.*;
 
 @Slf4j
@@ -52,12 +45,6 @@ public class UserController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    final String SESSION_KEY = "SESSION_KEY";
-
-    /**
-     * 操作session的工具类
-     */
-    private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
     /**
      * 当前登录用户 LoginAppUser
      */
@@ -339,56 +326,52 @@ public class UserController {
     /**
      * 验证码生成
      */
-    @GetMapping("/users-anon/captcha")
-    public void captchaInit(HttpServletRequest request, HttpServletResponse response, Model model) {
-        // 生成验证码
-        String code = VerifyCodeUtils.generateVerifyCode(4);
-        log.info("验证码:{}", code);
-        // 存入model
-        model.addAttribute("captchaCode", code);
-
-        sessionStrategy.setAttribute(new ServletWebRequest(request,response), SESSION_KEY, code);
-        // 设置响应格式
-        response.setContentType("image/png");
-        // 输出流
-        OutputStream os = null;
-        try {
-            os = response.getOutputStream();
-            // 设置宽和高
-            int w = 200, h = 80;
-            // 将图片输出给浏览器
-            VerifyCodeUtils.outputImage(w, h, os, code);
-        } catch (IOException e) {
-            log.error("生成验证码出现异常!", e);
-            throw new IllegalArgumentException("验证码生成出现异常！");
-        } finally {
-            try {
-                os.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    @PostMapping("/users/captcha")
+//    public void captchaInit(HttpServletResponse response, Model model) {
+//        // 生成验证码
+//        String code = VerifyCodeUtils.generateVerifyCode(4);
+//        log.info("验证码:{}", code);
+//        // 存入model
+//        model.addAttribute("captchaCode", code);
+//        // 设置响应格式
+//        response.setContentType("image/png");
+//        // 输出流
+//        OutputStream os = null;
+//        try {
+//            os = response.getOutputStream();
+//            // 设置宽和高
+//            int w = 200, h = 80;
+//            // 将图片输出给浏览器
+//            VerifyCodeUtils.outputImage(w, h, os, code);
+//        } catch (IOException e) {
+//            log.error("生成验证码出现异常!", e);
+//            throw new IllegalArgumentException("验证码生成出现异常！");
+//        } finally {
+//            try {
+//                os.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     /**
      * @param code     前台传值
      * @param trueCode session中的值
      *                 判断验证码
      */
-    @GetMapping("/users-anon/checkCaptcha/{code}")
-    public ResultVo checkCode(HttpServletRequest request, HttpServletResponse response,@PathVariable String code) {
-        if (StringUtils.isBlank(code)) {
-            throw new IllegalArgumentException("请输入验证码！");
-        }
-        String trueCode = (String) sessionStrategy.getAttribute(new ServletWebRequest(request,response), SESSION_KEY);
-        log.info("session中的,code:{}", trueCode);
-        log.info("输入的,code:{}", code);
-        if (!code.equalsIgnoreCase(trueCode)) {
-            throw new IllegalArgumentException("验证码错误！");
-        }
-        log.info("验证码正确");
-        return ResultVo.builder().code(20000).msg("验证码校验成功!").data(null).build();
-    }
+//    @GetMapping("/users/checkCaptcha/{code}")
+//    public void checkCode(@PathVariable String code, @ModelAttribute("captchaCode") String trueCode) {
+//        if (StringUtils.isBlank(code)) {
+//            throw new IllegalArgumentException("请输入验证码！");
+//        }
+//        log.info("session中的,code:{}", trueCode);
+//        log.info("输入的,code:{}", code);
+//        if (!code.equalsIgnoreCase(trueCode)) {
+//            throw new IllegalArgumentException("输入的验证码错误！");
+//        }
+//        log.info("验证码正确");
+//    }
 
 
     /**
@@ -399,7 +382,18 @@ public class UserController {
     @PreAuthorize("hasAuthority('back:user:query')")
     @PostMapping("/users/findPages")
     @ApiOperation(value = "分页，多条件查询全部用户",notes = "参数：pageNum（必填），pageSize（必填），username，nickname，sex，enabled")
-    public PageResult findUsersByPages(@RequestBody Map<String, Object> params) {
+    public PageResult findUsersByPages(
+            @ApiJsonObject(name = "分页，多条件查询全部用户", value = {
+                    @ApiJsonProperty(key = "pageNum", example = "1", description = "pageNum"),
+                    @ApiJsonProperty(key = "pageSize", example = "10", description = "pageSize"),
+                    @ApiJsonProperty(key = "username", example = "username", description = "username"),
+                    @ApiJsonProperty(key = "nickname", example = "nickname", description = "nickname"),
+                    @ApiJsonProperty(key = "personnelID", example = "0", description = "personnelID"),
+                    @ApiJsonProperty(key = "duties", example = "duties", description = "duties"),
+                    @ApiJsonProperty(key = "sex", example = "0", description = "性别 0:女1:男"),
+                    @ApiJsonProperty(key = "enabled", example = "false", description = "enabled")
+            })
+            @RequestBody Map<String, Object> params) {
         // 取值判空
         Long pageIndex = Long.valueOf(params.get("pageNum").toString());
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
@@ -529,7 +523,11 @@ public class UserController {
     @PreAuthorize("hasAuthority('back:user:role:set')")
     @PostMapping("/users/setRoles")
     @ApiOperation(value = "用户设置角色",notes = "必填参数： userId,roleIds（数组）")
-    public ResultVo setRoleForUser(@RequestBody Map map) {
+    public ResultVo setRoleForUser(
+            @ApiJsonObject(name = "用户设置角色", value = {
+                    @ApiJsonProperty(key = "roleIds", example = "[]", description = "roleIds"),
+                    @ApiJsonProperty(key = "userId", example = "0", description = "userId")})
+            @RequestBody Map map) {
         try {
             Long id = Long.valueOf(map.get("userId").toString());
             HashSet<Long> roleIds = new HashSet<>(JSONArray.parseArray(map.get("roleIds").toString(), Long.class));
