@@ -52,6 +52,8 @@ public class UserController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    final String SESSION_KEY = "SESSION_KEY";
+
     /**
      * 操作session的工具类
      */
@@ -345,7 +347,7 @@ public class UserController {
         // 存入model
         model.addAttribute("captchaCode", code);
 
-        sessionStrategy.setAttribute(new ServletWebRequest(request,response), "abc", code);
+        sessionStrategy.setAttribute(new ServletWebRequest(request,response), SESSION_KEY, code);
         // 设置响应格式
         response.setContentType("image/png");
         // 输出流
@@ -378,11 +380,11 @@ public class UserController {
         if (StringUtils.isBlank(code)) {
             throw new IllegalArgumentException("请输入验证码！");
         }
-        String trueCode = (String) sessionStrategy.getAttribute(new ServletWebRequest(request,response), "abc");
+        String trueCode = (String) sessionStrategy.getAttribute(new ServletWebRequest(request,response), SESSION_KEY);
         log.info("session中的,code:{}", trueCode);
         log.info("输入的,code:{}", code);
         if (!code.equalsIgnoreCase(trueCode)) {
-            throw new IllegalArgumentException("输入的验证码错误！");
+            throw new IllegalArgumentException("验证码错误！");
         }
         log.info("验证码正确");
         return ResultVo.builder().code(20000).msg("验证码校验成功!").data(null).build();
