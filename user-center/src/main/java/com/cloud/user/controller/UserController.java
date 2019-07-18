@@ -314,7 +314,7 @@ public class UserController {
                 return ResultVo.builder().code(200).data(null).msg("绑定成功!").build();
             } catch (Exception e) {
                 log.info(e + "");
-                return ResultVo.builder().code(50003).data(null).msg(e.getMessage()).build();
+                return ResultVo.builder().code(50003).data(null).msg("请联系管理员!").build();
             }
         } else {
             return ResultVo.builder().code(50003).data(null).msg("手机号不一致!").build();

@@ -229,7 +229,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         SysUser appUser = appUserDao.findById(userId);
         appUser.setPhone(phone);
 
-        updateAppUser(appUser);
+        appUserDao.updateById(appUser);
         log.info("绑定手机号成功,username:{}，phone:{}", appUser.getUsername(), phone);
 
         // 绑定成功后，将手机号存到用户凭证表，后续可通过手机号+密码或者手机号+短信验证码登陆
