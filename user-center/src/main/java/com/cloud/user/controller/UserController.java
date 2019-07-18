@@ -25,10 +25,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.social.connect.web.HttpSessionSessionStrategy;
+import org.springframework.social.connect.web.SessionStrategy;
 import org.springframework.ui.Model;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.ServletWebRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -48,6 +52,10 @@ public class UserController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    /**
+     * 操作session的工具类
+     */
+    private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
     /**
      * 当前登录用户 LoginAppUser
      */
@@ -330,12 +338,14 @@ public class UserController {
      * 验证码生成
      */
     @GetMapping("/users-anon/captcha")
-    public void captchaInit(HttpServletResponse response, Model model) {
+    public void captchaInit(HttpServletRequest request, HttpServletResponse response, Model model) {
         // 生成验证码
         String code = VerifyCodeUtils.generateVerifyCode(4);
         log.info("验证码:{}", code);
         // 存入model
         model.addAttribute("captchaCode", code);
+
+        sessionStrategy.setAttribute(new ServletWebRequest(request,response), "abc", code);
         // 设置响应格式
         response.setContentType("image/png");
         // 输出流
@@ -364,10 +374,11 @@ public class UserController {
      *                 判断验证码
      */
     @GetMapping("/users-anon/checkCaptcha/{code}")
-    public ResultVo checkCode(@PathVariable String code, @ModelAttribute("captchaCode") String trueCode) {
+    public ResultVo checkCode(HttpServletRequest request, HttpServletResponse response,@PathVariable String code) {
         if (StringUtils.isBlank(code)) {
             throw new IllegalArgumentException("请输入验证码！");
         }
+        String trueCode = (String) sessionStrategy.getAttribute(new ServletWebRequest(request,response), "abc");
         log.info("session中的,code:{}", trueCode);
         log.info("输入的,code:{}", code);
         if (!code.equalsIgnoreCase(trueCode)) {
