@@ -20,6 +20,9 @@ spring:
       enabled: true  #开启总线消息更新功能
 server:
   port: 18083
+#  servlet:
+#    session:
+#      timeout: 5s
 eureka:
   instance:
     instance-id: ${spring.application.name}:${random.int}

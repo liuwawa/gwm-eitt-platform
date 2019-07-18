@@ -37,6 +37,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
@@ -58,6 +61,7 @@ public class UserController {
      * 操作session的工具类
      */
     private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
+
     /**
      * 当前登录用户 LoginAppUser
      */
@@ -71,13 +75,13 @@ public class UserController {
 
     @GetMapping(value = "/users-anon/internal", params = "username")
     @ApiOperation(value = "根据用户名查找用户信息")
-    public LoginAppUser findByUsername(@ApiParam(value = "用户名",required =true ) String username) {
+    public LoginAppUser findByUsername(@ApiParam(value = "用户名", required = true) String username) {
         return appUserService.findByUsername(username);
     }
 
     @GetMapping(value = "/phone-anon/internal", params = "phone")
     @ApiOperation(value = "根据手机号查找用户信息")
-    public SysUser findByPhone(@ApiParam(value = "用户手机号",required =true )String phone) {
+    public SysUser findByPhone(@ApiParam(value = "用户手机号", required = true) String phone) {
         return appUserService.findByPhone(phone);
     }
 
@@ -140,7 +144,7 @@ public class UserController {
     @LogAnnotation(module = LogModule.UPDATE_ME)
     @PostMapping("/users/modifyMineInfo")
     @ApiOperation(value = "修改用户信息")
-    public ResultVo modifyMineInfo(@ApiParam(value = "SysUser对象")@RequestBody SysUser appUser) {
+    public ResultVo modifyMineInfo(@ApiParam(value = "SysUser对象") @RequestBody SysUser appUser) {
         SysUser user = AppUserUtil.getLoginAppUser();
         appUser.setId(user.getId());
 
@@ -182,7 +186,7 @@ public class UserController {
     @LogAnnotation(module = LogModule.UPDATE_PASSWORD)
     @PostMapping(value = "/users/modifyPassword")
     @ApiOperation(value = "修改密码")
-    public ResultVo modifyPassword(@ApiParam(value ="旧密码",required = true)@RequestParam("oldPassword") String oldPassword, @ApiParam(value ="新密码",required = true)@RequestParam("newPassword") String newPassword) {
+    public ResultVo modifyPassword(@ApiParam(value = "旧密码", required = true) @RequestParam("oldPassword") String oldPassword, @ApiParam(value = "新密码", required = true) @RequestParam("newPassword") String newPassword) {
         try {
             SysUser user = AppUserUtil.getLoginAppUser();
             appUserService.updatePassword2(user, oldPassword, newPassword);
@@ -209,7 +213,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('back:user:password')")
     @PutMapping(value = "/users/{id}/password", params = {"newPassword"})
     @ApiOperation(value = "重置密码")
-    public void resetPassword(@ApiParam(value = "用户id",required = true)@PathVariable Long id, @ApiParam(value ="新密码",required = true) String newPassword) {
+    public void resetPassword(@ApiParam(value = "用户id", required = true) @PathVariable Long id, @ApiParam(value = "新密码", required = true) String newPassword) {
         appUserService.updatePassword(id, null, newPassword);
     }
 
@@ -222,7 +226,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('back:user:update')")
     @PutMapping("/users")
     @ApiOperation(value = "修改用户")
-    public void updateAppUser(@ApiParam(value = "用户", required = true)@RequestBody SysUser appUser) {
+    public void updateAppUser(@ApiParam(value = "用户", required = true) @RequestBody SysUser appUser) {
         appUserService.updateAppUser(appUser);
     }
 
@@ -236,7 +240,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('back:user:role:set')")
     @PostMapping("/users/{id}/roles")
     @ApiOperation(value = "用户分配角色")
-    public void setRoleToUser(@ApiParam(value = "用户id", required = true)@PathVariable Long id, @RequestBody Set<Long> roleIds) {
+    public void setRoleToUser(@ApiParam(value = "用户id", required = true) @PathVariable Long id, @RequestBody Set<Long> roleIds) {
         appUserService.setRoleToUser(id, roleIds);
     }
 
@@ -247,7 +251,7 @@ public class UserController {
      */
     @PreAuthorize("hasAnyAuthority('back:user:role:set','user:role:byuid')")
     @GetMapping("/users/{id}/roles")
-    @ApiOperation(value ="根据用户id查询用户角色")
+    @ApiOperation(value = "根据用户id查询用户角色")
     public Set<SysRole> findRolesByUserId(@PathVariable Long id) {
         return appUserService.findRolesByUserId(id);
     }
@@ -300,7 +304,7 @@ public class UserController {
      */
     @PostMapping(value = "/users/bindPhone")
     @ApiOperation(value = "绑定手机号")
-    public ResultVo bindPhone(@ApiParam(value = "手机号", required = true)String phone,@ApiParam(value = "redis 中的key值，根据key取值去与验证码对比", required = true) String key, @ApiParam(value = "验证码", required = true)String code) {
+    public ResultVo bindPhone(@ApiParam(value = "手机号", required = true) String phone, @ApiParam(value = "redis 中的key值，根据key取值去与验证码对比", required = true) String key, @ApiParam(value = "验证码", required = true) String code) {
 
         if (StringUtils.isBlank(phone)) {
             return ResultVo.builder().code(50001).data(null).msg("手机号不能为空!").build();
@@ -347,7 +351,8 @@ public class UserController {
         // 存入model
         model.addAttribute("captchaCode", code);
 
-        sessionStrategy.setAttribute(new ServletWebRequest(request,response), SESSION_KEY, code);
+        sessionStrategy.setAttribute(new ServletWebRequest(request, response), SESSION_KEY, code);
+        removeAttrbute(new ServletWebRequest(request, response), SESSION_KEY);
         // 设置响应格式
         response.setContentType("image/png");
         // 输出流
@@ -372,15 +377,14 @@ public class UserController {
 
     /**
      * @param code     前台传值
-     * @param trueCode session中的值
      *                 判断验证码
      */
     @GetMapping("/users-anon/checkCaptcha/{code}")
-    public ResultVo checkCode(HttpServletRequest request, HttpServletResponse response,@PathVariable String code) {
+    public ResultVo checkCode(HttpServletRequest request, HttpServletResponse response, @PathVariable String code) {
         if (StringUtils.isBlank(code)) {
             throw new IllegalArgumentException("请输入验证码！");
         }
-        String trueCode = (String) sessionStrategy.getAttribute(new ServletWebRequest(request,response), SESSION_KEY);
+        String trueCode = (String) sessionStrategy.getAttribute(new ServletWebRequest(request, response), SESSION_KEY);
         log.info("session中的,code:{}", trueCode);
         log.info("输入的,code:{}", code);
         if (!code.equalsIgnoreCase(trueCode)) {
@@ -392,13 +396,25 @@ public class UserController {
 
 
     /**
+     * 设置1分钟后删除session中的验证码
+     *
+     * @param attrName
+     */
+    private void removeAttrbute(final ServletWebRequest request, final String attrName) {
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleAtFixedRate(
+                () -> {sessionStrategy.removeAttribute(request, attrName);service.shutdown();},
+                0, 60, TimeUnit.SECONDS);
+    }
+
+    /**
      * 用户查询
      *
      * @param params
      */
     @PreAuthorize("hasAuthority('back:user:query')")
     @PostMapping("/users/findPages")
-    @ApiOperation(value = "分页，多条件查询全部用户",notes = "参数：pageNum（必填），pageSize（必填），username，nickname，sex，enabled")
+    @ApiOperation(value = "分页，多条件查询全部用户", notes = "参数：pageNum（必填），pageSize（必填），username，nickname，sex，enabled")
     public PageResult findUsersByPages(@RequestBody Map<String, Object> params) {
         // 取值判空
         Long pageIndex = Long.valueOf(params.get("pageNum").toString());
@@ -528,7 +544,7 @@ public class UserController {
     @LogAnnotation(module = LogModule.SET_ROLE)
     @PreAuthorize("hasAuthority('back:user:role:set')")
     @PostMapping("/users/setRoles")
-    @ApiOperation(value = "用户设置角色",notes = "必填参数： userId,roleIds（数组）")
+    @ApiOperation(value = "用户设置角色", notes = "必填参数： userId,roleIds（数组）")
     public ResultVo setRoleForUser(@RequestBody Map map) {
         try {
             Long id = Long.valueOf(map.get("userId").toString());
@@ -584,7 +600,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('back:user:role:set','user:role:byuid')")
     @PostMapping("/queryRolesByUserId")
     @ApiOperation(value = "查看用户角色")
-    public ResultVo findRolesById(@ApiParam(value = "用户id", required = true)Long id) {
+    public ResultVo findRolesById(@ApiParam(value = "用户id", required = true) Long id) {
         Set<SysRole> rolesByUserId = appUserService.findRolesByUserId(id);
         List<SysRole> list = sysRoleService.list();
         list.forEach(i -> {
@@ -629,7 +645,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('back:user:query')")
     @GetMapping(value = "/users/getUser", params = "personnelID")
     @ApiOperation(value = "根据工号查找员工信息")
-    public ResultVo getUsersForGroup(@ApiParam(value = "员工工号", required = true)String personnelID) {
+    public ResultVo getUsersForGroup(@ApiParam(value = "员工工号", required = true) String personnelID) {
         try {
             SysUserResponse user = appUserService.getUsers(personnelID);
             return new ResultVo(200, "操作成功", user);
