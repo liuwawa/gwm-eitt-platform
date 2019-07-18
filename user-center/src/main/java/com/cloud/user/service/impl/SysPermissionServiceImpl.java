@@ -1,8 +1,6 @@
 package com.cloud.user.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.cloud.common.exception.ResultException;
 import com.cloud.model.user.SysPermission;
 import com.cloud.user.dao.RolePermissionDao;
 import com.cloud.user.dao.SysPermissionDao;
@@ -46,14 +44,6 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionDao, SysP
     @Transactional
     @Override
     public void update(SysPermission sysPermission) {
-
-        SysPermission permission = sysPermissionDao.selectOne(new QueryWrapper<SysPermission>().lambda()
-                .eq(SysPermission::getPermission, sysPermission.getPermission()));
-
-        if (permission != null && sysPermission.getPermission().equals(permission.getPermission())) {
-            throw new ResultException(500, "已经存在权限标识:" + permission.getPermission());
-        }
-
         sysPermission.setUpdateTime(new Date());
         sysPermissionDao.update(sysPermission);
         log.info("修改权限：{}", sysPermission);

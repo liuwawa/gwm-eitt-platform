@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cloud.common.enums.ResultEnum;
 import com.cloud.common.exception.ResultException;
-import com.cloud.model.user.GroupWithExpand;
 import com.cloud.model.user.SysGroup;
 import com.cloud.model.user.SysGroupExpand;
 import com.cloud.model.user.SysUser;
@@ -184,7 +183,6 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
     }
 
 
-
     @Override
     @Transactional
     public boolean updateByIds(List<Integer> groupIds, String loginAdminName) {
@@ -338,7 +336,6 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         }
         return level;
     }
-
 
 
 }

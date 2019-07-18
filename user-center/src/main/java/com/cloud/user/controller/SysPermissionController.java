@@ -113,14 +113,14 @@ public class SysPermissionController {
     public ResultVo update2(@RequestBody SysPermission sysPermission) {
         try {
             if (StringUtils.isBlank(sysPermission.getName())) {
-                throw new IllegalArgumentException("权限名不能为空");
+                return new ResultVo(500, "权限名不能为空", null);
             }
             sysPermissionService.update(sysPermission);
             log.info("编辑成功，权限id:{}", sysPermission.getId());
             return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
         } catch (Exception e) {
             log.error("编辑出现异常", e);
-            return new ResultVo(500, ResponseStatus.RESPONSE_OPERATION_ERROR.message, null);
+            return new ResultVo(500, "已经存在权限标识:" + sysPermission.getPermission(), null);
         }
 
     }
