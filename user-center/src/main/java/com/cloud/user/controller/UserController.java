@@ -387,6 +387,9 @@ public class UserController {
             throw new IllegalArgumentException("请输入验证码！");
         }
         String trueCode = (String) sessionStrategy.getAttribute(new ServletWebRequest(request, response), SESSION_KEY);
+        if(StringUtils.isBlank(trueCode)){
+            throw new IllegalArgumentException("验证码超时!");
+        }
         log.info("session中的,code:{}", trueCode);
         log.info("输入的,code:{}", code);
         if (!code.equalsIgnoreCase(trueCode)) {
