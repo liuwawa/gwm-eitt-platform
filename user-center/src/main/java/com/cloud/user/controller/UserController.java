@@ -403,10 +403,14 @@ public class UserController {
      * @param attrName
      */
     private void removeAttrbute(final ServletWebRequest request, final String attrName) {
-        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(
-                () -> {sessionStrategy.removeAttribute(request, attrName);service.shutdown();},
-                0, 60, TimeUnit.SECONDS);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                sessionStrategy.removeAttribute(request, attrName);
+                timer.cancel();
+            }
+        }, 60 * 1000);
     }
 
     /**
