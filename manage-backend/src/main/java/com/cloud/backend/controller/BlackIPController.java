@@ -87,7 +87,7 @@ public class BlackIPController {
     @PostMapping("/findPage")
     @ApiOperation(value = "分页，多条件查询黑名单",notes = "参数：pageNum（必填），pageSize（必填），ip(对象)")
     public PageResult findBlackIPsByPage(
-            @ApiJsonObject(name = "分页多条件查询角色", value = {
+            @ApiJsonObject(name = "分页，多条件查询黑名单", value = {
                     @ApiJsonProperty(key = "pageNum", example = "1", description = "pageNum"),
                     @ApiJsonProperty(key = "pageSize", example = "10", description = "pageSize"),
                     @ApiJsonProperty(key = "ip", example = "ip", description = "ip")})
