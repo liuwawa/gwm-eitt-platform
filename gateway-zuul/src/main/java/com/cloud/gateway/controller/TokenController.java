@@ -106,8 +106,8 @@ public class TokenController {
             String remoteAddr = IPUtil.getIpAddr(request);
             String loginTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
             String val = token + "@" + remoteAddr + "@" + loginTime + "@" + tokenInfo.get("access_token");
-            redisUtils.del(USER_CODE + username);
-            redisUtils.set(USER_CODE + username, val);
+            redisUtils.delString(USER_CODE + username);
+            redisUtils.setString(USER_CODE + username, val);
             Cookie cookie = new Cookie("token", username + "_" + token);
             cookie.setMaxAge(Integer.MAX_VALUE);
             cookie.setPath("/");
@@ -125,13 +125,13 @@ public class TokenController {
         //如果需要踢出用户，先踢再登陆
         if ("1".equals(request.getParameter("out"))) {
             if (username != null) {
-                String tok = (String) redisUtils.get(USER_CODE + username);
+                String tok = (String) redisUtils.getObject(USER_CODE + username);
                 String[] split = tok.split("@");
                 if (split != null && split.length == 4) {
-                    if (redisUtils.get(PAST + username) != null) {
-                        redisUtils.del(PAST + username);
+                    if (redisUtils.getObject(PAST + username) != null) {
+                        redisUtils.delString(PAST + username);
                     }
-                    redisUtils.set(PAST + username, split[3]);
+                    redisUtils.setString(PAST + username, split[3]);
                     oauth2Client.removeToken(split[3]);
                 }
             }
@@ -260,8 +260,8 @@ public class TokenController {
             }
         }
         if (username != null) {
-            redisUtils.del(USER_CODE + username);
-            redisUtils.del(PAST + username);
+            redisUtils.delString(USER_CODE + username);
+            redisUtils.delString(PAST + username);
         }
         oauth2Client.removeToken(access_token);
     }

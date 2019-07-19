@@ -38,12 +38,12 @@ public class UserInterceptor implements HandlerInterceptor {
 
         if (request.getParameter("phone") != null) {
             SysUser sysUser = userClient.findByPhone(request.getParameter("phone"));
-            if (redisUtils.get(USER_CODE + sysUser.getUsername()) == null) {
+            if (redisUtils.getObject(USER_CODE + sysUser.getUsername()) == null) {
                 return true;
             }
         } else {
             //第一次登录直接忽略
-            if (redisUtils.get(USER_CODE + request.getParameter("username")) == null) {
+            if (redisUtils.getObject(USER_CODE + request.getParameter("username")) == null) {
                 return true;
             }
         }
@@ -82,7 +82,7 @@ public class UserInterceptor implements HandlerInterceptor {
                 if ("token".equals(cookie.getName())) {
                     String username = cookie.getValue().split("_")[0];
                     String token = cookie.getValue().split("_")[1];
-                    String value = (String) redisUtils.get(USER_CODE + username);
+                    String value = redisUtils.getString(USER_CODE + username);
                     String[] valueArr = value.split("_");
                     String cacheToken = valueArr[0];
                     if (token.equals(cacheToken)) {

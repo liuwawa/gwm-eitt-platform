@@ -22,6 +22,6 @@ public class InitProject implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         log.info("运行删除redis数据");
-        redisUtils.delAllKey(USER_CODE);
+        redisUtils.delAllString(USER_CODE);
     }
 }

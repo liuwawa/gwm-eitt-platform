@@ -78,9 +78,9 @@ public class UniUserFilter extends ZuulFilter {
         //针对多个用户登陆暂时做的处理
         String my = request.getHeader("My");
         if (my != null) {
-            String past = (String) redisUtils.get(PAST + my);
+            String past = (String) redisUtils.getObject(PAST + my);
             if (past != null && past.equals(authentication)) {
-                redisUtils.del(PAST + my);
+                redisUtils.delString(PAST + my);
                 sendResponse(requestContext);
                 return false;
             }
