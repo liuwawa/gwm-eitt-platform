@@ -3,6 +3,8 @@ package com.cloud.notification.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.exception.SmsException;
+import com.cloud.common.plugins.ApiJsonObject;
+import com.cloud.common.plugins.ApiJsonProperty;
 import com.cloud.common.utils.PhoneUtil;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.model.common.Page;
@@ -92,7 +94,13 @@ public class SmsController {
     @PreAuthorize("hasAuthority('sms:query')")
     @PostMapping("/findSmsPage")
     @ApiOperation(value = "分页多条件查询短信记录",notes = "参数，pageNum，pageSize，condition（手机号）")
-    public PageResult findPage(@RequestBody Map<String, Object> params) {
+    public PageResult findPage(
+            @ApiJsonObject(name = "分页多条件查询短信记录", value = {
+                    @ApiJsonProperty(key = "pageNum", example = "1", description = "pageNum"),
+                    @ApiJsonProperty(key = "pageSize", example = "10", description = "pageSize"),
+                    @ApiJsonProperty(key = "condition", example = "phone", description = "phone")
+            })
+            @RequestBody Map<String, Object> params) {
         Long pageIndex = Long.valueOf(params.get("pageNum").toString());
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
         String condition = String.valueOf(params.get("condition").toString());

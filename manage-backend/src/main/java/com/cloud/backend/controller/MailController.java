@@ -3,6 +3,8 @@ package com.cloud.backend.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.backend.service.MailService;
+import com.cloud.common.plugins.ApiJsonObject;
+import com.cloud.common.plugins.ApiJsonProperty;
 import com.cloud.common.utils.AppUserUtil;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.model.common.Page;
@@ -86,7 +88,14 @@ public class MailController {
     @PreAuthorize("hasAuthority('mail:query')")
     @PostMapping("/findPage")
     @ApiOperation(value = "分页，多条件查询邮件",notes = "参数：pageNum（必填），pageSize（必填），username,toMail")
-    public PageResult findPage(@RequestBody Map<String, Object> params) {
+    public PageResult findPage(
+            @ApiJsonObject(name = "分页多条件查询角色", value = {
+                    @ApiJsonProperty(key = "pageNum", example = "1", description = "pageNum"),
+                    @ApiJsonProperty(key = "pageSize", example = "10", description = "pageSize"),
+                    @ApiJsonProperty(key = "username", example = "username", description = "username"),
+                    @ApiJsonProperty(key = "toMail", example = "toMail", description = "toMail")
+            })
+            @RequestBody Map<String, Object> params) {
         Long pageIndex = Long.valueOf(params.get("pageNum").toString());
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
         String username = String.valueOf(params.get("username").toString());

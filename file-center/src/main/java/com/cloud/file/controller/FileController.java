@@ -4,6 +4,8 @@ import java.util.*;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.cloud.common.plugins.ApiJsonObject;
+import com.cloud.common.plugins.ApiJsonProperty;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.model.common.PageResult;
 import io.swagger.annotations.Api;
@@ -124,7 +126,12 @@ public class FileController {
 	@PreAuthorize("hasAuthority('file:query')")
 	@PostMapping("/findPages")
 	@ApiOperation(value = "分页多条件查询文件记录",notes = "参数，pageNum，pageSize，fileName")
-	public PageResult findPage(@RequestBody Map<String, Object> params) {
+	public PageResult findPage(
+			@ApiJsonObject(name = "分页多条件查询文件记录", value = {
+					@ApiJsonProperty(key = "pageNum", example = "1", description = "pageNum"),
+					@ApiJsonProperty(key = "pageSize", example = "10", description = "pageSize"),
+					@ApiJsonProperty(key = "fileName", example = "name", description = "name")})
+			@RequestBody Map<String, Object> params) {
 		Long pageIndex = Long.valueOf(params.get("pageNum").toString());
 		Long pageSize = Long.valueOf(params.get("pageSize").toString());
 		String condition = String.valueOf(params.get("fileName").toString());

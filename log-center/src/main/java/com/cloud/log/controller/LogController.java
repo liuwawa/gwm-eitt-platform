@@ -2,6 +2,8 @@ package com.cloud.log.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.cloud.common.plugins.ApiJsonObject;
+import com.cloud.common.plugins.ApiJsonProperty;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.log.service.LogService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -62,7 +64,12 @@ public class LogController {
     @PreAuthorize("hasAuthority('log:query')")
     @PostMapping("/findPage")
     @ApiOperation(value = "分页多条件查询日志记录",notes = "参数，pageNum，pageSize，userName")
-    public PageResult findLogsPage(@RequestBody Map<String, Object> params) {
+    public PageResult findLogsPage(
+            @ApiJsonObject(name = "分页多条件查询日志记录", value = {
+                    @ApiJsonProperty(key = "pageNum", example = "1", description = "pageNum"),
+                    @ApiJsonProperty(key = "pageSize", example = "10", description = "pageSize"),
+                    @ApiJsonProperty(key = "userName", example = "userName", description = "userName")})
+            @RequestBody Map<String, Object> params) {
         Long pageNum = Long.valueOf(params.get("pageNum").toString());
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
         String userName = String.valueOf(params.get("userName").toString());

@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.backend.model.BlackIP;
 import com.cloud.backend.service.BlackIPService;
+import com.cloud.common.plugins.ApiJsonObject;
+import com.cloud.common.plugins.ApiJsonProperty;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.common.Page;
@@ -84,7 +86,12 @@ public class BlackIPController {
     @PreAuthorize("hasAuthority('ip:black:query')")
     @PostMapping("/findPage")
     @ApiOperation(value = "分页，多条件查询黑名单",notes = "参数：pageNum（必填），pageSize（必填），ip(对象)")
-    public PageResult findBlackIPsByPage(@RequestBody Map<String, Object> params) {
+    public PageResult findBlackIPsByPage(
+            @ApiJsonObject(name = "分页多条件查询角色", value = {
+                    @ApiJsonProperty(key = "pageNum", example = "1", description = "pageNum"),
+                    @ApiJsonProperty(key = "pageSize", example = "10", description = "pageSize"),
+                    @ApiJsonProperty(key = "ip", example = "ip", description = "ip")})
+            @RequestBody Map<String, Object> params) {
         Long pageIndex = Long.valueOf(params.get("pageNum").toString());
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
         String ipAddress = String.valueOf(params.get("ip").toString());
