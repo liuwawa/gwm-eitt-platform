@@ -262,42 +262,6 @@ public class UserController {
     private SmsClient smsClient;
 
     /**
-     * 绑定手机号
-     *
-     * @param phone
-     * @param key
-     * @param code
-     */
-//    @PostMapping(value = "/users/binding-phone")
-//    public void bindingPhone(String phone, String key, String code) {
-//        if (StringUtils.isBlank(phone)) {
-//            throw new IllegalArgumentException("手机号不能为空");
-//        }
-//
-//        if (StringUtils.isBlank(key)) {
-//            throw new IllegalArgumentException("key不能为空");
-//        }
-//
-//        if (StringUtils.isBlank(code)) {
-//            throw new IllegalArgumentException("code不能为空");
-//        }
-//
-//        LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
-//        log.info("绑定手机号，key:{},code:{},username:{}", key, code, loginAppUser.getUsername());
-//
-//        String value = smsClient.matcheCodeAndGetPhone(key, code, false, 30);
-//        if (value == null) {
-//            throw new IllegalArgumentException("验证码错误");
-//        }
-//
-//        if (phone.equals(value)) {
-//            appUserService.bindingPhone(loginAppUser.getId(), phone);
-//        } else {
-//            throw new IllegalArgumentException("手机号不一致");
-//        }
-//    }
-
-    /**
      * 绑定手机号(element ui)
      *
      * @param phone
@@ -387,6 +351,9 @@ public class UserController {
             throw new IllegalArgumentException("请输入验证码！");
         }
         String trueCode = (String) sessionStrategy.getAttribute(new ServletWebRequest(request, response), SESSION_KEY);
+        if(StringUtils.isBlank(trueCode)){
+            throw new IllegalArgumentException("验证码超时!");
+        }
         log.info("session中的,code:{}", trueCode);
         log.info("输入的,code:{}", code);
         if (!code.equalsIgnoreCase(trueCode)) {
