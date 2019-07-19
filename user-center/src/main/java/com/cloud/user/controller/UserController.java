@@ -370,6 +370,7 @@ public class UserController {
      * @param attrName
      */
     private void removeAttrbute(final ServletWebRequest request, final String attrName) {
+
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
