@@ -233,9 +233,9 @@ public class TokenController {
      * @param refresh_token
      * @return
      */
-    @PostMapping("/sys/refresh_token")
+    @GetMapping("/sys/refresh_token")
     @ApiOperation(value = "系统刷新refresh_token")
-    public Map<String, Object> refresh_token(String refresh_token) {
+    public Map<String, Object> refresh_token(@ApiParam(value = "refresh_token", required = true)String refresh_token) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(OAuth2Utils.GRANT_TYPE, "refresh_token");
         parameters.put(OAuth2Utils.CLIENT_ID, SystemClientInfo.CLIENT_ID);
