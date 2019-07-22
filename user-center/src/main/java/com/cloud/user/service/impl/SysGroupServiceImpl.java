@@ -175,11 +175,18 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
                 sysGroup.setParentid(group.getParentid());
             }
         }
-        // 再修改groupExpand拓展表
-        boolean groupExpandSave = sysGroupExpand.update(new QueryWrapper<SysGroupExpand>().lambda()
-                .eq(SysGroupExpand::getGroupId, sysGroup.getId()));
+        SysGroupExpand groupExpand = sysGroupExpand.selectOne(new QueryWrapper<SysGroupExpand>().lambda().eq(SysGroupExpand::getGroupId, sysGroup.getId()));
+        boolean f = true;
+        if(groupExpand != null){
+            // 再修改groupExpand拓展表
+            f = sysGroupExpand.update(new QueryWrapper<SysGroupExpand>().lambda()
+                    .eq(SysGroupExpand::getGroupId, sysGroup.getId()));
+        }else{
+            f = sysGroupExpand.insert();
+        }
 
-        return groupSave && groupExpandSave;
+
+        return groupSave && f;
     }
 
 
