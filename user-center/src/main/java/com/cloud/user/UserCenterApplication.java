@@ -8,6 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 /**
  * 用户中心
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource(value = {"classpath:provider.properties"})
 @Import(value = {SwaggerConfig.class})
 @ComponentScan("com.cloud.*")
+@EnableRedisHttpSession
 public class UserCenterApplication {
 
 	public static void main(String[] args) {

@@ -1,5 +1,6 @@
 package com.cloud.gateway.config;
 
+import com.cloud.common.utils.IPUtil;
 import com.cloud.common.utils.RedisUtils;
 import com.cloud.gateway.feign.UserClient;
 import com.cloud.model.common.Response;
@@ -36,14 +37,16 @@ public class UserInterceptor implements HandlerInterceptor {
         RedisUtils redisUtils = (RedisUtils) SpringContextHolder.getBean("redisUtils");
         Cookie[] cookies = request.getCookies();
 
+        log.info("--------------------  " + request.getRequestURI());
+
         if (request.getParameter("phone") != null) {
             SysUser sysUser = userClient.findByPhone(request.getParameter("phone"));
-            if (redisUtils.getObject(USER_CODE + sysUser.getUsername()) == null) {
+            if (redisUtils.getString(USER_CODE + sysUser.getUsername()) == null) {
                 return true;
             }
         } else {
             //第一次登录直接忽略
-            if (redisUtils.getObject(USER_CODE + request.getParameter("username")) == null) {
+            if (redisUtils.getString(USER_CODE + request.getParameter("username")) == null) {
                 return true;
             }
         }

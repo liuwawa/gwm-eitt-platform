@@ -125,14 +125,14 @@ public class TokenController {
         //如果需要踢出用户，先踢再登陆
         if ("1".equals(request.getParameter("out"))) {
             if (username != null) {
-                String tok = (String) redisUtils.getObject(USER_CODE + username);
+                String tok = redisUtils.getString(USER_CODE + username);
                 String[] split = tok.split("@");
                 if (split != null && split.length == 4) {
-                    if (redisUtils.getObject(PAST + username) != null) {
+                    if (redisUtils.getString(PAST + username) != null) {
                         redisUtils.delString(PAST + username);
                     }
                     redisUtils.setString(PAST + username, split[3]);
-                    oauth2Client.removeToken(split[3]);
+                    //oauth2Client.removeToken(split[3]);
                 }
             }
         }

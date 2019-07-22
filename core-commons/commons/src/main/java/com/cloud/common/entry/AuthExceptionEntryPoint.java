@@ -30,12 +30,12 @@ public class AuthExceptionEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException)
             throws ServletException,IOException {
-       // HttpUtils.sendResponse(response, authException.getMessage(), type);
-        if(isAjaxRequest(request)){
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,authException.getMessage());
-        }else{
-            response.sendRedirect("/login");
-        }
+        HttpUtils.sendResponse(response, authException.getMessage(), type);
+//        if(isAjaxRequest(request)){
+//            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,authException.getMessage());
+//        }else{
+//            response.sendRedirect("/login");
+//        }
     }
 
     private static boolean isAjaxRequest(HttpServletRequest request) {
