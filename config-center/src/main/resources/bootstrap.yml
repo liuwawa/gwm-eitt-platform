@@ -9,11 +9,13 @@ spring:
         native:
           searchLocations: classpath:/configs/{profile}
 #          searchLocations: file:/d:/configs/{profile}
-        git:
-          uri: http://10.255.20.38/jyjc/hr/cloud-config.git #https://gitee.com/javaFinall/cloud-config.git
+          git:
+#          uri: http://10.255.20.38/jyjc/hr/cloud-config.git #https://gitee.com/javaFinall/cloud-config.git
+          uri: https://gitee.com/javaFinall/cloud-config.git
           default-label: master
           force-pull: true
           searchPaths: '{profile}'
+#          searchPaths: test2
       bus:
         enabled: true
         trace:
@@ -21,7 +23,8 @@ spring:
         refresh:
           enabled: true
   rabbitmq:
-      host: 10.255.30.142
+#      host: 10.255.30.142
+      host: localhost
       port: 5672
       username: lz
       password: 123456

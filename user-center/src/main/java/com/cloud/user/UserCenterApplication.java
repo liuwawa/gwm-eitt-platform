@@ -24,6 +24,7 @@ import org.springframework.context.annotation.PropertySource;
 public class UserCenterApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(UserCenterApplication.class, args);
 	}
 
