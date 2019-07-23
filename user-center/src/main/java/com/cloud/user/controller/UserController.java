@@ -2,10 +2,10 @@ package com.cloud.user.controller;
 
 
 import com.alibaba.fastjson.JSONArray;
-import com.cloud.common.plugins.ApiJsonObject;
-import com.cloud.common.plugins.ApiJsonProperty;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.cloud.common.plugins.ApiJsonObject;
+import com.cloud.common.plugins.ApiJsonProperty;
 import com.cloud.common.utils.AppUserUtil;
 import com.cloud.common.utils.VerifyCodeUtils;
 import com.cloud.common.vo.ResultVo;
@@ -39,14 +39,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
 @Api(value = "用户操作", tags = {"用户操作接口 UserController"})
-@SessionAttributes("captchaCode")
 public class UserController {
 
     @Autowired
@@ -310,12 +306,10 @@ public class UserController {
      * 验证码生成
      */
     @GetMapping("/users-anon/captcha")
-    public void captchaInit(HttpServletRequest request, HttpServletResponse response, Model model) {
+    public void captchaInit(HttpServletRequest request, HttpServletResponse response) {
         // 生成验证码
         String code = VerifyCodeUtils.generateVerifyCode(4);
         log.info("验证码:{}", code);
-        // 存入model
-        model.addAttribute("captchaCode", code);
 
         sessionStrategy.setAttribute(new ServletWebRequest(request, response), SESSION_KEY, code);
         removeAttrbute(new ServletWebRequest(request, response), SESSION_KEY);
