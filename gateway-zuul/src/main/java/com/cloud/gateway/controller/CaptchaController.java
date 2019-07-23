@@ -20,10 +20,14 @@ import java.io.OutputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/***
+ * 验证码
+ */
 @Slf4j
 @RestController
 public class CaptchaController {
 
+    public static final int DELAY = 60 * 1000;
     /**
      * 操作session的工具类
      */
@@ -102,7 +106,7 @@ public class CaptchaController {
                 sessionStrategy.removeAttribute(request, attrName);
                 timer.cancel();
             }
-        }, 60 * 1000);
+        }, DELAY);
     }
 
 }
