@@ -24,5 +24,13 @@
 			<!--<artifactId>mybatis-plus</artifactId>-->
 		<!--</dependency>-->
 	<!--</dependencies>-->
-
+	<build>
+		<finalName>${project.artifactId}</finalName><!--打jar包去掉版本号-->
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	</build>
 </project>
