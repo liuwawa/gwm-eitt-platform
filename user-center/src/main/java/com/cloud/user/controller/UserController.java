@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.plugins.ApiJsonObject;
 import com.cloud.common.plugins.ApiJsonProperty;
 import com.cloud.common.utils.AppUserUtil;
-import com.cloud.common.utils.VerifyCodeUtils;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.common.Page;
@@ -27,17 +26,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.social.connect.web.HttpSessionSessionStrategy;
-import org.springframework.social.connect.web.SessionStrategy;
-import org.springframework.ui.Model;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.ServletWebRequest;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.*;
 
 @Slf4j
@@ -52,9 +43,6 @@ public class UserController {
     private SysRoleService sysRoleService;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-
-
-
 
 
     /**
