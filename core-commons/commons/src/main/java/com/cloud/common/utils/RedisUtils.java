@@ -210,6 +210,7 @@ public class RedisUtils {
      */
     public void delObj(String key) {
         try {
+
             redisTemplate.delete(key);
         } catch (Exception e) {
             log.warn(spellString("delObj {0}", key),e);

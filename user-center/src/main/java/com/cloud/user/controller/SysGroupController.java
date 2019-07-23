@@ -12,7 +12,8 @@ import com.cloud.model.user.SysGroupExpand;
 import com.cloud.response.BaseEntity;
 import com.cloud.response.ObjectConversionEntityUtil;
 import com.cloud.user.service.SysGroupService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -143,11 +144,14 @@ public class SysGroupController {
             SysGroupExpand expand = sysGroupExpand.selectOne(new QueryWrapper<SysGroupExpand>().lambda()
                     .eq(SysGroupExpand::getGroupId, sysGroup.getId()));
             // 设置前台需要的拓展属性
-            sysGroup.setGDirectLeader(expand.getGDirectLeader());
-            sysGroup.setGDeptopLeader(expand.getGDeptopLeader());
-            sysGroup.setGUnittopLeader(expand.getGUnittopLeader());
-            sysGroup.setGModule(expand.getGModule());
-            sysGroup.setSubModule(expand.getSubModule());
+            if (expand != null) {
+                sysGroup.setGDirectLeader(expand.getGDirectLeader());
+                sysGroup.setGDeptopLeader(expand.getGDeptopLeader());
+                sysGroup.setGUnittopLeader(expand.getGUnittopLeader());
+                sysGroup.setGModule(expand.getGModule());
+                sysGroup.setSubModule(expand.getSubModule());
+            }
+
         }
         reslut.put("code", 200);
         reslut.put("msg", null);
