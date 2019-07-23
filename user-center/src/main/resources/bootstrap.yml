@@ -1,6 +1,9 @@
 spring:
   application:
     name: user-center
+  session:
+    store-type: redis
+    timeout: 60s
   cloud:
     config:
       discovery:

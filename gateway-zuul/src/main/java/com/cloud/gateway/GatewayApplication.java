@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 /**
  * 网关系统
@@ -27,6 +28,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @PropertySource(value = {"classpath:provider.properties"})
 @Import(value = {SwaggerConfig.class})
 @ComponentScan("com.cloud.*")
+@EnableRedisHttpSession
 public class GatewayApplication {
     public static void main(String[] args) {
         SpringApplication.run(GatewayApplication.class, args);
