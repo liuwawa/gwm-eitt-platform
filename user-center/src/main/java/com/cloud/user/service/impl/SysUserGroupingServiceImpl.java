@@ -5,18 +5,19 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cloud.common.constants.SysConstants;
 import com.cloud.common.enums.ResultEnum;
 import com.cloud.common.exception.ResultException;
-import com.cloud.model.user.SysGroup;
-import com.cloud.model.user.SysGroupGrouping;
-import com.cloud.model.user.SysGrouping;
-import com.cloud.model.user.SysUserGrouping;
+import com.cloud.model.user.*;
 import com.cloud.user.dao.SysUserGroupingDao;
+import com.cloud.user.service.SysRoleService;
 import com.cloud.user.service.SysUserGroupingService;
+import com.cloud.user.service.SysUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -29,6 +30,10 @@ import java.util.List;
 @Service
 @Slf4j
 public class SysUserGroupingServiceImpl extends ServiceImpl<SysUserGroupingDao, SysUserGrouping> implements SysUserGroupingService {
+    @Autowired
+    private SysUserService userService;
+    @Autowired
+    private SysRoleService roleService;
 
     @Override
     @Transactional
@@ -66,8 +71,17 @@ public class SysUserGroupingServiceImpl extends ServiceImpl<SysUserGroupingDao, 
         }
         SysGroupGrouping groupGrouping = SysGroupGrouping.builder().build();
         List<SysGroupGrouping> groupGroupings = groupGrouping.selectAll();
+
         // 用户为超级管理员
-        if (userId.equals(SysConstants.ADMIN_USER_ID)) {
+        Long l = userId.longValue();
+        // 查看当前用户的角色
+        Set<SysRole> rolesByUserId = userService.findRolesByUserId(l);
+        List<Long> roleIds = new ArrayList<>();
+        rolesByUserId.forEach(role -> {
+            roleIds.add(role.getId());
+        });
+        // 当前用户是超级管理员 或者 角色是超级管理员
+        if (l.equals(SysConstants.ADMIN_USER_ID) || roleIds.contains(SysConstants.ADMIN_ROLE_ID)) {
             SysGrouping grouping = SysGrouping.builder().build();
             List<SysGrouping> groupings = grouping.selectList(new QueryWrapper<SysGrouping>().lambda()
                     .eq(SysGrouping::getIsDel, "0"));
@@ -82,13 +96,16 @@ public class SysUserGroupingServiceImpl extends ServiceImpl<SysUserGroupingDao, 
                 .eq(SysUserGrouping::getUserId, userId));
         // 根据groupingIds查找出所有的grouping
         List<Integer> groupingIds = new ArrayList<>();
-        for (SysUserGrouping userGrouping : sysUserGroupings) {
+        sysUserGroupings.forEach(userGrouping -> {
             groupingIds.add(userGrouping.getGroupingId());
-        }
+        });
         SysGrouping sysGrouping = SysGrouping.builder().build();
         List<SysGrouping> sysGroupings = sysGrouping.selectList(new QueryWrapper<SysGrouping>().lambda()
                 .in(SysGrouping::getGroupingId, groupingIds)
                 .eq(SysGrouping::getIsDel, "0"));
+        if (sysGroupings.size() == 0 || sysGroupings == null) {
+            return null;
+        }
         return getGroups(sysGroupings, groupGroupings);
     }
 
@@ -96,11 +113,11 @@ public class SysUserGroupingServiceImpl extends ServiceImpl<SysUserGroupingDao, 
     public static List<SysGrouping> getGroups(List<SysGrouping> sysGroupings, List<SysGroupGrouping> groupGroupings) {
         for (SysGrouping grouping : sysGroupings) {
             List<Integer> groupIds = new ArrayList<>();
-            for (SysGroupGrouping sysGroupGrouping : groupGroupings) {
+            groupGroupings.forEach(sysGroupGrouping -> {
                 if (sysGroupGrouping.getGroupingId().equals(grouping.getGroupingId())) {
                     groupIds.add(sysGroupGrouping.getGroupId());
                 }
-            }
+            });
             SysGroup sysGroup = SysGroup.builder().build();
             if (groupIds.size() != 0 && groupIds != null) {
                 List<SysGroup> list = sysGroup.selectList(new QueryWrapper<SysGroup>().lambda()
