@@ -68,10 +68,10 @@ public class MenuController {
     public Map findMyMenu2() {
         LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
         assert loginAppUser != null;
-        if (loginAppUser.getId().equals(SysConstants.ADMIN_USER_ID)) { //当前用户是超级管理员，拥有所有菜单权限
-            List<Menu> menus = menuService.findAll();
-            return buildLevelMenus(addParentName(menus));
-        }
+//        if (loginAppUser.getId().equals(SysConstants.ADMIN_USER_ID)) { //当前用户是超级管理员，拥有所有菜单权限
+//            List<Menu> menus = menuService.findAll();
+//            return buildLevelMenus(addParentName(menus));
+//        }
         Set<SysRole> roles = loginAppUser.getSysRoles();
         if (CollectionUtils.isEmpty(roles)) {
             return null;
@@ -202,13 +202,13 @@ public class MenuController {
      * 菜单树ztree (element ui)
      */
     @PreAuthorize("hasAnyAuthority('back:menu:set2role','back:menu:query')")
-    @GetMapping("/tree2")
+    @PostMapping("/findMenuTree2")
     @ApiOperation(value = "菜单树ztree")
-    public List<Menu> findMenuTree2() {
+    public Map findMenuTree2() {
         List<Menu> all = menuService.findAll();
         List<Menu> list = new ArrayList<>();
         setMenuTree2(0L, all, list);
-        return list;
+        return buildLevelMenus(addParentName(list));
     }
 
     /**
@@ -291,6 +291,14 @@ public class MenuController {
             return ResultVo.builder().code(200).msg("更新成功!").data(menu).build();
         }
         menuService.save(menu);
+        //给超级管理员角色添加权限
+        HashSet<Long> menuIds = new HashSet<>();
+        List<Menu> menusByRoleId = menuService.findMenusByRoleId(SysConstants.ADMIN_ROLE_ID);
+        for (Menu menu1 : menusByRoleId) {
+            menuIds.add(menu1.getId());
+        }
+        menuIds.add(menu.getId());
+        menuService.setMenuToRole(SysConstants.ADMIN_ROLE_ID, menuIds);
         return ResultVo.builder().code(200).msg("添加成功!").data(menu).build();
     }
 

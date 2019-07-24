@@ -17,6 +17,8 @@ public interface SysConstants {
 	 */
 	Long ADMIN_USER_ID = 2L;
 
+	String ADMIN_CODE = "SUPER_ADMIN";
+
 	public static final String PAST = "PAST|";
 	
 }

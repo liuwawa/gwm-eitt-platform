@@ -5,10 +5,13 @@ import java.util.*;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.cloud.common.constants.SysConstants;
 import com.cloud.common.plugins.ApiJsonObject;
 import com.cloud.common.plugins.ApiJsonProperty;
+import com.cloud.common.utils.AppUserUtil;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.model.common.PageResult;
+import com.cloud.model.user.LoginAppUser;
 import com.cloud.user.service.SysPermissionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -242,6 +245,19 @@ public class SysRoleController {
         String condition = String.valueOf(params.get("condition").toString());
         IPage<SysRole> roleIPage = sysRoleService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
                 new QueryWrapper<SysRole>().like("name", condition));
+        LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+        assert loginAppUser != null;
+        Set<SysRole> roles = loginAppUser.getSysRoles();
+        for (SysRole role : roles) {
+            if (!SysConstants.ADMIN_CODE.equals(role.getCode())){//当前用户无超级管理员角色,剔除超级管理员角色数据
+                List<SysRole> records = roleIPage.getRecords();
+                for (int i = 0; i < records.size(); i++) {
+                    if (SysConstants.ADMIN_CODE.equals(records.get(i).getCode())){
+                        records.remove(i);
+                    }
+                }
+            }
+        }
         return PageResult.builder().content(roleIPage.getRecords()).
                 pageNum(roleIPage.getCurrent()).
                 pageSize(roleIPage.getSize()).
