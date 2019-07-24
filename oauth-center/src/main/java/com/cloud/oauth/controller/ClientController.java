@@ -33,7 +33,7 @@ public class ClientController {
     @Autowired
     private RedisClientDetailsService clientDetailsService;
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @PreAuthorize("hasAuthority('client:save')")
     @LogAnnotation(module = LogModule.ADD_CLIENT)
@@ -44,7 +44,7 @@ public class ClientController {
             throw new IllegalArgumentException(clientDetails.getClientId() + "已存在");
         }
         // 密码加密
-        clientDetails.setClientSecret(passwordEncoder.encode(clientDetails.getClientSecret()));
+        clientDetails.setClientSecret(bCryptPasswordEncoder.encode(clientDetails.getClientSecret()));
 
         clientDetailsService.addClientDetails(clientDetails);
         log.info("保存client信息：{}", clientDetails);
@@ -66,7 +66,7 @@ public class ClientController {
         getAndCheckClient(clientId, true);
         checkSystemClient(clientId);
 
-        secret = passwordEncoder.encode(secret);
+        secret = bCryptPasswordEncoder.encode(secret);
         clientDetailsService.updateClientSecret(clientId, secret);
         log.info("修改client密码：{},{}", clientId, secret);
     }

@@ -32,7 +32,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Autowired
     private UserClient userClient;
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private SmsClient smsClient;
 
@@ -74,7 +74,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         userClient.wechatLoginCheck(tempCode, openid);
 
         // 其实这里是将密码重置，网关层的微信登录接口，密码也用同样规则即可
-        loginAppUser.setPassword(passwordEncoder.encode(tempCode));
+        loginAppUser.setPassword(bCryptPasswordEncoder.encode(tempCode));
         log.info("微信登陆，{},{}", loginAppUser, openid);
     }
 
@@ -103,7 +103,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         }
 
         // 其实这里是将密码重置，网关层的短信登录接口，密码也用同样规则即可
-        loginAppUser.setPassword(passwordEncoder.encode(phone));
+        loginAppUser.setPassword(bCryptPasswordEncoder.encode(phone));
         log.info("手机号+短信验证码登陆，{},{}", phone, code);
     }
 
