@@ -9,6 +9,7 @@ import com.cloud.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -30,6 +31,7 @@ public class UserInterceptor implements HandlerInterceptor {
     public static final String USER_CODE = "userCode|";
     public static final String SYS_LOGOUT = "/sys/logout";
     @Autowired
+    @Lazy
     private UserClient userClient;
 
     @Override

@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.util.OAuth2Utils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,10 +53,13 @@ import static com.cloud.gateway.config.UserInterceptor.USER_CODE;
 @Api(value = "登陆、刷新token、退出", tags = {"登陆、刷新token、退出 TokenController"})
 public class TokenController {
     @Autowired
+    @Lazy
     private Oauth2Client oauth2Client;
     @Autowired
+    @Lazy
     private UserClient userClient;
     @Autowired
+    @Lazy
     private LogClient logClient;
     @Autowired
     private RedisUtils redisUtils;

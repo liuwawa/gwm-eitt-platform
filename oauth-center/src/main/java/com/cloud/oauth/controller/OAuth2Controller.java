@@ -5,6 +5,7 @@ import com.cloud.model.log.constants.LogModule;
 import com.cloud.oauth.feign.LogClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
@@ -23,6 +24,7 @@ public class OAuth2Controller {
     @Autowired
     private ConsumerTokenServices tokenServices;
     @Autowired
+    @Lazy
     private LogClient logClient;
     /**
      * 当前登陆用户信息<br>
