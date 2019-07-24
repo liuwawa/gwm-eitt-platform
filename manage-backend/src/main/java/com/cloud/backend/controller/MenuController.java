@@ -79,7 +79,7 @@ public class MenuController {
 
         List<Menu> menus = menuService
                 .findByRoles(roles.parallelStream().map(SysRole::getId).collect(Collectors.toSet()));
-        return buildLevelMenus(addParentName(menus));
+        return buildLevelMenus(addParentName(menus.parallelStream().distinct().collect(Collectors.toList())));
     }
 
     /**
@@ -273,7 +273,7 @@ public class MenuController {
     @ApiOperation(value = "获取角色的菜单")
     public List<Menu> findMenusByRoleId(@ApiParam(value = "roleId",required = true) @RequestParam("roleId") Long roleId) {
         List<Menu> menusByRoleId = menuService.findMenusByRoleId(roleId);
-        return menusByRoleId;
+        return menusByRoleId.parallelStream().distinct().collect(Collectors.toList());
     }
 
     /**

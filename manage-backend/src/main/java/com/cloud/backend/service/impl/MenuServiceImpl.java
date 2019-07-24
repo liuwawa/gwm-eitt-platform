@@ -76,6 +76,9 @@ public class MenuServiceImpl implements MenuService {
 
 	@Override
 	public List<Menu> findByRoles(Set<Long> roleIds) {
+		if (roleIds.contains(SysConstants.ADMIN_ROLE_ID)){
+			return menuDao.findAll();
+		}
 		return roleMenuDao.findMenusByRoleIds(roleIds);
 	}
 
