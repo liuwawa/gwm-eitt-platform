@@ -7,8 +7,8 @@ eureka:
   client:
     serviceUrl:
       defaultZone: ${eureka.register.url}
-    register-with-eureka: true
-    fetch-registry: false
+    register-with-eureka: false
+    fetch-registry: true
     registry-fetch-interval-seconds: 5
   instance:
     lease-expiration-duration-in-seconds: 15
