@@ -34,6 +34,10 @@ spring:
           max-idle: 8
           max-active: 8
           max-wait: -1ms
+  servlet:
+      multipart:
+        max-file-size: 100MB
+        max-request-size: 100MB
   mvc:
     servlet:
       load-on-startup: 1
@@ -94,3 +98,24 @@ elasticsearch:
   clusterName: @elasticsearch-clusterName@
   clusterNodes: @elasticsearch-clusterNodes@
 testFlag: @testFlag@
+file:
+  local:
+    path: @file-path@
+    prefix: @file-prefix@
+    urlPrefix: @file-urlPrefix@${file.local.prefix}
+  aliyun:
+    endpoint: @aliyun-endpoint@
+    accessKeyId: @aliyun-accessKeyId@
+    accessKeySecret: @aliyun-accessKeySecret@
+    bucketName: @aliyun-bucketName@
+    domain: @aliyun-domain@
+aliyun:
+  accessKeyId: @aliyun-accessKeyId@
+  accessKeySecret: @aliyun-accessKeySecret@
+  sign:
+    name1: @aliyun-sign-name1@
+  template:
+    code1: @aliyun-template-code1@
+sms:
+  expire-minute: @sms-expire-minute@
+  day-count: @sms-day-count@

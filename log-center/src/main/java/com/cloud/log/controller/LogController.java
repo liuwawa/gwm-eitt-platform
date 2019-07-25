@@ -2,11 +2,11 @@ package com.cloud.log.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cloud.common.plugins.ApiJsonObject;
 import com.cloud.common.plugins.ApiJsonProperty;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.log.service.LogService;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cloud.model.common.PageResult;
 import com.cloud.model.log.Log;
 import com.cloud.model.log.LogAnnotation;
@@ -55,6 +55,7 @@ public class LogController {
 //    public Page<Log> findLogs(@RequestParam Map<String, Object> params) {
 //        return logService.findLogs(params);
 //    }
+
     /**
      * 日志分页查询
      *
@@ -63,7 +64,7 @@ public class LogController {
      */
     @PreAuthorize("hasAuthority('log:query')")
     @PostMapping("/findPage")
-    @ApiOperation(value = "分页多条件查询日志记录",notes = "参数，pageNum，pageSize，userName")
+    @ApiOperation(value = "分页多条件查询日志记录", notes = "参数，pageNum，pageSize，userName")
     public PageResult findLogsPage(
             @ApiJsonObject(name = "分页多条件查询日志记录", value = {
                     @ApiJsonProperty(key = "pageNum", example = "1", description = "pageNum"),
@@ -74,8 +75,8 @@ public class LogController {
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
         String userName = String.valueOf(params.get("userName").toString());
         QueryWrapper<Log> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like("username",userName).orderByDesc("id");
-        IPage<Log> pageLogs = logService.page(new Page<>(pageNum,pageSize),queryWrapper);
+        queryWrapper.like("username", userName).orderByDesc("id");
+        IPage<Log> pageLogs = logService.page(new Page<>(pageNum, pageSize), queryWrapper);
 
         return PageResult.builder().content(pageLogs.getRecords()).
                 pageNum(pageLogs.getCurrent()).
@@ -86,7 +87,7 @@ public class LogController {
 
     @LogAnnotation(module = LogModule.DELETE_ROLE)
     @PreAuthorize("hasAuthority('back:sms:delete')")
-    @DeleteMapping("/delAll")
+    @DeleteMapping("/delLogsAll")
     @ApiOperation(value = "删除全部日志")
     public ResultVo deleteAll() {
         try {
