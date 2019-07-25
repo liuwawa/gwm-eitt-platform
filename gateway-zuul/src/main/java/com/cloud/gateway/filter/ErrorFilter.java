@@ -12,6 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
+/**
+ * @author lz
+ */
 @Component
 public class ErrorFilter extends ZuulFilter {
     private final Logger log = LoggerFactory.getLogger(ErrorFilter.class);
@@ -24,7 +27,7 @@ public class ErrorFilter extends ZuulFilter {
     @Override
     public int filterOrder() {
         //需要在默认的 SendErrorFilter 之前
-        return -1; // Needs to run before SendErrorFilter which has filterOrder == 0
+        return -1;
     }
 
     @Override
@@ -41,12 +44,10 @@ public class ErrorFilter extends ZuulFilter {
             Object e = ctx.get("throwable");
 
             if (e != null && e instanceof ZuulException) {
-                ZuulException zuulException = (ZuulException) e;
-
                 // Remove error code to prevent further error handling in follow up filters
                 // 删除该异常信息,不然在下一个过滤器中还会被执行处理
                 ctx.remove("throwable");
-                initResponse(ctx, HttpStatus.UNAUTHORIZED.value(), "请登录后重试");
+                initResponse(ctx, HttpStatus.UNAUTHORIZED.value());
                 return ctx;
 
             }
@@ -59,17 +60,15 @@ public class ErrorFilter extends ZuulFilter {
 
     /**
      * 赋值response参数进行app回传
-     *
-     * @param context
-     * @param code
-     * @param msg
+     *  @param context 上下文
+     * @param code code
      */
-    private void initResponse(RequestContext context, int code, String msg) {
+    private void initResponse(RequestContext context, int code) {
         //令zuul过滤该请求，不对其进行路由
         context.setSendZuulResponse(false);
         context.setResponseStatusCode(code);
         Response result = new Response();
-        result.setMessage(msg);
+        result.setMessage("请登录后重试");
         result.setErrorCode(code);
         log.info(JsonUtils.toJson(result));
         context.setResponseBody(JsonUtils.toJson(result));

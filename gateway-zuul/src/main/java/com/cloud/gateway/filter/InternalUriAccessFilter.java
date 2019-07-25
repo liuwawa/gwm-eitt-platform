@@ -24,7 +24,7 @@ import com.netflix.zuul.context.RequestContext;
  */
 @Component
 @Order(1)
-public class InternalURIAccessFilter extends ZuulFilter {
+public class InternalUriAccessFilter extends ZuulFilter {
 
 	@Override
 	public Object run() {

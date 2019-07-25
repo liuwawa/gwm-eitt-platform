@@ -38,20 +38,25 @@ import static com.cloud.enums.ResponseStatus.RESPONSE_LOGOUT_SIGNAL_ERROR;
 @Slf4j
 public class UniUserFilter extends ZuulFilter {
 
+    @Autowired
+    public UniUserFilter(RedisUtils redisUtils) {
+        this.redisUtils = redisUtils;
+    }
+
     @Bean
     public SpringContextHolder springContextHolder() {
         return new SpringContextHolder();
     }
 
-    @Autowired
-    private RedisUtils redisUtils;
+    private final RedisUtils redisUtils;
 
     @Override
     public Object run() {
         try {
             RequestContext requestContext = RequestContext.getCurrentContext();
             HttpServletRequest request = requestContext.getRequest();
-            String authentication = request.getHeader("Authorization");
+            String authentication;
+            authentication = request.getHeader("Authorization");
 
             log.info(String.format("(%s) ip为 %s 收到 %s 请求 %s  %s ", authentication,
                     IPUtil.getIpAddr(request), request.getMethod(),
@@ -87,10 +92,7 @@ public class UniUserFilter extends ZuulFilter {
         }
 
         Cookie[] cookies = request.getCookies();
-        if (UserInterceptor.getCookies(redisUtils, cookies)) {
-            return true;
-        }
-        return false;
+        return UserInterceptor.getCookies(redisUtils, cookies);
     }
 
     private void sendResponse(RequestContext requestContext) {
