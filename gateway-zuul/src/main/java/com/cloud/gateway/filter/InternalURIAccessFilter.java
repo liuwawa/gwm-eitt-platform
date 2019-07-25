@@ -41,7 +41,8 @@ public class InternalURIAccessFilter extends ZuulFilter {
 		RequestContext requestContext = RequestContext.getCurrentContext();
 		HttpServletRequest request = requestContext.getRequest();
 		//内部的一些匿名接口可以放过执行
-		return PatternMatchUtils.simpleMatch(new String[]{"*-anon/internal*","/app-anon/**"}, request.getRequestURI());
+		String[] matchs = {"*-anon/internal*", "/app-anon/**"};
+		return PatternMatchUtils.simpleMatch(matchs, request.getRequestURI());
 	}
 
 	@Override

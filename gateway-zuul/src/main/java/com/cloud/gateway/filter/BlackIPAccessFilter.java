@@ -1,5 +1,6 @@
 package com.cloud.gateway.filter;
 
+import com.cloud.common.utils.IPUtil;
 import com.cloud.gateway.feign.BackendClient;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
@@ -7,15 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.cloud.common.utils.IPUtil;
 
 /**
  * 黑名单IP拦截<br>
@@ -44,8 +42,8 @@ public class BlackIPAccessFilter extends ZuulFilter {
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
         String ip = IPUtil.getIpAddress(request);
-
-        return blackIPs.contains(ip);// 判断ip是否在黑名单列表里
+// 判断ip是否在黑名单列表里
+        return blackIPs.contains(ip);
     }
 
     @Override

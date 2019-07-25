@@ -28,7 +28,7 @@ public class LocalFilePathConfig {
 	 * url前缀
 	 */
 	@Value("${file.local.prefix}")
-	public String localFilePrefix;
+	private String localFilePrefix;
 
 	@Bean
 	public WebMvcConfigurer webMvcConfigurerAdapter() {

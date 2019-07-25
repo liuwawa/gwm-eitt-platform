@@ -1,11 +1,11 @@
 package com.cloud.gateway.filter;
 
+import com.cloud.common.utils.IPUtil;
 import com.cloud.common.utils.RedisUtils;
 import com.cloud.gateway.config.SpringContextHolder;
 import com.cloud.gateway.config.UserInterceptor;
 import com.cloud.model.common.Response;
 import com.cloud.utils.JsonUtils;
-import com.cloud.common.utils.IPUtil;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PatternMatchUtils;
 
 import javax.servlet.http.Cookie;
@@ -24,7 +23,6 @@ import java.io.IOException;
 
 import static com.cloud.common.constants.SysConstants.PAST;
 import static com.cloud.enums.ResponseStatus.RESPONSE_LOGOUT_SIGNAL_ERROR;
-import static com.cloud.gateway.config.UserInterceptor.USER_CODE;
 
 /**
  * 过滤uri<br>
@@ -47,6 +45,7 @@ public class UniUserFilter extends ZuulFilter {
 
     @Autowired
     private RedisUtils redisUtils;
+
     @Override
     public Object run() {
         try {
@@ -69,8 +68,10 @@ public class UniUserFilter extends ZuulFilter {
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
 
-        boolean match = PatternMatchUtils.simpleMatch(new String[]{"*-anon/internal*","/app-anon/**","*-anon/codes","*-anon/captcha","*-anon/checkCaptcha/**"}, request.getRequestURI());
-        if (match){
+        String[] ms = {"*-anon/internal*", "/app-anon/**", "*-anon/codes", "*-anon/captcha", "*-anon/checkCaptcha/**"};
+        boolean match = PatternMatchUtils.simpleMatch(ms, request.getRequestURI());
+        Cookie[] cookies = request.getCookies();
+        if (match || UserInterceptor.getCookies(redisUtils, cookies)) {
             return true;
         }
         String authentication = request.getHeader("Authorization");
@@ -84,11 +85,6 @@ public class UniUserFilter extends ZuulFilter {
                 sendResponse(requestContext);
                 return false;
             }
-        }
-
-        Cookie[] cookies = request.getCookies();
-        if (UserInterceptor.getCookies(redisUtils, cookies)) {
-            return true;
         }
         return false;
     }

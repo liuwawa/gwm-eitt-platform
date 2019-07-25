@@ -74,5 +74,4 @@ public class ErrorFilter extends ZuulFilter {
         log.info(JsonUtils.toJson(result));
         context.setResponseBody(JsonUtils.toJson(result));
     }
-
 }
