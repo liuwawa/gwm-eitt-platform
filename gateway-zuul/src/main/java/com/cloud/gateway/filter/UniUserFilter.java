@@ -70,8 +70,7 @@ public class UniUserFilter extends ZuulFilter {
 
         String[] ms = {"*-anon/internal*", "/app-anon/**", "*-anon/codes", "*-anon/captcha", "*-anon/checkCaptcha/**"};
         boolean match = PatternMatchUtils.simpleMatch(ms, request.getRequestURI());
-        Cookie[] cookies = request.getCookies();
-        if (match || UserInterceptor.getCookies(redisUtils, cookies)) {
+        if (match) {
             return true;
         }
         String authentication = request.getHeader("Authorization");
@@ -85,6 +84,11 @@ public class UniUserFilter extends ZuulFilter {
                 sendResponse(requestContext);
                 return false;
             }
+        }
+
+        Cookie[] cookies = request.getCookies();
+        if (UserInterceptor.getCookies(redisUtils, cookies)) {
+            return true;
         }
         return false;
     }

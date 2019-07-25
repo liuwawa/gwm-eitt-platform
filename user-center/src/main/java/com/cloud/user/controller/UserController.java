@@ -169,7 +169,10 @@ public class UserController {
     @LogAnnotation(module = LogModule.UPDATE_PASSWORD)
     @PostMapping(value = "/users/modifyPassword")
     @ApiOperation(value = "修改密码")
-    public ResultVo modifyPassword(@ApiParam(value = "旧密码", required = true) @RequestParam("oldPassword") String oldPassword, @ApiParam(value = "新密码", required = true) @RequestParam("newPassword") String newPassword) {
+    public ResultVo modifyPassword(@ApiParam(value = "旧密码", required = true)
+                                       @RequestParam("oldPassword") String oldPassword,
+                                   @ApiParam(value = "新密码", required = true)
+                                   @RequestParam("newPassword") String newPassword) {
         try {
             SysUser user = AppUserUtil.getLoginAppUser();
             appUserService.updatePassword2(user, oldPassword, newPassword);
@@ -196,7 +199,9 @@ public class UserController {
     @PreAuthorize("hasAuthority('back:user:password')")
     @PutMapping(value = "/users/{id}/password", params = {"newPassword"})
     @ApiOperation(value = "重置密码")
-    public void resetPassword(@ApiParam(value = "用户id", required = true) @PathVariable Long id, @ApiParam(value = "新密码", required = true) String newPassword) {
+    public void resetPassword(@ApiParam(value = "用户id", required = true)
+                                  @PathVariable Long id, @ApiParam(value = "新密码",
+            required = true) String newPassword) {
         appUserService.updatePassword(id, null, newPassword);
     }
 
@@ -251,7 +256,9 @@ public class UserController {
      */
     @PostMapping(value = "/users/bindPhone")
     @ApiOperation(value = "绑定手机号")
-    public ResultVo bindPhone(@ApiParam(value = "手机号", required = true) String phone, @ApiParam(value = "redis 中的key值，根据key取值去与验证码对比", required = true) String key, @ApiParam(value = "验证码", required = true) String code) {
+    public ResultVo bindPhone(@ApiParam(value = "手机号", required = true) String phone,
+                              @ApiParam(value = "redis 中的key值，根据key取值去与验证码对比", required = true) String key,
+                              @ApiParam(value = "验证码", required = true) String code) {
 
         if (StringUtils.isBlank(phone)) {
             return ResultVo.builder().code(50001).data(null).msg("手机号不能为空!").build();
@@ -295,7 +302,8 @@ public class UserController {
      */
     @PreAuthorize("hasAuthority('back:user:query')")
     @PostMapping("/users/findPages")
-    @ApiOperation(value = "分页，多条件查询全部用户",notes = "参数：pageNum（必填），pageSize（必填），username，nickname，sex，enabled")
+    @ApiOperation(value = "分页，多条件查询全部用户",
+            notes = "参数：pageNum（必填），pageSize（必填），username，nickname，sex，enabled")
     public PageResult findUsersByPages(
             @ApiJsonObject(name = "分页，多条件查询全部用户", value = {
                     @ApiJsonProperty(key = "pageNum", example = "1", description = "pageNum"),
@@ -318,18 +326,34 @@ public class UserController {
 
         String sex = null;
         String enabled = null;
-        if (params.get("sex") != "") {
+        if ("".equals(params.get("sex"))) {
             sex = params.get("sex").toString();
         }
-        if (params.get("enabled") != "") {
+        if ("".equals(params.get("enabled"))) {
             enabled = params.get("enabled").toString();
         }
         IPage<SysUser> userPage = getPage(username, nickname, sex, enabled, personnelID, duties, pageIndex, pageSize);
         List<SysUser> sysUsers = userPage.getRecords();
         SysGroup sysGroup = SysGroup.builder().build();
+        initUserGrouping(sysUsers, sysGroup);
+
+
+        // 封装结果
+        return PageResult.builder().content(sysUsers).
+                pageNum(userPage.getCurrent()).
+                pageSize(userPage.getSize()).
+                totalPages(userPage.getPages()).
+                totalSize(userPage.getTotal()).build();
+    }
+
+    /**
+     * 查找并设置每个用户所在的分组和可以查看的分组
+     * @param sysUsers
+     * @param sysGroup
+     */
+    private void initUserGrouping(List<SysUser> sysUsers, SysGroup sysGroup) {
         SysUserGrouping userGrouping = SysUserGrouping.builder().build();
         SysGrouping grouping = SysGrouping.builder().build();
-        //  查找并设置每个用户所在的分组和可以查看的分组
         sysUsers.forEach(i -> {
             SysGroup group = sysGroup.selectOne(new QueryWrapper<SysGroup>().lambda()
                     .eq(SysGroup::getId, i.getGroupId()));
@@ -343,19 +367,12 @@ public class UserController {
             i.setGroupingIds(groupingIds);
 
             if (groupingIds.size() != 0 && groupingIds != null) {
-                List<SysGrouping> sysGroupings = grouping.selectList(new QueryWrapper<SysGrouping>().lambda().in(SysGrouping::getGroupingId, groupingIds));
+                List<SysGrouping> sysGroupings = grouping.selectList(new QueryWrapper<SysGrouping>()
+                        .lambda().in(SysGrouping::getGroupingId, groupingIds));
                 i.setGroupingsList(sysGroupings);
             }
 
         });
-
-
-        // 封装结果
-        return PageResult.builder().content(sysUsers).
-                pageNum(userPage.getCurrent()).
-                pageSize(userPage.getSize()).
-                totalPages(userPage.getPages()).
-                totalSize(userPage.getTotal()).build();
     }
 
     // 获取分页的结果
@@ -436,7 +453,8 @@ public class UserController {
     @LogAnnotation(module = LogModule.SET_ROLE)
     @PreAuthorize("hasAuthority('back:user:role:set')")
     @PostMapping("/users/setRoles")
-    @ApiOperation(value = "用户设置角色",notes = "必填参数： userId,roleIds（数组）")
+    @ApiOperation(value = "用户设置角色",
+            notes = "必填参数： userId,roleIds（数组）")
     public ResultVo setRoleForUser(
             @ApiJsonObject(name = "用户设置角色", value = {
                     @ApiJsonProperty(key = "roleIds", example = "[]", description = "roleIds"),

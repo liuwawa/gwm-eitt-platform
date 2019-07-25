@@ -74,7 +74,7 @@
         </module>
         <!-- 方法的参数个数不超过5个。 并且不对构造方法进行检查-->
         <module name="ParameterNumber">
-            <property name="max" value="5" />
+            <property name="max" value="10" />
             <property name="ignoreOverriddenMethods" value="true"/>
             <property name="tokens" value="METHOD_DEF" />
         </module>
@@ -168,7 +168,7 @@
         </module>
         <!-- return个数 3个-->
         <module name="ReturnCount">
-            <property name="max" value="3"/>
+            <property name="max" value="10"/>
         </module>
         <!--try catch 异常处理数量 3-->
         <module name="NestedTryDepth ">
