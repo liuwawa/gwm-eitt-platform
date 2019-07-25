@@ -51,14 +51,14 @@ public class CodeGeneration {
         dsc.setDriverName("com.mysql.jdbc.Driver"); //只有更换数据库时才需要修改
         dsc.setUsername("root");    //数据库账号
         dsc.setPassword("123@456.Com");    // 数据库密码
-        dsc.setUrl("jdbc:mysql://10.255.30.142:3306/cloud_user?useSSL=false");  //数据库链接地址
+        dsc.setUrl("jdbc:mysql://10.255.30.142:3306/cloud_personnel?useSSL=false");  //数据库链接地址
         mpg.setDataSource(dsc);
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
-        strategy.setTablePrefix(new String[]{"sys_"});// 此处可以修改为您的表前缀
+        strategy.setTablePrefix(new String[]{"hr_"});// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-        strategy.setInclude(new String[]{"sys_user_grouping"}); // 需要生成的表
+        strategy.setInclude(new String[]{"hr_repayment"}); // 需要生成的表
 
         strategy.setSuperServiceClass(null);
         strategy.setSuperServiceImplClass(null);
@@ -70,7 +70,7 @@ public class CodeGeneration {
 
         // 包配置
         PackageConfig pc = new PackageConfig();
-        pc.setParent("com.cloud.model.group"); //包名生成配置 这里只有指定目录才需要更改
+        pc.setParent("com.cloud.model.personnel"); //包名生成配置 这里只有指定目录才需要更改
         pc.setController("controller");
         pc.setService("service");
         pc.setServiceImpl("service.impl");

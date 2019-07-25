@@ -1,7 +1,7 @@
 package com.cloud.log.config;
 
-import com.cloud.model.log.FileSource;
 import com.cloud.log.service.FileService;
+import com.cloud.model.log.FileSource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

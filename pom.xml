@@ -21,6 +21,7 @@
         <module>log-starter</module>
 		<!--<module>file-center</module>-->
         <module>gateway-zuul</module>
+		<module>personnel-center</module>
 	</modules>
 
 	<parent>

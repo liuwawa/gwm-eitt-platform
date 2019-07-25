@@ -46,7 +46,7 @@ eureka:
 mybatis-plus:
   mapperLocations: classpath:/mybatis-mappers/*
   #实体扫描，多个package用逗号或者分号分隔
-  typeAliasesPackage: com.cloud.file.model
+  typeAliasesPackage: com.cloud.personnel.model
   #typeEnumsPackage: com.baomidou.springboot.entity.enums
   global-config:
     # 数据库相关配置

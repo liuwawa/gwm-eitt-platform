@@ -326,10 +326,10 @@ public class UserController {
 
         String sex = null;
         String enabled = null;
-        if ("".equals(params.get("sex"))) {
+        if (!"".equals(params.get("sex"))) {
             sex = params.get("sex").toString();
         }
-        if ("".equals(params.get("enabled"))) {
+        if (!"".equals(params.get("enabled"))) {
             enabled = params.get("enabled").toString();
         }
         IPage<SysUser> userPage = getPage(username, nickname, sex, enabled, personnelID, duties, pageIndex, pageSize);

@@ -8,16 +8,16 @@ spring:
     sender:
       type: web
   redis:
-      host: @ipAddress@
-      port: @redis-port@
-      password: @redis-password@
-      timeout: 10s
-      lettuce:
-        pool:
-          min-idle: 0
-          max-idle: 8
-          max-active: 8
-          max-wait: -1ms
+    host: @ipAddress@
+    port: @redis-port@
+    password: @redis-password@
+    timeout: 10s
+    lettuce:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-active: 8
+        max-wait: -1ms
 logging:
   level:
     root: info
@@ -25,7 +25,7 @@ logging:
   file: logs/${spring.application.name}.log
 zuul:
   ignored-services: '*'
-  sensitiveHeaders: 
+  sensitiveHeaders:
   routes:
     oauth:
       path: /api-oauth/**
@@ -42,6 +42,9 @@ zuul:
     file:
       path: /api-file/**
       serviceId: file-center
+    personnel:
+      path: /api-personnel/**
+      serviceId: personnel-center
     sms:
       path: /api-notify/**
       serviceId: notification-center
