@@ -30,7 +30,7 @@ public class BaseMainController {
     @GetMapping("/")
     public String login(Model model, HttpServletRequest request, HttpServletResponse response) {
         String code = request.getParameter("code");
-        if (code == null){
+        if (code == null) {
             response.setStatus(401);
             return "401";
         }

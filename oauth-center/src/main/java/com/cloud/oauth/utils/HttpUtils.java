@@ -18,7 +18,7 @@ public class HttpUtils {
         response.setContentType("application/json,charset=utf-8");
         response.setStatus(bs.getStatus());
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValue(response.getOutputStream(),bs);
+        objectMapper.writeValue(response.getOutputStream(), bs);
     }
 
 }

@@ -19,7 +19,7 @@ public class ListResponse extends BaseResponse {
     private long count;
     private List items;
 
-    protected ListResponse(){
+    protected ListResponse() {
 
     }
 

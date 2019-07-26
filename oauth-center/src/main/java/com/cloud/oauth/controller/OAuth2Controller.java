@@ -40,11 +40,12 @@ public class OAuth2Controller {
 
     /**
      * 注销登陆/退出
-     * @param access_token
+     * @param accessToken
      */
+    @SuppressWarnings("checkstyle:ParameterName")
     @DeleteMapping(value = "/remove_token", params = "access_token")
-    public void removeToken(String access_token) {
-        boolean flag = tokenServices.revokeToken(access_token);
+    public void removeToken(String accessToken) {
+        boolean flag = tokenServices.revokeToken(accessToken);
         if (flag) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             saveLogoutLog(authentication.getName());

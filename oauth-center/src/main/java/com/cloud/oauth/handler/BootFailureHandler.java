@@ -21,7 +21,8 @@ public class BootFailureHandler implements AuthenticationFailureHandler {
     private ObjectMapper objectMapper;
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+                                        AuthenticationException exception) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         Map map = new HashMap();
         map.put("errorCode", "401");

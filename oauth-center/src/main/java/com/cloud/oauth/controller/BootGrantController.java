@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author lz
@@ -38,7 +37,8 @@ public class BootGrantController {
         }
         view.addObject("scope", scope);*/
 
-        Map<String, String> scopes = (Map<String, String>) (model.containsKey("scopes") ? model.get("scopes") : request.getAttribute("scopes"));
+        Map<String, String> scopes = (Map<String, String>) (
+                model.containsKey("scopes") ? model.get("scopes") : request.getAttribute("scopes"));
         List<String> scopeList = new ArrayList<>();
         if (scopes != null) {
             scopeList.addAll(scopes.keySet());

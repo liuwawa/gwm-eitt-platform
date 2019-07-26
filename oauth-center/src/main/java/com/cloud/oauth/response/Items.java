@@ -10,6 +10,7 @@ import java.util.List;
  * @description
  * @modify by
  * @modify time
+ * @param <T> This is the type parameter
  **/
 @Data
 public class Items<T> {

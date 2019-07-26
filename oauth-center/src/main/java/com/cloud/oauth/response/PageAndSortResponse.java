@@ -21,6 +21,7 @@ public class PageAndSortResponse extends BaseResponse {
     private long count;
     List items;
 
-    protected PageAndSortResponse(){}
+    protected PageAndSortResponse() {
+    }
 
 }

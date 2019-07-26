@@ -209,12 +209,16 @@ public final class CommonUtils {
 
         for (PropertyDescriptor var1 : desSf) {
             // 如果该属性名是class 并且类型为Class 则跳过
-            if (var1.getName().equals("class") && var1.getPropertyType().getSimpleName().equals("Class")) continue;
+            if (var1.getName().equals("class") && var1.getPropertyType().getSimpleName().equals("Class")) {
+                continue;
+            }
 
             for (PropertyDescriptor var2 : desTf) {
 
                 // 如果该属性名是class 并且类型为Class 则跳过
-                if (var1.getName().equals("class") && var2.getPropertyType().getSimpleName().equals("Class")) continue;
+                if (var1.getName().equals("class") && var2.getPropertyType().getSimpleName().equals("Class")) {
+                    continue;
+                }
 
                 if (var1.getName().equals(var2.getName())) {
 

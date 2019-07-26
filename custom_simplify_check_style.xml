@@ -70,7 +70,7 @@
         <!-- 方法不超过50行 -->
         <module name="MethodLength">
             <property name="tokens" value="METHOD_DEF" />
-            <property name="max" value="50" />
+            <property name="max" value="80" />
         </module>
         <!-- 方法的参数个数不超过5个。 并且不对构造方法进行检查-->
         <module name="ParameterNumber">
@@ -167,9 +167,9 @@
             <property name="illegalPattern" value="true"/>
         </module>
         <!-- return个数 3个-->
-        <module name="ReturnCount">
-            <property name="max" value="10"/>
-        </module>
+        <!--<module name="ReturnCount">-->
+            <!--<property name="max" value="10"/>-->
+        <!--</module>-->
         <!--try catch 异常处理数量 3-->
         <module name="NestedTryDepth ">
             <property name="max" value="3"/>

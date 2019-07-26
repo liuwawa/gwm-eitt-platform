@@ -18,6 +18,7 @@ import java.util.List;
 
 /**
  * 将oauth_client_details表数据缓存到redis
+ *
  * @author lz
  */
 @Slf4j
@@ -59,7 +60,7 @@ public class RedisClientDetailsService extends JdbcClientDetailsService {
     private ClientDetails cacheAndGetClient(String clientId) {
         // 从数据库读取
         ClientDetails clientDetails = super.loadClientByClientId(clientId);
-        if (clientDetails != null) {// 写入redis缓存
+        if (clientDetails != null) { // 写入redis缓存
             stringRedisTemplate.boundHashOps(CACHE_CLIENT_KEY).put(clientId, JSONObject.toJSONString(clientDetails));
             log.info("缓存clientId:{},{}", clientId, clientDetails);
         }
@@ -98,16 +99,12 @@ public class RedisClientDetailsService extends JdbcClientDetailsService {
      * 将oauth_client_details全表刷入redis
      */
     public void loadAllClientToCache() {
-        if (stringRedisTemplate.hasKey(CACHE_CLIENT_KEY).equals(Boolean.TRUE)) {
-            return;
-        }
-        log.info("将oauth_client_details全表刷入redis");
-
         List<ClientDetails> list = super.listClientDetails();
-        if (CollectionUtils.isEmpty(list)) {
+        if (CollectionUtils.isEmpty(list) || stringRedisTemplate.hasKey(CACHE_CLIENT_KEY).equals(Boolean.TRUE)) {
             log.error("oauth_client_details表数据为空，请检查");
             return;
         }
+        log.info("将oauth_client_details全表刷入redis");
 
         list.parallelStream().forEach(client -> {
             stringRedisTemplate.boundHashOps(CACHE_CLIENT_KEY).put(client.getClientId(), JSONObject.toJSONString(client));

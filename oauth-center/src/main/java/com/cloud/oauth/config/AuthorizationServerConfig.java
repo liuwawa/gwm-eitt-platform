@@ -67,7 +67,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private RedisClientDetailsService redisClientDetailsService;
     @Autowired
-    public UserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
 
     /**
      * jwt签名key，可随意指定<br>
