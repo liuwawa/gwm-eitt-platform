@@ -64,7 +64,12 @@ public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGroup
     @Override
     @Transactional
     public boolean initGroupingSaveGroup(List<Integer> list, SysGrouping grouping) {
-        // 先添加生成一个分组
+        SysGrouping sysGrouping = grouping.selectOne(new QueryWrapper<SysGrouping>()
+                .lambda().eq(SysGrouping::getGroupingName, grouping.getGroupingName()));
+        if (null != sysGrouping) {
+            throw new ResultException(500, "分组名称重复！");
+        }
+        // 添加一个分组
         grouping.insert();
         // 构建对象
         SysGroupGrouping sysGroupGrouping = SysGroupGrouping.builder().groupingId(grouping.getGroupingId()).build();

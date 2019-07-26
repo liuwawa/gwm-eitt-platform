@@ -47,6 +47,10 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         sysGroup.setCreateBy(sysGroup.getLoginAdminName());
         sysGroup.setCreateTime(new Date());
         sysGroup.setEnableTime(new Date());
+        SysGroup selectOne = sysGroup.selectOne(new QueryWrapper<SysGroup>().lambda().eq(SysGroup::getLabel, sysGroup.getLabel()));
+        if (null != selectOne) {
+            throw new ResultException(500, "组织名称重复！");
+        }
         // 先添加group主表
         boolean groupSave = sysGroup.insert();
         // 给expand拓展表添加外键groupId
