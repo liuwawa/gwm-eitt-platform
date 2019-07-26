@@ -57,7 +57,7 @@ public class BxInsure extends Model<BxInsure> {
      * 保险基数
      */
     @TableField("Radix")
-    private BigDecimal Radix;
+    private BigDecimal radix;
 
     /**
      * 开始时间

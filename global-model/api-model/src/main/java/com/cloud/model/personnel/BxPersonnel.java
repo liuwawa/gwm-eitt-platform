@@ -45,25 +45,25 @@ public class BxPersonnel extends Model<BxPersonnel> {
      * 保险编号
      */
     @TableField("Accounts")
-    private String Accounts;
+    private String accounts;
 
     /**
      * 是否停缴(0否,1是)
      */
     @TableField("IsStop")
-    private Integer IsStop;
+    private Integer isStop;
 
     /**
      * 参保类型
      */
     @TableField("InsuranceType")
-    private Integer InsuranceType;
+    private Integer insuranceType;
 
     /**
      * 参保日期
      */
     @TableField("InsuranceDate")
-    private LocalDateTime InsuranceDate;
+    private LocalDateTime insuranceDate;
 
     /**
      * 备注
@@ -81,7 +81,7 @@ public class BxPersonnel extends Model<BxPersonnel> {
      * 医疗基数
      */
     @TableField("MedicalTreatmentRadix")
-    private BigDecimal MedicalTreatmentRadix;
+    private BigDecimal medicalTreatmentRadix;
 
     /**
      * 指定主键

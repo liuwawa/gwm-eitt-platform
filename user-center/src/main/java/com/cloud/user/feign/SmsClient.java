@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface SmsClient {
 
 	@GetMapping(value = "/notification-anon/internal/phone", params = { "key", "code" })
-	public String matcheCodeAndGetPhone(@RequestParam("key") String key, @RequestParam("code") String code,
+	String matcheCodeAndGetPhone(@RequestParam("key") String key, @RequestParam("code") String code,
 			@RequestParam(value = "delete", required = false) Boolean delete,
 			@RequestParam(value = "second", required = false) Integer second);
 }

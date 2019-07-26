@@ -13,11 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * <p>
@@ -41,7 +39,7 @@ public class SysUserGroupingController {
      * 添加用户的可以查看的分组
      */
     @PostMapping("/addUserCheck")
-    @ApiOperation(value = "添加用户的可以查看的分组",notes = "参数：groupingIds（组织id集合）,userId")
+    @ApiOperation(value = "添加用户的可以查看的分组", notes = "参数：groupingIds（组织id集合）,userId")
     public ResultVo addUserGroupingCheck(
             @ApiJsonObject(name = "添加用户的可以查看的分组", value = {
                     @ApiJsonProperty(key = "groupingIds", example = "[]", description = "groupingIds"),
@@ -53,13 +51,16 @@ public class SysUserGroupingController {
         try {
             if (!sysUserGroupingService.saveUserCheck(groupingIds, userId)) {
                 log.info("添加用户查看分组，操作失败!添加的用户id:{}", userId);
-                return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_FAILED.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_FAILED.message, null);
+                return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_FAILED.code,
+                        ResponseStatus.RESPONSE_GROUPING_HANDLE_FAILED.message, null);
             }
             log.info("添加用户查看分组，操作成功!添加的用户id:{}", userId);
-            return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message, null);
+            return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code,
+                    ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
             log.info("添加用户查看分组，出现异常!", e);
-            return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.message, null);
+            return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code,
+                    ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.message, null);
         }
     }
 

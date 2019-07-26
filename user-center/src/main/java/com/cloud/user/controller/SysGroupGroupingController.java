@@ -5,14 +5,16 @@ import com.cloud.common.plugins.ApiJsonObject;
 import com.cloud.common.plugins.ApiJsonProperty;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
-import com.cloud.model.user.SysGroup;
 import com.cloud.user.service.SysGroupGroupingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
@@ -40,7 +42,7 @@ public class SysGroupGroupingController {
      */
     @PreAuthorize("hasAnyAuthority('back:group:delete','back:group:save','back:group:update')")
     @PostMapping("/updateGrouping")
-    @ApiOperation(value = "添加部门分组",notes = "参数名称：（数组）groupIds，groupingId，groupingName，groupingRemark，loginAdminName")
+    @ApiOperation(value = "添加部门分组", notes = "参数名称：（数组）groupIds，groupingId，groupingName，groupingRemark，loginAdminName")
     public ResultVo addGroupToGrouping(
             @ApiJsonObject(name = "添加部门分组", value = {
                     @ApiJsonProperty(key = "groupingId", example = "1", description = "groupingId"),
@@ -58,10 +60,12 @@ public class SysGroupGroupingController {
         try {
             if (!sysGroupGroupingService.saveGroupToGrouping(groupIds, groupingId, groupingName, groupingRemark, loginAdminName)) {
                 log.info("添加组织到分组操作失败，添加的分组id:{}", groupingId);
-                return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.code, ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.message, null);
+                return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.code,
+                        ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.message, null);
             }
             log.info("添加组织到分组操作成功，添加的分组id:{}", groupingId);
-            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
+            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code,
+                    ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
             log.error("添加组织到分组,出现异常!", e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.message, null);

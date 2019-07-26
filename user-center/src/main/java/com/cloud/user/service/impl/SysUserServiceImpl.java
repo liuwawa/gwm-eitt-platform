@@ -54,11 +54,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             throw new IllegalArgumentException("用户名不能为空");
         }
 
-        if (PhoneUtil.checkPhone(username)) {// 防止用手机号直接当用户名，手机号要发短信验证
+        if (PhoneUtil.checkPhone(username)) { // 防止用手机号直接当用户名，手机号要发短信验证
             throw new IllegalArgumentException("用户名要包含英文字符");
         }
 
-        if (username.contains("@")) {// 防止用邮箱直接当用户名，邮箱也要发送验证（暂未开发）
+        if (username.contains("@")) { // 防止用邮箱直接当用户名，邮箱也要发送验证（暂未开发）
             throw new IllegalArgumentException("用户名不能包含@");
         }
 
@@ -121,7 +121,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             BeanUtils.copyProperties(appUser, loginAppUser);
 
             Set<SysRole> sysRoles = userRoleDao.findRolesByUserId(appUser.getId());
-            loginAppUser.setSysRoles(sysRoles);// 设置角色
+            loginAppUser.setSysRoles(sysRoles); // 设置角色
 
             if (!CollectionUtils.isEmpty(sysRoles)) {
                 Set<Long> roleIds = sysRoles.parallelStream().map(SysRole::getId).collect(Collectors.toSet());
@@ -130,7 +130,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
                     Set<String> permissions = sysPermissions.parallelStream().map(SysPermission::getPermission)
                             .collect(Collectors.toSet());
 
-                    loginAppUser.setPermissions(permissions);// 设置权限集合
+                    loginAppUser.setPermissions(permissions); // 设置权限集合
                 }
 
             }
@@ -271,11 +271,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             throw new IllegalArgumentException("用户名不能为空");
         }
 
-        if (PhoneUtil.checkPhone(username)) {// 防止用手机号直接当用户名，手机号要发短信验证
+        if (PhoneUtil.checkPhone(username)) { // 防止用手机号直接当用户名，手机号要发短信验证
             throw new IllegalArgumentException("用户名要包含英文字符");
         }
 
-        if (username.contains("@")) {// 防止用邮箱直接当用户名，邮箱也要发送验证（暂未开发）
+        if (username.contains("@")) { // 防止用邮箱直接当用户名，邮箱也要发送验证（暂未开发）
             throw new IllegalArgumentException("用户名不能包含@");
         }
 
@@ -344,8 +344,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         if (strLen < strLength) {
             while (strLen < strLength) {
                 StringBuffer sb = new StringBuffer();
-                sb.append("0").append(str);// 左补0
-                // sb.append(str).append("0");//右补0
+                sb.append("0").append(str); // 左补0
+                // sb.append(str).append("0"); //右补0
                 str = sb.toString();
                 strLen = str.length();
             }

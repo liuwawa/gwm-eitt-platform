@@ -1,7 +1,5 @@
 package com.cloud.user.controller;
 
-import java.util.*;
-
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -10,9 +8,15 @@ import com.cloud.common.plugins.ApiJsonObject;
 import com.cloud.common.plugins.ApiJsonProperty;
 import com.cloud.common.utils.AppUserUtil;
 import com.cloud.common.vo.ResultVo;
+import com.cloud.model.common.Page;
 import com.cloud.model.common.PageResult;
+import com.cloud.model.log.LogAnnotation;
+import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.user.LoginAppUser;
+import com.cloud.model.user.SysPermission;
+import com.cloud.model.user.SysRole;
 import com.cloud.user.service.SysPermissionService;
+import com.cloud.user.service.SysRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -20,21 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.cloud.model.common.Page;
-import com.cloud.model.log.LogAnnotation;
-import com.cloud.model.log.constants.LogModule;
-import com.cloud.model.user.SysPermission;
-import com.cloud.model.user.SysRole;
-import com.cloud.user.service.SysRoleService;
+import java.util.*;
 
 @RestController
 @Slf4j
@@ -243,16 +235,17 @@ public class SysRoleController {
         Long pageIndex = Long.valueOf(params.get("pageNum").toString());
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
         String condition = String.valueOf(params.get("condition").toString());
-        IPage<SysRole> roleIPage = sysRoleService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
-                new QueryWrapper<SysRole>().like("name", condition));
+        IPage<SysRole> roleIPage = sysRoleService.
+                page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
+                        new QueryWrapper<SysRole>().like("name", condition));
         LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
         assert loginAppUser != null;
         Set<SysRole> roles = loginAppUser.getSysRoles();
         for (SysRole role : roles) {
-            if (!SysConstants.ADMIN_CODE.equals(role.getCode())){//当前用户无超级管理员角色,剔除超级管理员角色数据
+            if (!SysConstants.ADMIN_CODE.equals(role.getCode())) { //当前用户无超级管理员角色,剔除超级管理员角色数据
                 List<SysRole> records = roleIPage.getRecords();
                 for (int i = 0; i < records.size(); i++) {
-                    if (SysConstants.ADMIN_CODE.equals(records.get(i).getCode())){
+                    if (SysConstants.ADMIN_CODE.equals(records.get(i).getCode())) {
                         records.remove(i);
                     }
                 }

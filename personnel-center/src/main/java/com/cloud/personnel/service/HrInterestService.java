@@ -2,6 +2,8 @@ package com.cloud.personnel.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cloud.model.personnel.HrInterest;
+import com.cloud.model.user.SysUser;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * <p>

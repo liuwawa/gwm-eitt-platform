@@ -62,7 +62,7 @@ public class SysGroupingController {
     @LogAnnotation(module = LogModule.DELETE_GROUPING)
     @PreAuthorize("hasAuthority('back:group:delete')")
     @DeleteMapping(value = "/deleteGroupings")
-    @ApiOperation(value = "批量删除(逻辑删除)",notes = "参数：groupingIds（数组），loginAdminName")
+    @ApiOperation(value = "批量删除(逻辑删除)", notes = "参数：groupingIds（数组），loginAdminName")
     public ResultVo deleteGroupings(
             @ApiJsonObject(name = "批量删除分组", value = {
                     @ApiJsonProperty(key = "groupingIds", example = "[]", description = "groupingIds"),
@@ -75,7 +75,8 @@ public class SysGroupingController {
         try {
             sysGroupingService.updateByIds(groupingIds, loginAdminName);
             log.info("删除分组操作成功，删除的分组Id:{}", groupingIds);
-            return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message, null);
+            return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code,
+                    ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
             log.error("删除分组(批删)，出现异常！", e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code, e.getMessage(), null);
@@ -91,7 +92,7 @@ public class SysGroupingController {
     @LogAnnotation(module = LogModule.ADD_GROUPING)
     @PreAuthorize("hasAuthority('back:group:save')")
     @PostMapping("/initGroupingSaveGroup")
-    @ApiOperation(value = "生成一个分组的同时把组织添加到这个分组里",notes = "参数：ids（数组），name，remark，userName")
+    @ApiOperation(value = "生成一个分组的同时把组织添加到这个分组里", notes = "参数：ids（数组），name，remark，userName")
     public ResultVo initGroupingSaveGroup(
             @ApiJsonObject(name = "生成一个分组的同时把组织添加到这个分组里", value = {
                     @ApiJsonProperty(key = "ids", example = "[]", description = "ids"),
@@ -115,10 +116,12 @@ public class SysGroupingController {
         try {
             if (!sysGroupingService.initGroupingSaveGroup(groupIds, grouping)) {
                 log.info("生成分组和添加组织到分组失败,分组名:{}", gorupingName);
-                return ResultVo.builder().code(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code).msg(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.message).data(null).build();
+                return ResultVo.builder().code(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code)
+                        .msg(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.message).data(null).build();
             }
             log.info("生成分组和添加组织到分组成功,分组名:{}", gorupingName);
-            return ResultVo.builder().code(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code).msg(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message).data(null).build();
+            return ResultVo.builder().code(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code)
+                    .msg(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.message).data(null).build();
         } catch (Exception e) {
             log.error("生成分组和添加组织到分组出现异常", e);
             return ResultVo.builder().code(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code).msg(e.getMessage()).data(null).build();

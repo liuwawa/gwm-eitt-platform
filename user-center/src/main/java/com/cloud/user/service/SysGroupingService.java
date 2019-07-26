@@ -1,7 +1,6 @@
 package com.cloud.user.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.cloud.model.user.SysGroupGrouping;
 import com.cloud.model.user.SysGrouping;
 
 import java.util.List;

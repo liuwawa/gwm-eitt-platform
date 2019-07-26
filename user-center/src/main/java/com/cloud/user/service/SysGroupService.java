@@ -1,7 +1,6 @@
 package com.cloud.user.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.cloud.model.user.GroupWithExpand;
 import com.cloud.model.user.SysGroup;
 import com.cloud.model.user.SysGroupExpand;
 

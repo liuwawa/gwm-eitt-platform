@@ -109,6 +109,9 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
             case 6:
                 sysGroupExpand.setGGrade("30");
                 break;
+            default:
+                sysGroupExpand.setGGrade("30");
+                break;
         }
         return sysGroupExpand;
     }
@@ -175,13 +178,16 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
                 sysGroup.setParentid(group.getParentid());
             }
         }
-        SysGroupExpand groupExpand = sysGroupExpand.selectOne(new QueryWrapper<SysGroupExpand>().lambda().eq(SysGroupExpand::getGroupId, sysGroup.getId()));
-        boolean f = true;
-        if(groupExpand != null){
+        SysGroupExpand groupExpand = sysGroupExpand
+                .selectOne(new QueryWrapper<SysGroupExpand>().lambda().eq(SysGroupExpand::getGroupId, sysGroup.getId()));
+        boolean f = false;
+        if (groupExpand != null) {
             // 再修改groupExpand拓展表
             f = sysGroupExpand.update(new QueryWrapper<SysGroupExpand>().lambda()
                     .eq(SysGroupExpand::getGroupId, sysGroup.getId()));
-        }else{
+        } else {
+            // 设置groupId，添加一个拓展表
+            sysGroupExpand.setGroupId(sysGroup.getId());
             f = sysGroupExpand.insert();
         }
 
@@ -225,34 +231,24 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
     @Override
     @Transactional
     public boolean changeGroup(List<Integer> groupIds, Integer parentId) {
-        // 非空验证
-        if (null == parentId) {
+        if (null == parentId) { // 非空验证
             log.error("移动组织结构,获取到的组织id为空值");
             throw new ResultException(ResultEnum.GROUPID_NULL.getCode(),
                     ResultEnum.GROUPID_NULL.getMessage());
         }
-        // 创建查询对象
-        SysGroup sysGroup = SysGroup.builder().build();
+        SysGroup sysGroup = SysGroup.builder().build();  // 创建查询对象
         List<SysGroup> groupList = new ArrayList<>();
-        // 查出需要的组织，并设置
         groupIds.forEach(i -> {
-            SysGroup group = sysGroup.selectById(i);
+            SysGroup group = sysGroup.selectById(i); // 查出需要的组织，并设置
             groupList.add(group);
         });
-        // 只设置第一个子节点的父节点到想要移动到的节点上，其他的不影响
-        SysGroup group = groupList.get(0);
+        SysGroup group = groupList.get(0); // 只设置第一个子节点的父节点到想要移动到的节点上，其他的不影响
         group.setParentid(parentId);
-
-        // 根据想要设置到的节点id找到该组织
-        SysGroup parentGroup = sysGroup.selectById(parentId);
-        // 找到想要设置到的级层的上级层
-        Integer parentLevel = parentGroup.getLevel();
-        // 找到没移动之前最大节点的级层
-        Integer level = group.getLevel();
-        // 算出将要设置的级层
-        Integer wiLevel = setGroupLevel(parentLevel);
-        // 重新所有的level
-        if (wiLevel > level) {
+        SysGroup parentGroup = sysGroup.selectById(parentId); // 根据想要设置到的节点id找到该组织
+        Integer parentLevel = parentGroup.getLevel(); // 找到想要设置到的级层的上级层
+        Integer level = group.getLevel(); // 找到没移动之前最大节点的级层
+        Integer wiLevel = setGroupLevel(parentLevel); // 算出将要设置的级层
+        if (wiLevel > level) {   // 重新设置所有的level
             Integer subLevel = wiLevel - level;
             for (SysGroup sysGroup1 : groupList) {
                 sysGroup1.setLevel(sysGroup1.getLevel() + subLevel);
@@ -263,25 +259,20 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
                 sysGroup1.setLevel(sysGroup1.getLevel() - subLevel);
             }
         }
-        // level大于6的都设置为6(最大到6)
         for (SysGroup wiGroup : groupList) {
             if (wiGroup.getLevel() > 6) {
-                wiGroup.setLevel(6);
+                wiGroup.setLevel(6); // level大于6的都设置为6(最大到6)
             }
-            // 做主表的更新操作
-            if (!wiGroup.updateById()) {
+            if (!wiGroup.updateById()) { // 做主表的更新操作
                 throw new ResultException(500, "更改出现错误！");
             }
         }
-        // 找出所有的拓展对象
         SysGroupExpand groupExpand = SysGroupExpand.builder().build();
         List<SysGroupExpand> groupExpands = groupExpand.selectList(new QueryWrapper<SysGroupExpand>().lambda()
-                .in(SysGroupExpand::getGroupId, groupIds));
+                .in(SysGroupExpand::getGroupId, groupIds)); // 找出所有的拓展对象
         List<SysGroupExpand> sysGroupExpands = new ArrayList<>();
-        // 重新设置其下的所有单位，部门和科室
-        for (int i = 0; i < groupList.size(); i++) {
-            // 设置gGrade
-            SysGroupExpand sysGroupExpand = setGgradeByLevel(groupList.get(i), groupExpands.get(i));
+        for (int i = 0; i < groupList.size(); i++) { // 重新设置其下的所有单位，部门和科室
+            SysGroupExpand sysGroupExpand = setGgradeByLevel(groupList.get(i), groupExpands.get(i));  // 设置gGrade
             sysGroupExpands.add(sysGroupExpand);
         }
         for (SysGroupExpand sysGroupExpand : sysGroupExpands) {
@@ -290,7 +281,6 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
                 boolean flag = false;
                 // 根据其父id查找出其上一级的组织拓展数据
                 while (flag) {
-
                     // 根据传来的父id查找出父对象
                     SysGroup group1 = sysGroup.selectOne(new QueryWrapper<SysGroup>().lambda()
                             .eq(SysGroup::getIsDel, "0")
@@ -338,6 +328,9 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
                 level = 6;
                 break;
             case 6:
+                level = 6;
+                break;
+            default:
                 level = 6;
                 break;
         }

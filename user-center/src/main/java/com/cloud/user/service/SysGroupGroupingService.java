@@ -1,7 +1,6 @@
 package com.cloud.user.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.cloud.model.user.SysGroup;
 import com.cloud.model.user.SysGroupGrouping;
 
 import java.util.List;
@@ -22,6 +21,6 @@ public interface SysGroupGroupingService extends IService<SysGroupGrouping> {
      * @return 保存是否成功
      * 保存多个组织到一个分组里
      */
-    boolean saveGroupToGrouping(List<Integer> groupIds, Integer groupingId, String groupingName, String groupingRemark, String loginAdminName);
-
+    boolean saveGroupToGrouping(List<Integer> groupIds, Integer groupingId, String groupingName,
+                                String groupingRemark, String loginAdminName);
 }

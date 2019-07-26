@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cloud.common.enums.ResultEnum;
 import com.cloud.common.exception.ResultException;
-import com.cloud.model.user.SysGroup;
 import com.cloud.model.user.SysGroupGrouping;
 import com.cloud.model.user.SysGrouping;
 import com.cloud.user.dao.SysGroupGroupingDao;
@@ -13,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +29,8 @@ public class SysGroupGroupingServiceImpl extends ServiceImpl<SysGroupGroupingDao
 
     @Override
     @Transactional
-    public boolean saveGroupToGrouping(List<Integer> groupIds, Integer groupingId, String groupingName, String groupingRemark, String loginAdminName) {
+    public boolean saveGroupToGrouping(List<Integer> groupIds, Integer groupingId,
+                                       String groupingName, String groupingRemark, String loginAdminName) {
         // 非空验证
         if (null == groupingId) {
             log.error("添加组织到分组,获取到的分组id为空值");
@@ -46,8 +45,9 @@ public class SysGroupGroupingServiceImpl extends ServiceImpl<SysGroupGroupingDao
         }
 
         // 修改分组
-        SysGrouping grouping = SysGrouping.builder()
-                .groupingId(groupingId).groupingName(groupingName).groupingRemark(groupingRemark).updateBy(loginAdminName).updateTime(new Date()).build();
+        SysGrouping grouping = SysGrouping
+                .builder().groupingId(groupingId).groupingName(groupingName).groupingRemark(groupingRemark).
+                        updateBy(loginAdminName).updateTime(new Date()).build();
         grouping.updateById();
 
         // 构建对象

@@ -110,7 +110,8 @@ public class WechatServiceImpl implements WechatService {
                     log.info("具有相同的unionid,视为同一用户：{}", userInfo);
 
                     // 将新公众号的openid也存入登陆凭证表
-                    userCredentialsDao.save(new UserCredential(wechatUserInfo.getOpenid(), CredentialType.WECHAT_OPENID.name(), userInfo.getUserId()));
+                    userCredentialsDao.save(
+                            new UserCredential(wechatUserInfo.getOpenid(), CredentialType.WECHAT_OPENID.name(), userInfo.getUserId()));
                 }
             }
         }

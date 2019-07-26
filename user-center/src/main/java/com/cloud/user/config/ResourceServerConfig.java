@@ -25,7 +25,8 @@ import static com.cloud.common.constants.Messages.APP;
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().exceptionHandling().authenticationEntryPoint(new AuthExceptionEntryPoint(APP)).accessDeniedHandler(new CustomAccessDeniedHandler())
+        http.csrf().disable().exceptionHandling().authenticationEntryPoint(new AuthExceptionEntryPoint(APP))
+                .accessDeniedHandler(new CustomAccessDeniedHandler())
                 .and().authorizeRequests()
                 .antMatchers(PermitAllUrl.permitAllUrl("/users-anon/**", "/wechat/**", "/phone-anon/**")).permitAll() // 放开权限的url
                 .anyRequest().authenticated().and().httpBasic();

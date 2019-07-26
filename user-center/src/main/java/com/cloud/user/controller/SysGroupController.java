@@ -57,10 +57,12 @@ public class SysGroupController {
         try {
             if (!sysGroupService.saveGroupAndGroupExpand(sysGroup, sysGroupExpand)) {
                 log.info("操作失败，添加的组织名称:{}", sysGroup.getLabel());
-                return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.code, ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.message, null);
+                return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.code,
+                        ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.message, null);
             }
             log.info("操作成功，添加的组织名称:{}", sysGroup.getLabel());
-            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
+            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code,
+                    ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
             log.error("添加组织，出现异常！", e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, e.getMessage(), null);
@@ -87,7 +89,8 @@ public class SysGroupController {
         try {
             if (!sysGroupService.updateGroupAndGroupExpand(sysGroup, sysGroupExpand)) {
                 log.info("操作失败，修改的组织名称:{}", sysGroup.getLabel());
-                return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.code, ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.message, null);
+                return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.code,
+                        ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.message, null);
             }
         } catch (Exception e) {
             log.error("修改组织，出现异常！", e);
@@ -187,7 +190,8 @@ public class SysGroupController {
     public ResultVo<List<SysGroup>> getAll() {
         SysGroup sysGroup = SysGroup.builder().build();
         List<SysGroup> groups = sysGroup.selectAll();
-        return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, groups);
+        return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code,
+                ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, groups);
     }
 
 
@@ -208,7 +212,8 @@ public class SysGroupController {
         List<Integer> groupIds = (List<Integer>) map.get("groupIds");
         try {
             sysGroupService.changeGroup(groupIds, parentId);
-            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
+            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code,
+                    ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, e.getMessage(), null);
 

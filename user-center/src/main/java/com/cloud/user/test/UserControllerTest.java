@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.cloud.model.user.SysDept;
 import com.cloud.model.user.SysGroup;
 import com.cloud.user.UserCenterApplication;
-
 import com.cloud.user.controller.UserController;
-
-
 import com.cloud.user.dao.SysDeptDao;
 import com.cloud.user.service.SysGroupService;
 import org.junit.Before;
@@ -15,10 +12,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -40,7 +35,6 @@ import java.util.Map;
 @WebAppConfiguration
 public class UserControllerTest {
     private MockMvc mockMvc;
-
 
 
     @Autowired
@@ -65,7 +59,7 @@ public class UserControllerTest {
     @Test
     public void testFingByUserName() throws Exception {
         String contentAsString = mockMvc.perform(MockMvcRequestBuilders.get("/users-anon/internal")
-                .accept(MediaType.MULTIPART_FORM_DATA).param("username","wmy"))
+                .accept(MediaType.MULTIPART_FORM_DATA).param("username", "wmy"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse().getContentAsString();
@@ -75,12 +69,13 @@ public class UserControllerTest {
     @Test
     public void testFindByPhone() throws Exception {
         String contentAsString = mockMvc.perform(MockMvcRequestBuilders.get("/phone-anon/internal")
-                .accept(MediaType.MULTIPART_FORM_DATA).param("phone","13337061322"))
+                .accept(MediaType.MULTIPART_FORM_DATA).param("phone", "13337061322"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse().getContentAsString();
         System.out.println(contentAsString);
     }
+
     @Test
     public void testFindById() throws Exception {
         String contentAsString = mockMvc.perform(MockMvcRequestBuilders.get("/users/1")
@@ -91,16 +86,16 @@ public class UserControllerTest {
         System.out.println(contentAsString);
     }
 
-//    注册接口测试
+    //    注册接口测试
     @Test
     public void testRegister() throws Exception {
         Map map = new HashMap();
-        map.put("username","wmy");
-        map.put("password","wmy920715");
+        map.put("username", "wmy");
+        map.put("password", "wmy920715");
 
         String contentAsString = mockMvc.perform(MockMvcRequestBuilders.post("/users-anon/register")
-               .content(JSON.toJSONString(map)).contentType(MediaType.APPLICATION_JSON)
-                )
+                .content(JSON.toJSONString(map)).contentType(MediaType.APPLICATION_JSON)
+        )
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andReturn().getResponse().getContentAsString();
@@ -108,7 +103,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void  testMapper(){
+    public void testMapper() {
 
         SysDept sysDept = new SysDept();
         sysDept.setParentId(1L);
@@ -121,8 +116,7 @@ public class UserControllerTest {
         sysDept.setUpdateTime(new Date());
         sysDept.setDeptId(120L);
         List<SysDept> data = sysDeptDao.findData(sysDept);
-        for (SysDept sys:
-             data) {
+        for (SysDept sys : data) {
             System.out.println(sys);
         }
         sysDeptDao.insertDept(sysDept);
@@ -130,18 +124,17 @@ public class UserControllerTest {
     }
 
     @Test
-    public void  testGroupService(){
+    public void testGroupService() {
         SysGroup sysGroup = SysGroup.builder().id(277).build();
         boolean b = sysGroup.deleteById();
-        System.out.println("11111111111111111111111111111111111"+b);
+        System.out.println("11111111111111111111111111111111111" + b);
     }
 
     @Test
-    public void testRestTemplate(){
+    public void testRestTemplate() {
         String uri = "http://wthrcdn.etouch.cn/weather_mini?city=";
 
     }
-
 
 
 }

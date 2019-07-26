@@ -43,7 +43,7 @@ public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGroup
         SysUserGrouping userGrouping = SysUserGrouping.builder().build();
         List<SysUserGrouping> userGroupings = userGrouping.selectList(new QueryWrapper<SysUserGrouping>().lambda()
                 .in(SysUserGrouping::getGroupingId, groupingIds));
-        if (userGroupings != null || userGroupings.size() != 0) {
+        if (userGroupings != null && userGroupings.size() != 0) {
             throw new ResultException(500, "用户使用分组中，请先解除关系");
         }
         // 构建对象

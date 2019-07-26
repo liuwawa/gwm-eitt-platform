@@ -27,15 +27,15 @@ public class SysGroupExpandServiceImpl extends ServiceImpl<SysGroupExpandDao, Sy
     public boolean save(SysGroupExpand sysGroupExpand) {
 
         // 非空验证
-        if( null == sysGroupExpand.getGroupId()){
+        if (null == sysGroupExpand.getGroupId()) {
             log.error("添加组织拓展表时，主表id为空");
             throw new ResultException(ResultEnum.GROUPID_NULL.getCode(),
                     ResultEnum.GROUPID_NULL.getMessage());
         }
         // 是否在主表存在组织
         SysGroup sysGroup = SysGroup.builder().id(sysGroupExpand.getGroupId()).build();
-        if(null == sysGroup.selectById()){
-            log.error("添加组织拓展表时，不存在该组织，groupId为:{}",sysGroupExpand.getGroupId());
+        if (null == sysGroup.selectById()) {
+            log.error("添加组织拓展表时，不存在该组织，groupId为:{}", sysGroupExpand.getGroupId());
             throw new ResultException(ResultEnum.GROUP_NOT_EXIST.getCode(),
                     ResultEnum.GROUP_NOT_EXIST.getMessage());
         }
