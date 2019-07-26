@@ -2,6 +2,7 @@ package com.cloud.personnel.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cloud.model.personnel.BxInsure;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import com.cloud.model.personnel.BxInsure;
  * @author liuek
  * @since 2019-07-25
  */
+@Mapper
 public interface BxInsureDao extends BaseMapper<BxInsure> {
 
 }
