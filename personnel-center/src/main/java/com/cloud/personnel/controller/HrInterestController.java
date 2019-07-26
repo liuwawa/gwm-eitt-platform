@@ -1,8 +1,8 @@
 package com.cloud.personnel.controller;
 
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author liuek
  * @since 2019-07-25
  */
-@Controller
+@RestController
 @RequestMapping("/interest")
 public class HrInterestController {
 
