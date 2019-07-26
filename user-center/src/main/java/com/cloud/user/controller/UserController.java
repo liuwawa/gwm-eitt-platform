@@ -248,6 +248,20 @@ public class UserController {
     private SmsClient smsClient;
 
     /**
+     * 查询手机号是否存在
+     * @param phone
+     * @return
+     */
+    @PostMapping("/users/queryPhone")
+    @ApiOperation(value = "查询手机号是否存在")
+    public ResultVo queryPhone(@ApiParam(value = "手机号", required = true) String phone){
+        if (appUserService.findByPhone(phone) != null) {
+            return ResultVo.builder().code(50003).data(null).msg("手机号已被绑定!").build();
+        }
+        return null;
+    }
+
+    /**
      * 绑定手机号(element ui)
      *
      * @param phone

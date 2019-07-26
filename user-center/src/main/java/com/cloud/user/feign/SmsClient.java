@@ -4,7 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "${notification-center}")
+@FeignClient(name = "${log-center}")
 public interface SmsClient {
 
 	@GetMapping(value = "/notification-anon/internal/phone", params = { "key", "code" })
