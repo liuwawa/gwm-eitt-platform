@@ -22,7 +22,5 @@ public interface SysRoleService extends IService<SysRole> {
 
     Page<SysRole> findRoles(Map<String, Object> params);
 
-//	PageResult findPage(Map params);
-
     Set<SysPermission> findPermissionsByRoleId(Long roleId);
 }
