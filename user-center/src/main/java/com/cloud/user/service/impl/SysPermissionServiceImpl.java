@@ -27,19 +27,6 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionDao, SysP
         return rolePermissionDao.findPermissionsByRoleIds(roleIds);
     }
 
-//	@Transactional
-//	@Override
-//	public void saveSysPermission(SysPermission sysPermission) {
-//		SysPermission permission = sysPermissionDao.findByPermission(sysPermission.getPermission());
-//		if (permission != null) {
-//			throw new IllegalArgumentException("权限标识已存在");
-//		}
-//		sysPermission.setCreateTime(new Date());
-//		sysPermission.setUpdateTime(sysPermission.getCreateTime());
-//
-//		sysPermissionDao.save(sysPermission);
-//		log.info("保存权限标识：{}", sysPermission);
-//	}
 
     @Transactional
     @Override
@@ -62,15 +49,4 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionDao, SysP
         log.info("删除权限标识：{}", permission);
     }
 
-//	@Override
-//	public Page<SysPermission> findPermissions(Map<String, Object> params) {
-//		int total = sysPermissionDao.count(params);
-//		List<SysPermission> list = Collections.emptyList();
-//		if (total > 0) {
-//			PageUtil.pageParamConver(params, false);
-//
-//			list = sysPermissionDao.findData(params);
-//		}
-//		return new Page<>(total, list);
-//	}
 }

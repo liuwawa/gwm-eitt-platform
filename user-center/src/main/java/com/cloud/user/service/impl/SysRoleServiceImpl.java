@@ -34,20 +34,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
     @Autowired
     private AmqpTemplate amqpTemplate;
 
-//	@Transactional
-//	@Override
-//	public void saveSysRole(SysRole sysRole) {
-//		SysRole role = sysRoleDao.findByCode(sysRole.getCode());
-//		if (role != null) {
-//			throw new IllegalArgumentException("角色code已存在");
-//		}
-//
-//		sysRole.setCreateTime(new Date());
-//		sysRole.setUpdateTime(sysRole.getCreateTime());
-//
-//		sysRoleDao.save(sysRole);
-//		log.info("保存角色：{}", sysRole);
-//	}
+
 
     @Transactional
     @Override

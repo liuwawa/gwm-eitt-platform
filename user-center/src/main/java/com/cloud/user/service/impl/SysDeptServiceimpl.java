@@ -22,23 +22,5 @@ public class SysDeptServiceimpl extends ServiceImpl<SysDeptDao,SysDept> implemen
         return sysDeptDao.findData(sysDept);
     }
 
-//    @Override
-//    public List<SysDept> selectByParentId(Long parentId) {
-//        return sysDeptDao.selectByParentId(parentId);
-//    }
-//
-//    @Override
-//    public void insertDept(SysDept sysDept) {
-//        sysDeptDao.insertDept(sysDept);
-//    }
-//
-//    @Override
-//    public int deletById(Long id) {
-//        return sysDeptDao.deletById(id);
-//    }
-//
-//    @Override
-//    public void updateSysDept(SysDept sysDept) {
-//        sysDeptDao.updateSysDept(sysDept);
-//    }
+
 }
