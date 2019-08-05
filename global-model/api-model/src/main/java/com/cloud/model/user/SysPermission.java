@@ -24,9 +24,9 @@ public class SysPermission implements Serializable {
 	private Long id;
 	private String permission;
 	private String name;
-//	@TableField("createTime")
+
 	private Date createTime;
-//	@TableField("updateTime")
+
 	private Date updateTime;
 	@TableField(exist = false)
 	private boolean checked = false;
