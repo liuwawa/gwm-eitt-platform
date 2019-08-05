@@ -12,8 +12,6 @@ public interface BlackIPService extends IService<BlackIP> {
 
     void delete(Integer ip);
 
-//    Page<BlackIP> findBlackIPs(Map<String, Object> params);
-
     void deleteAll();
 
     void delete(String ip);

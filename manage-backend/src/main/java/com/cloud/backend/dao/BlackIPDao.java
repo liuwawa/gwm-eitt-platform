@@ -19,13 +19,6 @@ public interface BlackIPDao extends BaseMapper<BlackIP> {
 	@Delete("delete from black_ip where ip = #{ip}")
 	int delete(String ip);
 
-//	@Select("select * from black_ip t where t.ip = #{ip}")
-//	BlackIP findByIp(String ip);
-//
-//	int count(Map<String, Object> params);
-//
-//	List<BlackIP> findData(Map<String, Object> params);
-
 	@Delete("delete from black_ip")
 	int deleteAll();
 }

@@ -34,31 +34,6 @@ public class MenuController {
     private MenuService menuService;
 
     /**
-     * 当前登录用户的菜单
-     *
-     * @return
-     */
-//    @GetMapping("/me")
-//    public List<Menu> findMyMenu() {
-//        LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
-//        Set<SysRole> roles = loginAppUser.getSysRoles();
-//        if (CollectionUtils.isEmpty(roles)) {
-//            return Collections.emptyList();
-//        }
-//
-//        List<Menu> menus = menuService
-//                .findByRoles(roles.parallelStream().map(SysRole::getId).collect(Collectors.toSet()));
-//
-//        List<Menu> firstLevelMenus = menus.stream().filter(m -> m.getParentId().equals(0L))
-//                .collect(Collectors.toList());
-//        firstLevelMenus.forEach(m -> {
-//            setChild(m, menus);
-//        });
-//
-//        return firstLevelMenus;
-//    }
-
-    /**
      * 当前登录用户的菜单(element ui)
      *
      * @return
@@ -68,10 +43,6 @@ public class MenuController {
     public Map findMyMenu2() {
         LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
         assert loginAppUser != null;
-//        if (loginAppUser.getId().equals(SysConstants.ADMIN_USER_ID)) { //当前用户是超级管理员，拥有所有菜单权限
-//            List<Menu> menus = menuService.findAll();
-//            return buildLevelMenus(addParentName(menus));
-//        }
         Set<SysRole> roles = loginAppUser.getSysRoles();
         if (CollectionUtils.isEmpty(roles)) {
             return null;
@@ -117,24 +88,6 @@ public class MenuController {
         return menus;
     }
 
-    /**
-     * lay ui 数据
-     *
-     * @param menu
-     * @param menus
-     */
-//    private void setChild(Menu menu, List<Menu> menus) {
-//        List<Menu> child = menus.stream().filter(m -> m.getParentId().equals(menu.getId()))
-//                .collect(Collectors.toList());
-//        if (!CollectionUtils.isEmpty(child)) {
-//            menu.setChild(child);
-////			menu.setChildren(child);
-//            //递归设置子元素，多级菜单支持
-//            child.parallelStream().forEach(c -> {
-//                setChild(c, menus);
-//            });
-//        }
-//    }
 
     /**
      * element  ui  数据
@@ -154,18 +107,6 @@ public class MenuController {
         }
     }
 
-    /**
-     * 给角色分配菜单
-     *
-     * @param roleId  角色id
-     * @param menuIds 菜单ids
-     */
-//    @LogAnnotation(module = LogModule.SET_MENU_ROLE)
-//    @PreAuthorize("hasAuthority('back:menu:set2role')")
-//    @PostMapping("/toRole")
-//    public void setMenuToRole(Long roleId, @RequestBody Set<Long> menuIds) {
-//        menuService.setMenuToRole(roleId, menuIds);
-//    }
 
     /**
      * 给角色分配菜单(element ui)
@@ -186,17 +127,7 @@ public class MenuController {
         }
     }
 
-    /**
-     * 菜单树ztree (lay ui)
-     */
-//    @PreAuthorize("hasAnyAuthority('back:menu:set2role','back:menu:query')")
-//    @GetMapping("/tree")
-//    public List<Menu> findMenuTree() {
-//        List<Menu> all = menuService.findAll();
-//        List<Menu> list = new ArrayList<>();
-//        setMenuTree(0L, all, list);
-//        return list;
-//    }
+
 
     /**
      * 菜单树ztree (element ui)
@@ -212,26 +143,6 @@ public class MenuController {
     }
 
     /**
-     * 菜单树 （lay ui）
-     *
-     * @param parentId
-     * @param all
-     * @param list
-     */
-//    private void setMenuTree(Long parentId, List<Menu> all, List<Menu> list) {
-//        all.forEach(menu -> {
-//            if (parentId.equals(menu.getParentId())) {
-//                list.add(menu);
-//
-//                List<Menu> child = new ArrayList<>();
-//                menu.setChild(child);
-////				menu.setChildren(child);
-//                setMenuTree(menu.getId(), all, child);
-//            }
-//        });
-//    }
-
-    /**
      * 菜单树 （element ui）
      *
      * @param parentId
@@ -244,7 +155,6 @@ public class MenuController {
                 list.add(menu);
 
                 List<Menu> child = new ArrayList<>();
-//				menu.setChild(child);
                 menu.setChildren(child);
                 setMenuTree2(menu.getId(), all, child);
             }
@@ -302,19 +212,6 @@ public class MenuController {
         return ResultVo.builder().code(200).msg("添加成功!").data(menu).build();
     }
 
-    /**
-     * 添加菜单 （ lay ui 添加菜单）
-     *
-     * @param menu
-     */
-//    @LogAnnotation(module = LogModule.ADD_MENU)
-//    @PreAuthorize("hasAuthority('back:menu:save')")
-//    @PostMapping
-//    public Menu save(@RequestBody Menu menu) {
-//        menuService.save(menu);
-//
-//        return menu;
-//    }
 
     /**
      * 修改菜单

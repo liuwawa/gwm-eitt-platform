@@ -23,5 +23,4 @@ public interface MailService extends IService<Mail> {
 
     void updateIsRead(Long id);
 
-//    void updateIsReadByUserId(Long id);
 }
