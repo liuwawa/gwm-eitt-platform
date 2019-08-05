@@ -31,27 +31,6 @@ public class SysPermissionController {
     @Autowired
     private SysPermissionService sysPermissionService;
 
-    /**
-     * 管理后台添加权限
-     *
-     * @param sysPermission
-     * @return
-     */
-//    @LogAnnotation(module = LogModule.ADD_PERMISSION)
-//    @PreAuthorize("hasAuthority('back:permission:save')")
-//    @PostMapping("/permissions")
-//    public SysPermission save(@RequestBody SysPermission sysPermission) {
-//        if (StringUtils.isBlank(sysPermission.getPermission())) {
-//            throw new IllegalArgumentException("权限标识不能为空");
-//        }
-//        if (StringUtils.isBlank(sysPermission.getName())) {
-//            throw new IllegalArgumentException("权限名不能为空");
-//        }
-//
-//        sysPermissionService.save(sysPermission);
-//
-//        return sysPermission;
-//    }
 
     /**
      * 管理后台添加权限( element ui)
@@ -85,23 +64,6 @@ public class SysPermissionController {
             return new ResultVo(500, ResponseStatus.RESPONSE_OPERATION_ERROR.message, null);
         }
     }
-    /**
-     * 管理后台修改权限
-     *
-     * @param sysPermission
-     */
-//    @LogAnnotation(module = LogModule.UPDATE_PERMISSION)
-//    @PreAuthorize("hasAuthority('back:permission:update')")
-//    @PutMapping("/permissions")
-//    public SysPermission update(@RequestBody SysPermission sysPermission) {
-//        if (StringUtils.isBlank(sysPermission.getName())) {
-//            throw new IllegalArgumentException("权限名不能为空");
-//        }
-//
-//        sysPermissionService.update(sysPermission);
-//
-//		return sysPermission;
-//	}
 
     /**
      * 管理后台修改权限（ element ui）
@@ -127,17 +89,6 @@ public class SysPermissionController {
 
     }
 
-    /**
-     * 删除权限标识
-     *
-     * @param id
-     */
-//    @LogAnnotation(module = LogModule.DELETE_PERMISSION)
-//    @PreAuthorize("hasAuthority('back:permission:delete')")
-//    @DeleteMapping("/permissions/{id}")
-//    public void delete(@PathVariable Long id) {
-//        sysPermissionService.delete(id);
-//    }
 
     /**
      * 删除权限标识（  element ui）
@@ -159,15 +110,6 @@ public class SysPermissionController {
         }
 
     }
-
-    /**
-     * 查询所有的权限标识
-     */
-//    @PreAuthorize("hasAuthority('back:permission:query')")
-//    @GetMapping("/permissions")
-//    public Page<SysPermission> findPermissions(@RequestParam Map<String, Object> params) {
-//        return sysPermissionService.findPermissions(params);
-//    }
 
     /**
      * 分页查询所有的权限标识分（ element ui）
@@ -205,15 +147,6 @@ public class SysPermissionController {
     @PostMapping("/findAllPermissions")
     @ApiOperation(value = "查询所有的权限标识")
     public List<SysPermission> findAllPermissions() {
-        //		for (SysPermission sysPermission : list) {
-//		}
-//        Set<String> permissions = Objects.requireNonNull(AppUserUtil.getLoginAppUser()).getPermissions();
-//        List<SysPermission> list = sysPermissionService.list();
-//        list.forEach(l -> {
-//            if (permissions.contains(l.getPermission())) {
-//                l.setChecked(true);
-//            }
-//        });
         return sysPermissionService.list();
     }
 
@@ -224,9 +157,6 @@ public class SysPermissionController {
     @PostMapping("/findUserPermissions")
     @ApiOperation(value = "查询所有的权限标识")
     public List<SysPermission> findUserPermissions() {
-//		List<SysPermission> list = sysPermissionService.list();
-//		for (SysPermission sysPermission : list) {
-//		}
         Set<String> permissions = Objects.requireNonNull(AppUserUtil.getLoginAppUser()).getPermissions();
         List<SysPermission> list = sysPermissionService.list();
         list.forEach(l -> {
