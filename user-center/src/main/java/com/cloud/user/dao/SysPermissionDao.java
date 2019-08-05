@@ -29,9 +29,6 @@ public interface SysPermissionDao extends BaseMapper<SysPermission> {
 	@Select("select * from sys_permission t where t.id = #{id}")
 	SysPermission findById(Long id);
 
-//	@Select("select * from sys_permission t where t.permission = #{permission}")
-//	SysPermission findByPermission(String permission);
-
 	int count(Map<String, Object> params);
 
 	List<SysPermission> findData(Map<String, Object> params);
