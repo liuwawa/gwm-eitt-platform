@@ -38,18 +38,6 @@ public class SysRoleController {
     @Autowired
     private SysPermissionService sysPermissionService;
 
-    /**
-     * 管理后台添加角色
-     *
-     * @param sysRole
-     */
-//	@LogAnnotation(module = LogModule.ADD_ROLE)
-//	@PreAuthorize("hasAuthority('back:role:save')")
-//	@PostMapping("/roles")
-//	public SysRole save(@RequestBody SysRole sysRole) {
-//		saveRole(sysRole);
-//		return sysRole;
-//	}
 
     /**
      * 管理后台添加角色(element ui)
@@ -81,17 +69,6 @@ public class SysRoleController {
         sysRoleService.saveOrUpdate(sysRole);
     }
 
-    /**
-     * 管理后台删除角色
-     *
-     * @param id
-     */
-//	@LogAnnotation(module = LogModule.DELETE_ROLE)
-//	@PreAuthorize("hasAuthority('back:role:delete')")
-//	@DeleteMapping("/roles/{id}")
-//	public void deleteRole(@PathVariable Long id) {
-//		sysRoleService.deleteRole(id);
-//	}
 
     /**
      * 管理后台删除角色(element ui)
@@ -130,18 +107,6 @@ public class SysRoleController {
         return sysRole;
     }
 
-    /**
-     * 管理后台给角色分配权限
-     *
-     * @param id            角色id
-     * @param permissionIds 权限ids
-     */
-//	@LogAnnotation(module = LogModule.SET_PERMISSION)
-//	@PreAuthorize("hasAuthority('back:role:permission:set')")
-//	@PostMapping("/roles/{id}/permissions")
-//	public void setPermissionToRole(@PathVariable Long id, @RequestBody Set<Long> permissionIds) {
-//		sysRoleService.setPermissionToRole(id, permissionIds);
-//	}
 
     /**
      * 管理后台给角色分配权限(element ui)
@@ -169,17 +134,6 @@ public class SysRoleController {
         }
 
     }
-
-    /**
-     * 获取角色的权限
-     *
-     * @param id
-     */
-//	@PreAuthorize("hasAnyAuthority('back:role:permission:set','role:permission:byroleid')")
-//	@GetMapping("/roles/{id}/permissions")
-//	public Set<SysPermission> findPermissionsByRoleId(@PathVariable Long id) {
-//		return sysRoleService.findPermissionsByRoleId(id);
-//	}
 
     /**
      * 获取角色的权限(element ui)
