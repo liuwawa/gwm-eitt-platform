@@ -101,22 +101,6 @@ public class UserController {
         return appUser;
     }
 
-    /**
-     * 修改自己的个人信息
-     * register
-     *
-     * @param appUser
-     */
-//    @LogAnnotation(module = LogModule.UPDATE_ME)
-//    @PutMapping("/users/me")
-//    public SysUser updateMe(@RequestBody SysUser appUser) {
-//        SysUser user = AppUserUtil.getLoginAppUser();
-//        appUser.setId(user.getId());
-//
-//        appUserService.updateAppUser(appUser);
-//
-//        return appUser;
-//    }
 
     /**
      * 修改自己的个人信息 (element ui)
@@ -140,25 +124,7 @@ public class UserController {
         return ResultVo.builder().code(200).msg("操作成功!").data(user).build();
     }
 
-    /**
-     * 修改密码
-     *
-     * @param oldPassword 旧密码
-     * @param newPassword 新密码
-     */
-//    @LogAnnotation(module = LogModule.UPDATE_PASSWORD)
-//    @PutMapping(value = "/users/password", params = {"oldPassword", "newPassword"})
-//    public void updatePassword(String oldPassword, String newPassword) {
-//        if (StringUtils.isBlank(oldPassword)) {
-//            throw new IllegalArgumentException("旧密码不能为空");
-//        }
-//        if (StringUtils.isBlank(newPassword)) {
-//            throw new IllegalArgumentException("新密码不能为空");
-//        }
-//
-//        SysUser user = AppUserUtil.getLoginAppUser();
-//        appUserService.updatePassword(user.getId(), oldPassword, newPassword);
-//    }
+
 
     /**
      * 修改密码(element ui)
