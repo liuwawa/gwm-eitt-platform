@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 @AllArgsConstructor
 @Data
-public class ErrorResponse implements Serializable{
+public class ErrorResponse implements Serializable {
     private String message;
     private Integer errorCode;
     private Long timestamp;

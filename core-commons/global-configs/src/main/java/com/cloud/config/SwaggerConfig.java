@@ -1,10 +1,12 @@
 package com.cloud.config;
 
+import com.google.common.base.Predicates;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
@@ -37,10 +39,15 @@ public class SwaggerConfig {
                 .required(false).build();
 		pars.add(tokenPar.build());
 
-		return new Docket(DocumentationType.SWAGGER_2).groupName("认证中心swagger接口文档")
+		return new Docket(DocumentationType.SWAGGER_2)
+				.groupName("认证中心swagger接口文档")
 				.apiInfo(getApiInfo())
+				.pathMapping("/")
 				.select()
+				.apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
+				.paths(Predicates.not(PathSelectors.regex("/error.*")))
+				.paths(Predicates.not(PathSelectors.regex("/actuator.*")))
                 .build()
                 .globalOperationParameters(pars);
 	}

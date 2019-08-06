@@ -44,17 +44,6 @@ public class LogController {
         return LogModule.MODULES;
     }
 
-    /**
-     * 日志查询
-     *
-     * @param params
-     * @return
-     */
-//    @PreAuthorize("hasAuthority('log:query')")
-//    @GetMapping("/logs")
-//    public Page<Log> findLogs(@RequestParam Map<String, Object> params) {
-//        return logService.findLogs(params);
-//    }
 
     /**
      * 日志分页查询

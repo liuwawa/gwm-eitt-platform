@@ -54,66 +54,6 @@ public class FileController {
         return fileService.upload(file);
     }
 
-    /**
-     * layui富文本文件自定义上传
-     *
-     * @param file
-     * @param fileSource
-     * @return
-     * @throws Exception
-     */
-//	@LogAnnotation(module = LogModule.FILE_UPLOAD, recordParam = false)
-//	@PostMapping("/layui")
-//	public Map<String, Object> uploadLayui(@RequestParam("file") MultipartFile file, String fileSource)
-//			throws Exception {
-//		FileInfo fileInfo = upload(file, fileSource);
-//
-//		Map<String, Object> map = new HashMap<>();
-//		map.put("code", 0);
-//		Map<String, Object> data = new HashMap<>();
-//		data.put("src", fileInfo.getUrl());
-//		map.put("data", data);
-//
-//		return map;
-//	}
-
-    /**
-     * 文件删除
-     *
-     * @param id
-     */
-//	@LogAnnotation(module = LogModule.FILE_DELETE)
-//	@PreAuthorize("hasAuthority('file:del')")
-//	@DeleteMapping("/{id}")
-//	public void delete(@PathVariable String id) {
-//		FileInfo fileInfo = fileDao.getById(id);
-//		if (fileInfo != null) {
-//			FileService fileService = fileServiceFactory.getFileService(fileInfo.getSource());
-//			fileService.delete(fileInfo);
-//		}
-//	}
-
-    @Autowired
-    private FileDao fileDao;
-
-    /**
-     * 文件查询
-     *
-     * @param params
-     * @return
-     */
-//	@PreAuthorize("hasAuthority('file:query')")
-//	@GetMapping
-//	public Page<FileInfo> findFiles(@RequestParam Map<String, Object> params) {
-//		int total = fileDao.count(params);
-//		List<FileInfo> list = Collections.emptyList();
-//		if (total > 0) {
-//			PageUtil.pageParamConver(params, true);
-//
-//			list = fileDao.findData(params);
-//		}
-//		return new Page<>(total, list);
-//	}
 
     /**
      * 分页查询文件
