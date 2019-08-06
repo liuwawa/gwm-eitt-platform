@@ -60,8 +60,8 @@ public class SysUser implements Serializable {
     /**
      * 工号
      */
-    @TableField("personnelID")
-    private String personnelID;
+    @TableField("personnelNO")
+    private String personnelNO;
     /**
      * 职务
      */
