@@ -39,10 +39,6 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.cloud.common.constants.SysConstants.PAST;
 import static com.cloud.gateway.config.UserInterceptor.USER_CODE;
-
-//import com.cloud.gateway.utils.SystemUtils;
-//import com.cloud.gateway.utils.IPUtil;
-
 /**
  * 登陆、刷新token、退出
  *

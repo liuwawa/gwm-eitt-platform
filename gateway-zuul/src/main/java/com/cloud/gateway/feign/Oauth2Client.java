@@ -3,7 +3,6 @@ package com.cloud.gateway.feign;
 import java.util.Map;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.security.oauth2.common.util.OAuth2Utils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
