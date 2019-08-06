@@ -35,13 +35,13 @@ public class PhoneUtil {
 	 * @param phone 手机号
 	 * @param content 短信内容
 	 */
-	public static void sendCode(String phone, String content){
+	public static void sendCode(String phone, String content) {
 		if (!PhoneUtil.checkPhone(phone)) {
 			throw new IllegalArgumentException("手机号格式不正确");
 		}
 		//生成验证码
-		String account = "344932";// 用户名（必填）
-		String password = "FuG7HB8b";// 密码（必填）
+		String account = "344932"; // 用户名（必填）
+		String password = "FuG7HB8b"; // 密码（必填）
 		String sign = "【长城汽车】"; // 短信签名（必填）
 		String subcode = ""; // 子号码（选填）
 		String msgid = UUID.randomUUID().toString().replace("-", ""); // 短信id，查询短信状态报告时需要，（可选）

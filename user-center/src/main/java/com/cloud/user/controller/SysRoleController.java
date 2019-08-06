@@ -49,6 +49,17 @@ public class SysRoleController {
     @PostMapping("/roles2")
     @ApiOperation(value = "管理后台添加角色")
     public ResultVo save2(@RequestBody SysRole sysRole) {
+        QueryWrapper<SysRole> sysRoleWrapper = new QueryWrapper<>();
+        sysRoleWrapper.eq("code", sysRole.getCode());
+        if (sysRoleService.getOne(sysRoleWrapper) != null) {
+            return ResultVo.builder().data(sysRole).code(40000).msg("code已存在，不能重复.").build();
+        }
+        sysRoleWrapper = new QueryWrapper<>();
+        sysRoleWrapper.eq("name", sysRole.getName());
+
+        if (sysRoleService.getOne(sysRoleWrapper) != null) {
+            return ResultVo.builder().data(sysRole).code(40001).msg("角色名已存在，不能重复.").build();
+        }
         saveRole(sysRole);
         return ResultVo.builder().data(sysRole).code(200).msg("添加成功!").build();
     }
@@ -59,6 +70,17 @@ public class SysRoleController {
      * @param sysRole
      */
     private void saveRole(@RequestBody SysRole sysRole) {
+//        QueryWrapper<SysRole> sysRoleWrapper = new QueryWrapper<>();
+//        sysRoleWrapper.eq("code", sysRole.getCode());
+//        if (sysRoleService.getOne(sysRoleWrapper) != null) {
+//            throw new IllegalArgumentException("code已存在，不能重复。");
+//        }
+//        sysRoleWrapper = new QueryWrapper<>();
+//        sysRoleWrapper.eq("name", sysRole.getName());
+//
+//        if (sysRoleService.getOne(sysRoleWrapper) != null) {
+//            throw new IllegalArgumentException("角色名已存在，不能重复。");
+//        }
         if (StringUtils.isBlank(sysRole.getCode())) {
             throw new IllegalArgumentException("角色code不能为空");
         }
@@ -66,7 +88,12 @@ public class SysRoleController {
             sysRole.setName(sysRole.getCode());
         }
         sysRole.setCreateTime(new Date());
-        sysRoleService.saveOrUpdate(sysRole);
+        try {
+            sysRoleService.saveOrUpdate(sysRole);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 
