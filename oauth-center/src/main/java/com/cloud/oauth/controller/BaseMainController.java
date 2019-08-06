@@ -3,6 +3,7 @@ package com.cloud.oauth.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  * @modify time
  **/
 @Controller
+@ApiIgnore
 public class BaseMainController {
     @GetMapping("/auth/login")
     public String loginPage(Model model) {

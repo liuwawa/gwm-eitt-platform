@@ -2,10 +2,9 @@ package com.cloud.gateway.controller;
 
 import com.cloud.common.utils.VerifyCodeUtils;
 import com.cloud.common.vo.ResultVo;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
 import org.springframework.social.connect.web.SessionStrategy;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +24,7 @@ import java.util.TimerTask;
  */
 @Slf4j
 @RestController
+@Api(value = "登录验证码", tags = {"登录验证码"})
 public class CaptchaController {
 
     public static final int DELAY = 60 * 1000;
@@ -40,6 +40,7 @@ public class CaptchaController {
      * 验证码生成
      */
     @GetMapping("/users-anon/captcha")
+    @ApiOperation(value = "生成验证码")
     public void captchaInit(HttpServletRequest request, HttpServletResponse response) {
         // 生成验证码
         String code = VerifyCodeUtils.generateVerifyCode(4);
@@ -74,6 +75,10 @@ public class CaptchaController {
      *             判断验证码
      */
     @GetMapping("/users-anon/checkCaptcha/{code}")
+    @ApiOperation(value = "校验验证码")
+    @ApiImplicitParams(
+            @ApiImplicitParam(paramType = "path", name = "code", value = "前台传递的验证码", required = true, dataType = "String")
+    )
     public ResultVo checkCode(HttpServletRequest request, HttpServletResponse response, @PathVariable String code) {
         if (StringUtils.isBlank(code)) {
             throw new IllegalArgumentException("请输入验证码！");

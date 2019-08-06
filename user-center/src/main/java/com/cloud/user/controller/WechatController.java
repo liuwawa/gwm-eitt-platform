@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
@@ -16,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 @Slf4j
 @RestController
 @RequestMapping("/wechat")
+@ApiIgnore
 public class WechatController {
 
     @Autowired

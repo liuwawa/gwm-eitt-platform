@@ -7,6 +7,7 @@ import com.cloud.model.oauth.SystemClientInfo;
 import com.cloud.oauth.service.impl.RedisClientDetailsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +28,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/clients")
-@Api
+@Api(value = "client管理", tags = "client管理")
 public class ClientController {
 
     @Autowired
@@ -38,7 +39,8 @@ public class ClientController {
     @PreAuthorize("hasAuthority('client:save')")
     @LogAnnotation(module = LogModule.ADD_CLIENT)
     @PostMapping
-    public void save(@RequestBody BaseClientDetails clientDetails) {
+    @ApiOperation(value = "新增保存")
+    public void save(@ApiParam(value = "参数：实体clientDetails", required = true) @RequestBody BaseClientDetails clientDetails) {
         ClientDetails client = getAndCheckClient(clientDetails.getClientId(), false);
         if (client != null) {
             throw new IllegalArgumentException(clientDetails.getClientId() + "已存在");
@@ -53,7 +55,8 @@ public class ClientController {
     @PreAuthorize("hasAuthority('client:update')")
     @LogAnnotation(module = LogModule.UPDATE_CLIENT)
     @PutMapping
-    public void update(@RequestBody BaseClientDetails clientDetails) {
+    @ApiOperation(value = "修改")
+    public void update(@ApiParam(value = "参数：实体clientDetails", required = true) @RequestBody BaseClientDetails clientDetails) {
         getAndCheckClient(clientDetails.getClientId(), true);
         clientDetailsService.updateClientDetails(clientDetails);
         log.info("修改client信息：{}", clientDetails);
@@ -62,7 +65,9 @@ public class ClientController {
     @PreAuthorize("hasAuthority('client:update')")
     @LogAnnotation(module = LogModule.RESET_PASSWORD_CLIENT)
     @PutMapping(value = "/{clientId}", params = "secret")
-    public void updateSecret(@PathVariable String clientId, String secret) {
+    @ApiOperation(value = "根据client Id修改密码")
+    public void updateSecret(@ApiParam(value = "clientId", required = true) @PathVariable String clientId,
+                             @ApiParam(value = "新密码", required = true) String secret) {
         getAndCheckClient(clientId, true);
         checkSystemClient(clientId);
 
@@ -73,23 +78,25 @@ public class ClientController {
 
     @PreAuthorize("hasAuthority('client:query')")
     @GetMapping
+    @ApiOperation(value = "分页查询")
     public Page<ClientDetails> findClients() {
         List<ClientDetails> clientDetails = clientDetailsService.listClientDetails();
         clientDetails.parallelStream().forEach(c -> isSystemClient(c));
         return new Page<>(clientDetails.size(), clientDetails);
     }
 
-    @ApiOperation(value = "获取client Id")
+    @ApiOperation(value = "根据client Id 查询")
     @PreAuthorize("hasAuthority('client:query')")
     @GetMapping("/{clientId}")
-    public ClientDetails getById(@PathVariable String clientId) {
+    public ClientDetails getById(@ApiParam(value = "clientId", required = true)@PathVariable String clientId) {
         return getAndCheckClient(clientId, true);
     }
 
     @PreAuthorize("hasAuthority('client:del')")
     @LogAnnotation(module = LogModule.DELETE_CLIENT)
     @DeleteMapping("/{clientId}")
-    public void delete(@PathVariable String clientId) {
+    @ApiOperation(value = "根据client Id删除")
+    public void delete(@ApiParam(value = "clientId", required = true)@PathVariable String clientId) {
         getAndCheckClient(clientId, true);
         checkSystemClient(clientId);
 

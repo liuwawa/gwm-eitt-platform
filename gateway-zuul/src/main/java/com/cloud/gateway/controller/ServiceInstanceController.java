@@ -1,5 +1,7 @@
 package com.cloud.gateway.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -13,6 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/service-instances")
+@Api(value = "获取各个服务信息", tags = "获取各个服务信息")
 public class ServiceInstanceController {
 
     @Autowired
@@ -24,6 +27,7 @@ public class ServiceInstanceController {
      * @return
      */
     @GetMapping
+    @ApiOperation(value = "获取各个服务的信息")
     public Map<String, Object> map() {
         Map<String, Object> map = new HashMap<>();
         List<String> services = discoveryClient.getServices();

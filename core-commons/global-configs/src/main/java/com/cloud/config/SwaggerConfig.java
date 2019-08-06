@@ -48,6 +48,8 @@ public class SwaggerConfig {
                 .paths(PathSelectors.any())
 				.paths(Predicates.not(PathSelectors.regex("/error.*")))
 				.paths(Predicates.not(PathSelectors.regex("/actuator.*")))
+				.paths(Predicates.not(PathSelectors.regex("/oauth.*")))
+				.paths(Predicates.not(PathSelectors.regex("/custom.*")))
                 .build()
                 .globalOperationParameters(pars);
 	}
