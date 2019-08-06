@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.personnel.dao.HrRepaymentDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.cloud.model.personnel.HrRepayment">
+        <id column="id" property="id" />
+        <result column="P_PersonnelID" property="pPersonnelid" />
+        <result column="R_StartDate" property="rStartdate" />
+        <result column="R_EndDate" property="rEnddate" />
+        <result column="R_Moneny" property="rMoneny" />
+        <result column="R_IsPay" property="rIspay" />
+        <result column="C_InputDate" property="cInputdate" />
+        <result column="R_PayDate" property="rPaydate" />
+        <result column="R_Interest" property="rInterest" />
+        <result column="R_Type" property="rType" />
+        <result column="R_Bankcard" property="rBankcard" />
+    </resultMap>
+
+</mapper>

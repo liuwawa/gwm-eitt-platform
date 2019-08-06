@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.personnel.dao.HrContractDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.cloud.model.personnel.HrContract">
+        <id column="id" property="id" />
+        <result column="P_PersonnelID" property="pPersonnelid" />
+        <result column="C_GroupID" property="cGroupid" />
+        <result column="C_StartDate" property="cStartdate" />
+        <result column="C_EndDate" property="cEnddate" />
+        <result column="C_Type" property="cType" />
+        <result column="C_ContractNO" property="cContractno" />
+        <result column="C_Status" property="cStatus" />
+        <result column="C_HasTry" property="cHastry" />
+        <result column="C_BreachMoney" property="cBreachmoney" />
+        <result column="C_InputDate" property="cInputdate" />
+        <result column="C_Directory" property="cDirectory" />
+        <result column="C_Remark" property="cRemark" />
+    </resultMap>
+
+</mapper>

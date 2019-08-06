@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.personnel.dao.BxInsureDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.cloud.model.personnel.BxInsure">
+        <id column="id" property="id" />
+        <result column="C_Name" property="cName" />
+        <result column="C_Rate" property="cRate" />
+        <result column="P_Rate" property="pRate" />
+        <result column="Radix" property="Radix" />
+        <result column="B_StartDate" property="bStartdate" />
+        <result column="B_EndDate" property="bEnddate" />
+        <result column="B_Limit" property="bLimit" />
+        <result column="P_Duty" property="pDuty" />
+        <result column="P_InputDate" property="pInputdate" />
+    </resultMap>
+
+</mapper>

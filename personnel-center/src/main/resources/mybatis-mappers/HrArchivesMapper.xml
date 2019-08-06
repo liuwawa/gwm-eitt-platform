@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.personnel.dao.HrArchivesDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.cloud.model.personnel.HrArchives">
+        <id column="id" property="id" />
+        <result column="P_PersonnelID" property="pPersonnelid" />
+        <result column="P_GroupID" property="pGroupid" />
+        <result column="A_ArchivesNo" property="aArchivesno" />
+        <result column="A_Date" property="aDate" />
+        <result column="A_Class" property="aClass" />
+        <result column="A_Address" property="aAddress" />
+        <result column="A_CName" property="aCname" />
+        <result column="A_Type" property="aType" />
+        <result column="A_Unit" property="aUnit" />
+        <result column="A_Hander" property="aHander" />
+        <result column="A_Reason" property="aReason" />
+        <result column="A_Remark" property="aRemark" />
+        <result column="A_Party" property="aParty" />
+    </resultMap>
+
+</mapper>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.personnel.dao.HrPhycialDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.cloud.model.personnel.HrPhycial">
+        <id column="id" property="id" />
+        <result column="P_PersonnelID" property="pPersonnelid" />
+        <result column="PL_Date" property="plDate" />
+        <result column="PL_Height" property="plHeight" />
+        <result column="PL_Weight" property="plWeight" />
+        <result column="PL_BMI" property="plBmi" />
+        <result column="PL_Smoking" property="plSmoking" />
+        <result column="PL_Leftvision" property="plLeftvision" />
+        <result column="PL_Rightvision" property="plRightvision" />
+        <result column="PL_BloodPressure" property="plBloodpressure" />
+        <result column="PL_BloodPressurevalue" property="plBloodpressurevalue" />
+        <result column="PL_Internist" property="plInternist" />
+        <result column="PL_ChestXrays" property="plChestxrays" />
+        <result column="PL_Colorultrasonic" property="plColorultrasonic" />
+        <result column="PL_HepatitisB" property="plHepatitisb" />
+        <result column="PL_Antibody" property="plAntibody" />
+        <result column="PL_Liverfunction" property="plLiverfunction" />
+        <result column="PL_Renalfunction" property="plRenalfunction" />
+        <result column="PL_BloodSugar" property="plBloodsugar" />
+        <result column="PL_BloodFat" property="plBloodfat" />
+        <result column="PL_Electrocardiogram" property="plElectrocardiogram" />
+        <result column="PL_Other" property="plOther" />
+        <result column="PL_Result" property="plResult" />
+        <result column="PL_Conclusion" property="plConclusion" />
+        <result column="PL_DoctorAdvice" property="plDoctoradvice" />
+    </resultMap>
+
+</mapper>

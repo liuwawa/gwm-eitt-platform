@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.personnel.dao.HrPersonnelDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.cloud.model.personnel.HrPersonnel">
+        <id column="id" property="id" />
+        <result column="P_PersonnelNo" property="pPersonnelno" />
+        <result column="P_OName" property="pOname" />
+        <result column="P_NName" property="pNname" />
+        <result column="P_Sex" property="pSex" />
+        <result column="P_Marriage" property="pMarriage" />
+        <result column="P_BirthDate" property="pBirthdate" />
+        <result column="P_IDCard" property="pIdcard" />
+        <result column="P_NativePlace" property="pNativeplace" />
+        <result column="P_RegisterResidence" property="pRegisterresidence" />
+        <result column="P_DwellingType" property="pDwellingtype" />
+        <result column="P_Dwelling" property="pDwelling" />
+        <result column="P_Weight" property="pWeight" />
+        <result column="P_Height" property="pHeight" />
+        <result column="P_BloodType" property="pBloodtype" />
+        <result column="P_Polity" property="pPolity" />
+        <result column="P_Native" property="pNative" />
+        <result column="P_Health" property="pHealth" />
+        <result column="P_ArchivesIsInCorp" property="pArchivesisincorp" />
+        <result column="P_RResidenceIsInCorp" property="pRresidenceisincorp" />
+        <result column="P_Diploma" property="pDiploma" />
+        <result column="P_OtherCertificate" property="pOthercertificate" />
+        <result column="P_Professional" property="pProfessional" />
+        <result column="P_GraduationSchool" property="pGraduationschool" />
+        <result column="P_GraduationDate" property="pGraduationdate" />
+        <result column="P_OtherLanguage" property="pOtherlanguage" />
+        <result column="P_EnglishAbility" property="pEnglishability" />
+        <result column="P_ComputerAbility" property="pComputerability" />
+        <result column="P_Mobile" property="pMobile" />
+        <result column="P_HomePhone" property="pHomephone" />
+        <result column="P_Email" property="pEmail" />
+        <result column="P_MSN" property="pMsn" />
+        <result column="P_PostTitle" property="pPosttitle" />
+        <result column="P_GroupID" property="pGroupid" />
+        <result column="P_WorkType" property="pWorktype" />
+        <result column="P_Duty" property="pDuty" />
+        <result column="P_PositionType" property="pPositiontype" />
+        <result column="P_PositionSerial" property="pPositionserial" />
+        <result column="P_Position" property="pPosition" />
+        <result column="P_PositionLevel" property="pPositionlevel" />
+        <result column="P_WorkAge" property="pWorkage" />
+        <result column="P_JoinDate" property="pJoindate" />
+        <result column="P_Status" property="pStatus" />
+        <result column="P_Remark" property="pRemark" />
+        <result column="P_InputDate" property="pInputdate" />
+        <result column="P_Delete" property="pDelete" />
+        <result column="P_PersonType" property="pPersontype" />
+        <result column="P_ResumeNubmer" property="pResumenubmer" />
+        <result column="P_InputPersonnel" property="pInputpersonnel" />
+        <result column="P_EduType" property="pEdutype" />
+        <result column="P_ArchiveNo" property="pArchiveno" />
+        <result column="P_ResidenceNo" property="pResidenceno" />
+        <result column="P_ArchiveUnit" property="pArchiveunit" />
+        <result column="P_ResidenceUnit" property="pResidenceunit" />
+        <result column="P_Foregin" property="pForegin" />
+        <result column="P_IsCheck" property="pIscheck" />
+        <result column="P_GZState" property="pGzstate" />
+        <result column="G_Address" property="gAddress" />
+        <result column="isUpdate" property="isUpdate" />
+        <result column="directPersonnleID" property="directPersonnleID" />
+        <result column="datePower" property="datePower" />
+        <result column="P_TreatmentLevel" property="pTreatmentlevel" />
+        <result column="P_CostOwner" property="pCostowner" />
+        <result column="P_PositionCode" property="pPositioncode" />
+        <result column="P_PositionStep" property="pPositionstep" />
+        <result column="P_BankCard" property="pBankcard" />
+        <result column="P_Position_Son" property="pPositionSon" />
+        <result column="P_OutsideWorkAge" property="pOutsideworkage" />
+        <result column="P_DutyLevel" property="pDutylevel" />
+        <result column="P_CardName" property="pCardname" />
+        <result column="P_CardNo" property="pCardno" />
+        <result column="P_CardType" property="pCardtype" />
+        <result column="P_ModifyDate" property="pModifydate" />
+        <result column="P_EnableDate" property="pEnabledate" />
+    </resultMap>
+
+</mapper>
