@@ -9,9 +9,8 @@ import org.springframework.context.annotation.Import;
 
 /**
  * 个人中心
- * 
- * @author lz
  *
+ * @author lz
  */
 @EnableDiscoveryClient
 @ComponentScan("com.cloud.*")
@@ -19,8 +18,8 @@ import org.springframework.context.annotation.Import;
 @Import(value = {SwaggerConfig.class})
 public class PersonnelCenterApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PersonnelCenterApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(PersonnelCenterApplication.class, args);
+    }
 
 }
