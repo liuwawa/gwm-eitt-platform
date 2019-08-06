@@ -220,7 +220,7 @@ public class UserController {
      */
     @PostMapping("/users/queryPhone")
     @ApiOperation(value = "查询手机号是否存在")
-    public ResultVo queryPhone(@ApiParam(value = "手机号", required = true) String phone){
+    public ResultVo queryPhone(@ApiParam(value = "手机号", required = true) String phone) {
         if (appUserService.findByPhone(phone) != null) {
             return ResultVo.builder().code(50003).data(null).msg("手机号已被绑定!").build();
         }
@@ -365,7 +365,7 @@ public class UserController {
                             .eq(SysUser::getEnabled, enabled)
                             .like(SysUser::getUsername, username)
                             .like(SysUser::getDuties, duties)
-                            .like(SysUser::getPersonnelID, personnelID)
+                            .like(SysUser::getPersonnelNO, personnelID)
                             .like(SysUser::getNickname, nickname));
         } else if (enabled == null && sex != null) {
             userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
@@ -373,14 +373,14 @@ public class UserController {
                             .eq(SysUser::getSex, sex)
                             .like(SysUser::getUsername, username)
                             .like(SysUser::getDuties, duties)
-                            .like(SysUser::getPersonnelID, personnelID)
+                            .like(SysUser::getPersonnelNO, personnelID)
                             .like(SysUser::getNickname, nickname));
         } else if (sex == null && enabled == null) {
             userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
                     new QueryWrapper<SysUser>().lambda()
                             .like(SysUser::getUsername, username)
                             .like(SysUser::getDuties, duties)
-                            .like(SysUser::getPersonnelID, personnelID)
+                            .like(SysUser::getPersonnelNO, personnelID)
                             .like(SysUser::getNickname, nickname));
         } else {
             userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
@@ -389,7 +389,7 @@ public class UserController {
                             .eq(SysUser::getEnabled, enabled)
                             .like(SysUser::getUsername, username)
                             .like(SysUser::getDuties, duties)
-                            .like(SysUser::getPersonnelID, personnelID)
+                            .like(SysUser::getPersonnelNO, personnelID)
                             .like(SysUser::getNickname, nickname));
         }
         return userPage;

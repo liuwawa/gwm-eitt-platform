@@ -97,7 +97,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Transactional
     @Override
     public void updateAppUser(SysUser appUser) {
-        // appUser.setUpdateTime(new Date());
 
         appUserDao.updateById(appUser);
         QueryWrapper<UserCredential> deleteWrapper = new QueryWrapper<>();
@@ -106,8 +105,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
                         i -> i.eq("type", CredentialType.PHONE.name())
                 );
         userCredentialsDao.delete(deleteWrapper);
-//        QueryWrapper<UserCredential> wrapper = new QueryWrapper<>();
-//        wrapper.eq("userId",appUser.getId());
         userCredentialsDao.save(new UserCredential(appUser.getPhone(), CredentialType.PHONE.name(), appUser.getId()));
         log.info("修改用户：{}", appUser);
     }
