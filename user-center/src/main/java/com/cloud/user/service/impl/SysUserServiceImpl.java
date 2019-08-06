@@ -314,9 +314,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
             Integer personelno = Integer.valueOf(personnelNO.substring(2, 10));
             personelno = personelno + 1;
             String zeroForNum = addZeroForNum(personelno.toString(), 8);
-            appUser.setPersonnelID("GW" + zeroForNum);
+            appUser.setPersonnelNO("GW" + zeroForNum);
         } else {
-            appUser.setPersonnelID("GW00000001");
+            appUser.setPersonnelNO("GW00000001");
         }
 
         appUserDao.insert(appUser);
@@ -408,7 +408,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Override
     public SysUserResponse getUsers(String personnelID) {
         SysUser sysUser = appUserDao.selectOne(new QueryWrapper<SysUser>().lambda()
-                .eq(SysUser::getPersonnelID, personnelID));
+                .eq(SysUser::getPersonnelNO, personnelID));
         if (sysUser == null) {
             throw new ResultException(500, "查无此人");
         }

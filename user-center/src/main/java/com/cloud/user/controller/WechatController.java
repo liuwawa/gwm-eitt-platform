@@ -17,7 +17,7 @@ import java.io.UnsupportedEncodingException;
 @Slf4j
 @RestController
 @RequestMapping("/wechat")
-@ApiIgnore
+@ApiIgnore //swagger文档 忽略此接口类 后期加入微信登录 注释掉此注解即可
 public class WechatController {
 
     @Autowired
