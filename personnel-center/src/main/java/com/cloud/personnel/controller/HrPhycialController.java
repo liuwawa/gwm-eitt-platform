@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * <p>
  * 体检信息表 前端控制器
@@ -32,9 +34,10 @@ public class HrPhycialController {
 
         // 根据员工编号在体检信息表中查询
         HrPhycial hrPhycial = HrPhycial.builder().build();
-        HrPhycial phycial = hrPhycial.selectOne(new QueryWrapper<HrPhycial>().lambda().eq(HrPhycial::getPPersonnelid, hrPersonnel.getId()));
-        if (null != phycial) {
-            return new ResultVo(200, "操作成功", phycial);
+        List<HrPhycial> hrPhycials = hrPhycial.selectList(new QueryWrapper<HrPhycial>().lambda()
+                .eq(HrPhycial::getPPersonnelid, hrPersonnel.getId()).orderByDesc(HrPhycial::getPlDate));
+        if (null != hrPhycials && hrPhycials.size() != 0) {
+            return new ResultVo(200, "操作成功", hrPhycials.get(0));
         } else {
             return new ResultVo(16610, "没有查到相关信息", null);
         }

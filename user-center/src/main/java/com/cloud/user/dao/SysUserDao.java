@@ -32,6 +32,6 @@ public interface SysUserDao extends BaseMapper<SysUser> {
 
     List<SysUser> findData(Map<String, Object> params);
 
-    @Select("select max(PersonnelID) from sys_user")
+    @Select("select max(PersonnelNO) from sys_user")
     String selectMaxPersonnelNO();
 }
