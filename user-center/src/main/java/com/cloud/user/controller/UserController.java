@@ -301,7 +301,7 @@ public class UserController {
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
         String username = params.get("username").toString();
         String nickname = params.get("nickname").toString();
-        String personnelID = params.get("personnelID").toString();
+        String personnelNO = params.get("personnelNO").toString();
         String duties = params.get("duties").toString();
 
         String sex = null;
@@ -312,7 +312,7 @@ public class UserController {
         if (!"".equals(params.get("enabled"))) {
             enabled = params.get("enabled").toString();
         }
-        IPage<SysUser> userPage = getPage(username, nickname, sex, enabled, personnelID, duties, pageIndex, pageSize);
+        IPage<SysUser> userPage = getPage(username, nickname, sex, enabled, personnelNO, duties, pageIndex, pageSize);
         List<SysUser> sysUsers = userPage.getRecords();
         SysGroup sysGroup = SysGroup.builder().build();
         initUserGrouping(sysUsers, sysGroup);
