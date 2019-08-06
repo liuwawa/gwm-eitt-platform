@@ -28,6 +28,7 @@ import java.time.LocalDateTime;
 @TableName("hr_repayment")
 public class HrRepayment extends Model<HrRepayment> {
 
+
     /**
      * 主键
      */
@@ -95,10 +96,26 @@ public class HrRepayment extends Model<HrRepayment> {
     private String rBankcard;
 
     /**
+    * 偿还重金额
+    * */
+    @TableField(exist = false)
+    private String totalMoney;
+
+    public String getTotalMoney() {
+        this.totalMoney = Integer.parseInt(this.rInterest) + Integer.parseInt(this.rMoneny) + "";
+        return totalMoney;
+    }
+
+    /**
      * 指定主键
      */
     @Override
     protected Serializable pkVal() {
         return id;
     }
+
+
+
+
+
 }
