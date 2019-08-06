@@ -61,7 +61,7 @@ public class BMIController {
         BigDecimal pHeight = new BigDecimal(height).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
 
         //bmi计算公式 体质指数（BMI）=体重（kg）÷身高（m）^2
-        BigDecimal bmi = pWeight.divide(pHeight.multiply(pHeight), 2, RoundingMode.HALF_UP).multiply(new BigDecimal("1000"));
+        BigDecimal bmi = pWeight.divide(pHeight.multiply(pHeight), 2, RoundingMode.HALF_UP);
         return bmi;
     }
 
