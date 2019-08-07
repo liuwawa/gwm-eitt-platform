@@ -76,6 +76,9 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
                 // 根据父对象的id查出他的拓展数据
                 SysGroupExpand groupExpand = sysGroupExpand.selectOne(new QueryWrapper<SysGroupExpand>().lambda()
                         .eq(SysGroupExpand::getGroupId, group.getId()));
+                if (null == groupExpand) {
+                    throw new ResultException(500, "添加的父级没有拓展信息，无法添加！");
+                }
                 // 为拓展数据赋值
                 sysGroupExpand = setProperty(groupExpand, sysGroupExpand, group);
                 // 为sysGroup重新赋值父id， 循环查找
@@ -234,7 +237,7 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
 
     @Override
     @Transactional
-    public boolean changeGroup(List<Integer> groupIds, Integer parentId) {
+    public boolean changeGroup(List<Integer> groupIds, Integer parentId, String loginAdminName) {
         if (null == parentId) { // 非空验证
             log.error("移动组织结构,获取到的组织id为空值");
             throw new ResultException(ResultEnum.GROUPID_NULL.getCode(),
@@ -267,6 +270,9 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
             if (wiGroup.getLevel() > 6) {
                 wiGroup.setLevel(6); // level大于6的都设置为6(最大到6)
             }
+            wiGroup.setUpdateBy(loginAdminName);
+            wiGroup.setUpdateTime(new Date());
+            wiGroup.setIsUpdate("1");
             if (!wiGroup.updateById()) { // 做主表的更新操作
                 throw new ResultException(500, "更改出现错误！");
             }
@@ -275,10 +281,12 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         List<SysGroupExpand> groupExpands = groupExpand.selectList(new QueryWrapper<SysGroupExpand>().lambda()
                 .in(SysGroupExpand::getGroupId, groupIds)); // 找出所有的拓展对象
         List<SysGroupExpand> sysGroupExpands = new ArrayList<>();
+
         for (int i = 0; i < groupList.size(); i++) { // 重新设置其下的所有单位，部门和科室
             SysGroupExpand sysGroupExpand = setGgradeByLevel(groupList.get(i), groupExpands.get(i));  // 设置gGrade
             sysGroupExpands.add(sysGroupExpand);
         }
+
         for (SysGroupExpand sysGroupExpand : sysGroupExpands) {
             // 判断修改的组织是哪个级别
             if (!sysGroupExpand.getGGrade().equals("0")) {   //不是集团级别，肯定有父级，是集团级别也不会有这六个属性

@@ -118,7 +118,8 @@ public class SysGroupController {
         try {
             sysGroupService.updateByIds(groupIds, loginAdminName);
             log.info("删除分组操作成功，删除的分组Id:{}", groupIds);
-            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
+            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code,
+                    ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
             log.error("删除分组(批删)，出现异常！", e);
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, e.getMessage(), null);
@@ -201,21 +202,28 @@ public class SysGroupController {
     @LogAnnotation(module = LogModule.UPDATE_GROUP)
     @PreAuthorize("hasAuthority('back:group:update')")
     @PostMapping("/changeGroup")
-    @ApiOperation(value = "修改部门", notes = "参数：parentId，（数组）groupIds")
+    @ApiOperation(value = "修改部门", notes = "参数：parentId，（数组）groupIds, loginAdminName")
     public ResultVo changeGroupStructure(
             @ApiJsonObject(name = "修改组织结构的接口", value = {
                     @ApiJsonProperty(key = "parentId", example = "1", description = "parentId"),
-                    @ApiJsonProperty(key = "groupIds", example = "[]", description = "groupIds数组")
+                    @ApiJsonProperty(key = "groupIds", example = "[]", description = "groupIds数组"),
+                    @ApiJsonProperty(key = "loginAdminName", example = "admin", description = "操作人")
             })
             @RequestBody Map map) {
-        Integer parentId = Integer.valueOf(map.get("parentId").toString());
+        if (map.get("parentId") == null) {
+            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code,
+                    ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
+        }
         List<Integer> groupIds = (List<Integer>) map.get("groupIds");
+        Integer parentId = Integer.valueOf(map.get("parentId").toString());
+        String loginAdminName = map.get("loginAdminName").toString();
         try {
-            sysGroupService.changeGroup(groupIds, parentId);
+            sysGroupService.changeGroup(groupIds, parentId, loginAdminName);
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code,
                     ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
-            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, e.getMessage(), null);
+            log.error("出现异常" + e);
+            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, e.getMessage(), null);
 
         }
     }

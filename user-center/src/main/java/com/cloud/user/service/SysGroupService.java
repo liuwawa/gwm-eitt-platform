@@ -47,5 +47,5 @@ public interface SysGroupService extends IService<SysGroup> {
      * @return 操作结果
      * 把一个组织结构移动到另一个组织上
      */
-    boolean changeGroup(List<Integer> groupIds, Integer parentId);
+    boolean changeGroup(List<Integer> groupIds, Integer parentId, String loginAdminName);
 }

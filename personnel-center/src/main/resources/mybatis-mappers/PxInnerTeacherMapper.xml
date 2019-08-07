@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.personnel.dao.PxInnerTeacherDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.cloud.model.personnel.PxInnerTeacher">
+        <id column="id" property="id" />
+        <result column="P_PersonnelID" property="pPersonnelid" />
+        <result column="TeachLevel" property="TeachLevel" />
+        <result column="CDate" property="CDate" />
+        <result column="Tel" property="Tel" />
+        <result column="TeachSpecial" property="TeachSpecial" />
+        <result column="Remark" property="Remark" />
+        <result column="attestation" property="attestation" />
+        <result column="JingPin" property="JingPin" />
+        <result column="Moudel" property="Moudel" />
+        <result column="goal" property="goal" />
+        <result column="obj" property="obj" />
+        <result column="pxjlkcsj" property="pxjlkcsj" />
+        <result column="pxjlttt" property="pxjlttt" />
+        <result column="state" property="state" />
+        <result column="reviewer" property="reviewer" />
+        <result column="reviewDate" property="reviewDate" />
+        <result column="reviewIdea" property="reviewIdea" />
+        <result column="createTime" property="createTime" />
+    </resultMap>
+
+</mapper>

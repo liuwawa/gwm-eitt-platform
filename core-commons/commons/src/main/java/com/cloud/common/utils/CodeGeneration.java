@@ -56,9 +56,9 @@ public class CodeGeneration {
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
-        strategy.setTablePrefix(new String[]{"hr_"}); // 此处可以修改为您的表前缀
+        strategy.setTablePrefix(new String[]{"px_"}); // 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel); // 表名生成策略
-        strategy.setInclude(new String[]{"hr_repayment"}); // 需要生成的表
+        strategy.setInclude(new String[]{"px_innerTeacher"}); // 需要生成的表
 
         strategy.setSuperServiceClass(null);
         strategy.setSuperServiceImplClass(null);
