@@ -366,7 +366,7 @@ public class UserController {
                             .like(SysUser::getUsername, username)
                             .like(SysUser::getDuties, duties)
                             .like(SysUser::getPersonnelNO, personnelID)
-                            .like(SysUser::getNickname, nickname));
+                            .like(SysUser::getNickname, nickname).orderByDesc(SysUser::getCreateTime));
         } else if (enabled == null && sex != null) {
             userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
                     new QueryWrapper<SysUser>().lambda()
@@ -374,14 +374,14 @@ public class UserController {
                             .like(SysUser::getUsername, username)
                             .like(SysUser::getDuties, duties)
                             .like(SysUser::getPersonnelNO, personnelID)
-                            .like(SysUser::getNickname, nickname));
+                            .like(SysUser::getNickname, nickname).orderByDesc(SysUser::getCreateTime));
         } else if (sex == null && enabled == null) {
             userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
                     new QueryWrapper<SysUser>().lambda()
                             .like(SysUser::getUsername, username)
                             .like(SysUser::getDuties, duties)
                             .like(SysUser::getPersonnelNO, personnelID)
-                            .like(SysUser::getNickname, nickname));
+                            .like(SysUser::getNickname, nickname).orderByDesc(SysUser::getCreateTime));
         } else {
             userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
                     new QueryWrapper<SysUser>().lambda()
@@ -390,7 +390,7 @@ public class UserController {
                             .like(SysUser::getUsername, username)
                             .like(SysUser::getDuties, duties)
                             .like(SysUser::getPersonnelNO, personnelID)
-                            .like(SysUser::getNickname, nickname));
+                            .like(SysUser::getNickname, nickname).orderByDesc(SysUser::getCreateTime));
         }
         return userPage;
     }

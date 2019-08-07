@@ -448,6 +448,12 @@ public class HrPersonnel extends Model<HrPersonnel> {
     private LocalDateTime pEnabledate;
 
     /**
+     * 合同日期
+     */
+    @TableField(exist = false)
+    private String contractDate;
+
+    /**
      * 指定主键
      */
     @Override

@@ -2,11 +2,9 @@ package com.cloud.personnel.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.cloud.common.utils.AppUserUtil;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.model.personnel.HrContract;
 import com.cloud.model.personnel.HrPersonnel;
-import com.cloud.model.user.LoginAppUser;
 import com.cloud.personnel.util.PersonnelUtil;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
