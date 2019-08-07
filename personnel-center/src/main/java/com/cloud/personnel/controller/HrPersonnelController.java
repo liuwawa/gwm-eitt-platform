@@ -28,7 +28,7 @@ public class HrPersonnelController {
      * 根据员工编号查询其员工履历
      */
     @GetMapping("/getPersonnelInfo")
-    public ResultVo findContractByPersonnelID() {
+    public ResultVo findPersonnelInfoByPersonnelID() {
         // 获取当前的登录对象个人信息
         HrPersonnel hrPersonnel = PersonnelUtil.getPersonnel();
         // 查询员工合同信息
