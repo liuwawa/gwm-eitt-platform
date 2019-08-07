@@ -9,7 +9,6 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 
 import feign.RequestInterceptor;
-import feign.RequestTemplate;
 
 /**
  * 使用feign client访问别的微服务时，将access_token放入参数或者header<br>

@@ -118,7 +118,7 @@ public class MailController {
     @LogAnnotation(module = LogModule.DELETE_ROLE)
     @PreAuthorize("hasAuthority('back:mail:delete')")
     @DeleteMapping("/delBatch/{ids}")
-    @ApiOperation(value ="批量删除" ,notes = "以,拼接的id字符串 ")
+    @ApiOperation(value = "批量删除", notes = "以,拼接的id字符串 ")
     public ResultVo deleteBatchMail(@PathVariable String ids) {
         List<Integer> list = new ArrayList<>();
         try {

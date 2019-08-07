@@ -106,6 +106,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
                 );
         userCredentialsDao.delete(deleteWrapper);
         userCredentialsDao.save(new UserCredential(appUser.getPhone(), CredentialType.PHONE.name(), appUser.getId()));
+        deleteWrapper = new QueryWrapper<>();
+        deleteWrapper.eq("userId", appUser.getId())
+                .and(
+                        i -> i.eq("type", CredentialType.USERNAME.name())
+                );
+        userCredentialsDao.delete(deleteWrapper);
+        userCredentialsDao.save(new UserCredential(appUser.getUsername(), CredentialType.USERNAME.name(), appUser.getId()));
         log.info("修改用户：{}", appUser);
     }
 
