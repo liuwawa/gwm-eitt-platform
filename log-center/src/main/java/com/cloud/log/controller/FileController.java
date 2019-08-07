@@ -77,7 +77,7 @@ public class FileController {
         QueryWrapper<FileInfo> queryWrapper = new QueryWrapper<>();
 
         queryWrapper.like("name", condition);
-
+        queryWrapper.orderByDesc("createTime");
         IPage<FileInfo> fileInfoPage = fileService.page(new Page<>(pageIndex, pageSize), queryWrapper);
         return PageResult.builder().content(fileInfoPage.getRecords()).
                 pageNum(fileInfoPage.getCurrent()).

@@ -131,8 +131,10 @@ public class SysPermissionController {
         String permission = String.valueOf(params.get("permission").toString());
         IPage<SysPermission> permissionIPage = sysPermissionService.
                 page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
-                        new QueryWrapper<SysPermission>()
-                                .lambda().like(SysPermission::getName, name).like(SysPermission::getPermission, permission));
+                        new QueryWrapper<SysPermission>().lambda()
+                                .like(SysPermission::getName, name)
+                                .like(SysPermission::getPermission, permission)
+                                .orderByDesc(SysPermission::getCreateTime));
         return PageResult.builder().content(permissionIPage.getRecords()).
                 pageNum(permissionIPage.getCurrent()).
                 pageSize(permissionIPage.getSize()).

@@ -218,7 +218,7 @@ public class SysRoleController {
         String condition = String.valueOf(params.get("condition").toString());
         IPage<SysRole> roleIPage = sysRoleService.
                 page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
-                        new QueryWrapper<SysRole>().like("name", condition));
+                        new QueryWrapper<SysRole>().like("name", condition).orderByDesc("createTime"));
         LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
         assert loginAppUser != null;
         Set<SysRole> roles = loginAppUser.getSysRoles();
