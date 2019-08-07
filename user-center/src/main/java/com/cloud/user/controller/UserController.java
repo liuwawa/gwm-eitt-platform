@@ -290,7 +290,7 @@ public class UserController {
                     @ApiJsonProperty(key = "pageSize", example = "10", description = "pageSize"),
                     @ApiJsonProperty(key = "username", example = "username", description = "username"),
                     @ApiJsonProperty(key = "nickname", example = "nickname", description = "nickname"),
-                    @ApiJsonProperty(key = "personnelID", example = "0", description = "personnelID"),
+                    @ApiJsonProperty(key = "personnelNO", example = "0", description = "personnelNO"),
                     @ApiJsonProperty(key = "duties", example = "duties", description = "duties"),
                     @ApiJsonProperty(key = "sex", example = "0", description = "性别 0:女1:男"),
                     @ApiJsonProperty(key = "enabled", example = "false", description = "enabled")
