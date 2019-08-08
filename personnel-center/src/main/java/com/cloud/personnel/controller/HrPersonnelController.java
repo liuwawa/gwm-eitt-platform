@@ -6,6 +6,7 @@ import com.cloud.common.vo.ResultVo;
 import com.cloud.model.personnel.HrContract;
 import com.cloud.model.personnel.HrPersonnel;
 import com.cloud.personnel.util.PersonnelUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/personnel")
+@Slf4j
 public class HrPersonnelController {
     /**
      * @return 查询结果
@@ -36,17 +38,24 @@ public class HrPersonnelController {
         List<HrContract> hrContracts = contract.selectList(new QueryWrapper<HrContract>().lambda()
                 .eq(HrContract::getPPersonnelid, hrPersonnel.getId()).eq(HrContract::getCStatus, "有效").orderByDesc(HrContract::getId));
         // 有合同信息
-        if (hrContracts.size() != 0 && hrContracts != null) {
-            // endDate是9999-12-30表示无固定期限
-            if (hrContracts.get(0).getCEnddate().toString().equals("9999-12-30")) {
-                hrPersonnel.setContractDate(hrContracts.get(0).getCStartdate() + "---无固定期限");
-            }
-            // 日期做字符串连接
-            hrPersonnel.setContractDate(hrContracts.get(0).getCStartdate().toString() + hrContracts.get(0).getCEnddate().toString());
-            return new ResultVo(200, "操作成功", hrPersonnel);
+        if (hrContracts.size() == 0 || hrContracts == null) {
+            hrPersonnel.setContractDate("暂无");
         } else {
-            return new ResultVo(16610, "没有查到相关信息", null);
+            // endDate是9999-12-30表示无固定期限
+            String endDate = hrContracts.get(0).getCEnddate().toString();
+            String subEndDate = endDate.substring(0, 10);
+            log.info("合同截止日期" + subEndDate);
+            if (subEndDate.equals("9999-12-30")) {
+                hrPersonnel.setContractDate(hrContracts.get(0).getCStartdate() + " --- 无固定期限");
+            } else {
+                // 日期做字符串连接
+                hrPersonnel.setContractDate(
+                        hrContracts.get(0).getCStartdate().toString() + " --- " + endDate);
+            }
+
         }
+
+        return new ResultVo(200, "操作成功", hrPersonnel);
     }
 }
 

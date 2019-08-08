@@ -39,7 +39,7 @@ public class BxInsure extends Model<BxInsure> {
      * 保险名称
      */
     @TableField("C_Name")
-    private BigDecimal cName;
+    private String cName;
 
     /**
      * 公司比例

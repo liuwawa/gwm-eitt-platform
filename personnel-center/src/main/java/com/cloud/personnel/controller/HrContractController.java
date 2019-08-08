@@ -6,6 +6,7 @@ import com.cloud.common.vo.ResultVo;
 import com.cloud.model.personnel.HrContract;
 import com.cloud.model.personnel.HrPersonnel;
 import com.cloud.personnel.util.PersonnelUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/contract")
+@Slf4j
 public class HrContractController {
     /**
      * @return 查询结果
