@@ -9,9 +9,11 @@ import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.user.SysGroup;
 import com.cloud.model.user.SysGroupExpand;
+import com.cloud.model.user.constants.SysUserResponse;
 import com.cloud.response.BaseEntity;
 import com.cloud.response.ObjectConversionEntityUtil;
 import com.cloud.user.service.SysGroupService;
+import com.cloud.user.service.SysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +43,8 @@ import java.util.stream.Collectors;
 public class SysGroupController {
     @Autowired
     private SysGroupService sysGroupService;
+    @Autowired
+    private SysUserService appUserService;
 
     /**
      * @param baseEntity 封装组织的数据
@@ -154,6 +158,19 @@ public class SysGroupController {
                 sysGroup.setGUnittopLeader(expand.getGUnittopLeader());
                 sysGroup.setGModule(expand.getGModule());
                 sysGroup.setSubModule(expand.getSubModule());
+                SysUserResponse directLeader = appUserService.getUsers(expand.getGDirectLeader());
+                if (null != directLeader) {
+                    sysGroup.setGDirectLeaderInfo(directLeader);
+                }
+                SysUserResponse deptopLeader = appUserService.getUsers(expand.getGDeptopLeader());
+                if (null != deptopLeader) {
+                    sysGroup.setGDeptopLeaderInfo(deptopLeader);
+                }
+                SysUserResponse unittopLeader = appUserService.getUsers(expand.getGUnittopLeader());
+                if (null != unittopLeader) {
+                    sysGroup.setGUnittopLeaderInfo(unittopLeader);
+                }
+
             }
 
         }

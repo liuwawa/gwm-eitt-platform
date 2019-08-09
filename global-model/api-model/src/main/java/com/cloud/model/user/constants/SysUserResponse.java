@@ -12,7 +12,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Builder
 public class SysUserResponse implements Serializable {
-    private String personnelID;
     private String duties;
     private String nickname;
     private String groupName;

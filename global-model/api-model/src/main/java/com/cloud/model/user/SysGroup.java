@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.cloud.model.user.constants.SysUserResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -179,6 +180,24 @@ public class SysGroup extends Model<SysGroup> {
      */
     @TableField(exist = false)
     private String subModule;
+
+    /**
+     * 当前组织直接领导信息
+     */
+    @TableField(exist = false)
+    private SysUserResponse gDirectLeaderInfo;
+
+    /**
+     * 部门最高领导信息
+     */
+    @TableField(exist = false)
+    private SysUserResponse gDeptopLeaderInfo;
+
+    /**
+     * 单位最高领导信息
+     */
+    @TableField(exist = false)
+    private SysUserResponse gUnittopLeaderInfo;
 
     /**
      * 指定主键

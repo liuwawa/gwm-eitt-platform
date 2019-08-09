@@ -410,23 +410,30 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     }
 
     @Override
-    public SysUserResponse getUsers(String personnelID) {
+    public SysUserResponse getUsers(String personnelNO) {
+        // 根据工号查找对象
         SysUser sysUser = appUserDao.selectOne(new QueryWrapper<SysUser>().lambda()
-                .eq(SysUser::getPersonnelNO, personnelID));
-        if (sysUser == null) {
-            throw new ResultException(500, "查无此人");
+                .eq(SysUser::getPersonnelNO, personnelNO));
+        if (null == sysUser) {
+            return null;
         }
-        SysGroup sysGroup = SysGroup.builder().id(sysUser.getGroupId()).build();
-        SysGroup group = sysGroup.selectById();
+
         SysUserResponse userResponse = SysUserResponse.builder()
                 .duties(sysUser.getDuties())
-                .personnelID(personnelID)
                 .nickname(sysUser.getNickname()).build();
-        if (group == null) {
-            userResponse.setGroupName(null);
-        } else {
-            userResponse.setGroupName(group.getLabel());
+        Integer sysUserGroupId = sysUser.getGroupId();
+        // 根据groupId查找对应的组织
+        if (null != sysUserGroupId) {
+            SysGroup sysGroup = SysGroup.builder().id(sysUserGroupId).build();
+            SysGroup group = sysGroup.selectById();
+            if (null == group) {
+                userResponse.setGroupName(null);
+            } else {
+                userResponse.setGroupName(group.getLabel());
+            }
         }
+
+
         return userResponse;
 
     }

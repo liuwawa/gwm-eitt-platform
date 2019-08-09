@@ -125,7 +125,6 @@ public class UserController {
     }
 
 
-
     /**
      * 修改密码(element ui)
      *
@@ -136,7 +135,7 @@ public class UserController {
     @PostMapping(value = "/users/modifyPassword")
     @ApiOperation(value = "修改密码")
     public ResultVo modifyPassword(@ApiParam(value = "旧密码", required = true)
-                                       @RequestParam("oldPassword") String oldPassword,
+                                   @RequestParam("oldPassword") String oldPassword,
                                    @ApiParam(value = "新密码", required = true)
                                    @RequestParam("newPassword") String newPassword) {
         try {
@@ -166,7 +165,7 @@ public class UserController {
     @PutMapping(value = "/users/{id}/password", params = {"newPassword"})
     @ApiOperation(value = "重置密码")
     public void resetPassword(@ApiParam(value = "用户id", required = true)
-                                  @PathVariable Long id, @ApiParam(value = "新密码",
+                              @PathVariable Long id, @ApiParam(value = "新密码",
             required = true) String newPassword) {
         appUserService.updatePassword(id, null, newPassword);
     }
@@ -215,6 +214,7 @@ public class UserController {
 
     /**
      * 查询手机号是否存在
+     *
      * @param phone
      * @return
      */
@@ -328,6 +328,7 @@ public class UserController {
 
     /**
      * 查找并设置每个用户所在的分组和可以查看的分组
+     *
      * @param sysUsers
      * @param sysGroup
      */
@@ -542,6 +543,9 @@ public class UserController {
     public ResultVo getUsersForGroup(@ApiParam(value = "员工工号", required = true) String personnelID) {
         try {
             SysUserResponse user = appUserService.getUsers(personnelID);
+            if (null == user) {
+                return new ResultVo(500, "查无此人", null);
+            }
             return new ResultVo(200, "操作成功", user);
         } catch (Exception e) {
             log.info("根据工号查找用户出现错误", e);
