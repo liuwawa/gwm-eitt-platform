@@ -1,5 +1,6 @@
 package com.cloud.gateway.feign;
 
+import com.cloud.model.user.LoginAppUser;
 import com.cloud.model.user.SysUser;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
@@ -22,12 +23,19 @@ public interface UserClient {
     @GetMapping(value = "/phone-anon/internal")
     SysUser findByPhone(@RequestParam("phone") String phone);
 
+    @GetMapping(value = "/users-anon/internal")
+    LoginAppUser findByUsername(@RequestParam("username") String username);
 
     @Component("userClientFeign")
     final class UserClientFeign implements UserClient {
 
         @Override
         public SysUser findByPhone(String phone) {
+            return null;
+        }
+
+        @Override
+        public LoginAppUser findByUsername(String username) {
             return null;
         }
     }

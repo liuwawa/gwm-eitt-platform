@@ -9,6 +9,7 @@ import com.cloud.gateway.feign.UserClient;
 import com.cloud.model.log.Log;
 import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.oauth.SystemClientInfo;
+import com.cloud.model.user.LoginAppUser;
 import com.cloud.model.user.SysUser;
 import com.cloud.model.user.constants.CredentialType;
 import com.cloud.utils.ZuulUtils;
@@ -73,6 +74,10 @@ public class TokenController {
     @ApiOperation(value = "根据用户名登录")
     public Map<String, Object> login(@ApiParam(value = "用户名", required = true) String username, @ApiParam(value = "密码", required = true) String password, HttpServletRequest request, HttpServletResponse response) {
         getOut(username, request);
+
+        LoginAppUser byUsername = userClient.findByUsername(username);
+        Map<String, Object> map = isEnabled(byUsername);
+        if (map != null) return map;
 
         Map<String, String> parameters = initOauthParam();
         // 为了支持多类型登录，这里在username后拼装上登录类型
@@ -153,6 +158,9 @@ public class TokenController {
 
         SysUser appUser = userClient.findByPhone(phone);
 
+        Map<String, Object> map = isEnabled(appUser);
+        if (map != null) return map;
+
         getOut(appUser.getUsername(), request);
         // 为了支持多类型登录，这里在username后拼装上登录类型，同时为了校验短信验证码，我们也拼上code等
         parameters.put("username", appUser.getUsername() + "|" + CredentialType.PHONE.name() + "|" + key + "|" + code + "|"
@@ -169,6 +177,21 @@ public class TokenController {
         ZuulUtils.initZuulResponseForCode(tokenInfo, ResponseStatus.RESPONSE_SUCCESS);
         initTokenCookie(appUser.getUsername(), request, response, tokenInfo);
         return tokenInfo;
+    }
+
+    /**
+     * 判断用户是否被冻结
+     * @param appUser
+     * @return
+     */
+    private Map<String, Object> isEnabled(SysUser appUser) {
+        if (!appUser.getEnabled()) {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("errorCode", 88888);
+            map.put("message", "此用户已冻结!");
+            return map;
+        }
+        return null;
     }
 
     /**

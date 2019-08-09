@@ -14,10 +14,12 @@ import com.cloud.model.common.PageResult;
 import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.user.*;
+import com.cloud.model.user.constants.CredentialType;
 import com.cloud.model.user.constants.SysUserResponse;
 import com.cloud.user.feign.SmsClient;
 import com.cloud.user.service.SysRoleService;
 import com.cloud.user.service.SysUserService;
+import com.cloud.user.service.UserCredentialsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -43,6 +45,8 @@ public class UserController {
     private SysRoleService sysRoleService;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private UserCredentialsService userCredentialsService;
 
 
     /**
@@ -271,6 +275,68 @@ public class UserController {
             }
         } else {
             return ResultVo.builder().code(50003).data(null).msg("手机号不一致!").build();
+        }
+    }
+
+    /**
+     * 修改手机号 （element ui）
+     * @param oldPhone 原手机号
+     * @param newPhone 新手机号
+     * @param key 验证码key
+     * @param code 验证码
+     * @return
+     */
+    @PostMapping(value = "/users/changePhone")
+    @ApiOperation(value = "修改手机号")
+    public  ResultVo changePhone(@ApiParam(value = "原手机号", required = true) String oldPhone,
+                                 @ApiParam(value = "新手机号", required = true) String newPhone,
+                                 @ApiParam(value = "redis 中的key值，根据key取值去与验证码对比", required = true) String key,
+                                 @ApiParam(value = "验证码", required = true) String code) {
+        if (StringUtils.isBlank(code)) {
+            return ResultVo.builder().code(50002).data(null).msg("验证码不能为空!").build();
+        }
+        if (StringUtils.isBlank(oldPhone)) {
+            return ResultVo.builder().code(50000).data(null).msg("原手机号不能为空!").build();
+        }
+        if (StringUtils.isBlank(newPhone)) {
+            return ResultVo.builder().code(50001).data(null).msg("新手机号不能为空!").build();
+        }
+        LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+        assert loginAppUser != null;
+
+        if (!loginAppUser.getPhone().equals(oldPhone)) {
+            return ResultVo.builder().code(50005).data(null).msg("原手机号错误!").build();
+        }
+        if (appUserService.findByPhone(newPhone) != null) {
+            return ResultVo.builder().code(50003).data(null).msg("新手机号已被绑定!").build();
+        }
+        String value = smsClient.matcheCodeAndGetPhone(key, code, false, 10);
+        if (value == null) {
+            return ResultVo.builder().code(50004).data(null).msg("验证码错误!").build();
+        }
+
+        log.info("修改手机号，key:{},code:{},username:{}", key, code, loginAppUser.getUsername());
+        if (newPhone.equals(value)) {
+            try {
+                QueryWrapper<SysUser> userWrapper = new QueryWrapper<>();
+                userWrapper.eq("id", loginAppUser.getId());
+                SysUser sysUser = appUserService.getById(loginAppUser.getId());
+                sysUser.setPhone(newPhone);
+                appUserService.update(sysUser, userWrapper);
+                QueryWrapper<UserCredential> userCredentialsWrapper = new QueryWrapper<>();
+                userCredentialsWrapper.eq("type", CredentialType.PHONE.name())
+                        .and(i -> i.eq("username", oldPhone))
+                        .and(i -> i.eq("userId", loginAppUser.getId()));
+                UserCredential userCredential = userCredentialsService.getOne(userCredentialsWrapper);
+                userCredential.setUsername(newPhone);
+                userCredentialsService.update(userCredential, userCredentialsWrapper);
+                return ResultVo.builder().code(200).data(null).msg("手机号修改成功!").build();
+            } catch (Exception e) {
+                log.info(e + "");
+                return ResultVo.builder().code(50006).data(null).msg("请联系管理员!").build();
+            }
+        } else {
+            return ResultVo.builder().code(50007).data(null).msg("手机号不一致!").build();
         }
     }
 
