@@ -227,16 +227,22 @@ public class SysRoleController {
         LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
         assert loginAppUser != null;
         Set<SysRole> roles = loginAppUser.getSysRoles();
-        for (SysRole role : roles) {
-            if (!SysConstants.ADMIN_CODE.equals(role.getCode())) { //当前用户无超级管理员角色,剔除超级管理员角色数据
-                List<SysRole> records = roleIPage.getRecords();
-                for (int i = 0; i < records.size(); i++) {
-                    if (SysConstants.ADMIN_CODE.equals(records.get(i).getCode())) {
-                        records.remove(i);
-                    }
-                }
-            }
-        }
+        QueryWrapper<SysRole> roleWrapper = new QueryWrapper<>();
+        roleWrapper.eq("code", SysConstants.ADMIN_CODE);
+        SysRole superAdminRole = sysRoleService.getOne(roleWrapper);
+        //判断当前用户有无超级管理员角色,如果没有，则剔除超级管理员角色数据
+        if (!roles.contains(superAdminRole)) roleIPage.getRecords().remove(superAdminRole);
+//        for (SysRole role : roles) {
+//            if (SysConstants.ADMIN_CODE.equals(role.getCode())) {
+//               break;
+//            }
+//            List<SysRole> records = roleIPage.getRecords();
+//            for (int i = 0; i < records.size(); i++) {
+//                if (SysConstants.ADMIN_CODE.equals(records.get(i).getCode())) {
+//                    records.remove(i);
+//                }
+//            }
+//        }
         return PageResult.builder().content(roleIPage.getRecords()).
                 pageNum(roleIPage.getCurrent()).
                 pageSize(roleIPage.getSize()).
