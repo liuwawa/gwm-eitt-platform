@@ -141,44 +141,56 @@ public class SysGroupController {
         List<SysGroup> groupList = sysGroupService.list(new QueryWrapper<SysGroup>().lambda()
                 .eq(SysGroup::getIsDel, "0")
                 .orderByAsc(SysGroup::getGroupShowOrder));
-        List<SysGroup> firstLevelMenus;
-        HashMap<Object, Object> reslut = new HashMap<>();
-        firstLevelMenus = groupList.stream().filter(m -> m.getParentid().equals(0))
+        List<SysGroup> firstLevelMenus = groupList.stream().filter(m -> m.getParentid().equals(0))
                 .collect(Collectors.toList());
         firstLevelMenus.forEach(m -> setChildren(m, groupList));
-        // 设置拓展信息
-        for (SysGroup sysGroup : firstLevelMenus) {
-            SysGroupExpand sysGroupExpand = SysGroupExpand.builder().build();
-            SysGroupExpand expand = sysGroupExpand.selectOne(new QueryWrapper<SysGroupExpand>().lambda()
-                    .eq(SysGroupExpand::getGroupId, sysGroup.getId()));
-            // 设置前台需要的拓展属性
-            if (expand != null) {
-                sysGroup.setGDirectLeader(expand.getGDirectLeader());
-                sysGroup.setGDeptopLeader(expand.getGDeptopLeader());
-                sysGroup.setGUnittopLeader(expand.getGUnittopLeader());
-                sysGroup.setGModule(expand.getGModule());
-                sysGroup.setSubModule(expand.getSubModule());
-                SysUserResponse directLeader = appUserService.getUsers(expand.getGDirectLeader());
-                if (null != directLeader) {
-                    sysGroup.setGDirectLeaderInfo(directLeader);
-                }
-                SysUserResponse deptopLeader = appUserService.getUsers(expand.getGDeptopLeader());
-                if (null != deptopLeader) {
-                    sysGroup.setGDeptopLeaderInfo(deptopLeader);
-                }
-                SysUserResponse unittopLeader = appUserService.getUsers(expand.getGUnittopLeader());
-                if (null != unittopLeader) {
-                    sysGroup.setGUnittopLeaderInfo(unittopLeader);
-                }
-
-            }
-
-        }
+        HashMap<Object, Object> reslut = new HashMap<>();
         reslut.put("code", 200);
         reslut.put("msg", null);
         reslut.put("data", firstLevelMenus);
         return reslut;
     }
+
+    /**
+     * @return 点击获取分组的详细信息
+     */
+    @GetMapping("/getGroupInfo")
+    @ApiOperation(value = "点击获取分组的详细信息")
+    public ResultVo getGroupInfoById(Integer groupId) {
+        // 根据id查询出分组
+        SysGroup group = SysGroup.builder().id(groupId).build();
+        SysGroup sysGroup = group.selectOne(new QueryWrapper<SysGroup>().lambda().eq(SysGroup::getId, groupId).eq(SysGroup::getIsDel, "0"));
+        if (null == sysGroup) {
+            return new ResultVo(16610, "没有找到该分组信息，请查看是否已经删除！", null);
+        }
+        // 查找其拓展数据
+        SysGroupExpand sysGroupExpand = SysGroupExpand.builder().build();
+        SysGroupExpand expand = sysGroupExpand.selectOne(
+                new QueryWrapper<SysGroupExpand>().lambda().eq(SysGroupExpand::getGroupId, groupId));
+        // 设置前台需要的拓展属性
+        if (null != expand) {
+            sysGroup.setGDirectLeader(expand.getGDirectLeader());
+            sysGroup.setGDeptopLeader(expand.getGDeptopLeader());
+            sysGroup.setGUnittopLeader(expand.getGUnittopLeader());
+            sysGroup.setGModule(expand.getGModule());
+            sysGroup.setSubModule(expand.getSubModule());
+            SysUserResponse directLeader = appUserService.getUsers(expand.getGDirectLeader());
+            if (null != directLeader) {
+                sysGroup.setGDirectLeaderInfo(directLeader);
+            }
+            SysUserResponse deptopLeader = appUserService.getUsers(expand.getGDeptopLeader());
+            if (null != deptopLeader) {
+                sysGroup.setGDeptopLeaderInfo(deptopLeader);
+            }
+            SysUserResponse unittopLeader = appUserService.getUsers(expand.getGUnittopLeader());
+            if (null != unittopLeader) {
+                sysGroup.setGUnittopLeaderInfo(unittopLeader);
+            }
+        }
+
+        return new ResultVo(200, "操作成功！", sysGroup);
+    }
+
 
     /**
      * element  ui  数据

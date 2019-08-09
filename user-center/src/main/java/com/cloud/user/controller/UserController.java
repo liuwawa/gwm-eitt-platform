@@ -2,6 +2,7 @@ package com.cloud.user.controller;
 
 
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cloud.common.plugins.ApiJsonObject;
@@ -280,18 +281,19 @@ public class UserController {
 
     /**
      * 修改手机号 （element ui）
+     *
      * @param oldPhone 原手机号
      * @param newPhone 新手机号
-     * @param key 验证码key
-     * @param code 验证码
+     * @param key      验证码key
+     * @param code     验证码
      * @return
      */
     @PostMapping(value = "/users/changePhone")
     @ApiOperation(value = "修改手机号")
-    public  ResultVo changePhone(@ApiParam(value = "原手机号", required = true) String oldPhone,
-                                 @ApiParam(value = "新手机号", required = true) String newPhone,
-                                 @ApiParam(value = "redis 中的key值，根据key取值去与验证码对比", required = true) String key,
-                                 @ApiParam(value = "验证码", required = true) String code) {
+    public ResultVo changePhone(@ApiParam(value = "原手机号", required = true) String oldPhone,
+                                @ApiParam(value = "新手机号", required = true) String newPhone,
+                                @ApiParam(value = "redis 中的key值，根据key取值去与验证码对比", required = true) String key,
+                                @ApiParam(value = "验证码", required = true) String code) {
         if (StringUtils.isBlank(code)) {
             return ResultVo.builder().code(50002).data(null).msg("验证码不能为空!").build();
         }
@@ -423,41 +425,26 @@ public class UserController {
     }
 
     // 获取分页的结果
-    public IPage<SysUser> getPage(String username, String nickname, String sex, String enabled, String personnelID, String duties, Long
+    public IPage<SysUser> getPage(String username, String nickname, String sex, String enabled, String personnelNO, String duties, Long
             pageIndex, Long pageSize) {
         IPage<SysUser> userPage = null;
-        if (sex == null && enabled != null) {
+        LambdaQueryWrapper<SysUser> userQueryWrapper = new QueryWrapper<SysUser>().lambda()
+                .like(SysUser::getUsername, username)
+                .like(SysUser::getDuties, duties)
+                .like(SysUser::getPersonnelNO, personnelNO)
+                .like(SysUser::getNickname, nickname).orderByDesc(SysUser::getCreateTime);
+        if (null == sex && null != enabled) {
             userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
-                    new QueryWrapper<SysUser>().lambda()
-                            .eq(SysUser::getEnabled, enabled)
-                            .like(SysUser::getUsername, username)
-                            .like(SysUser::getDuties, duties)
-                            .like(SysUser::getPersonnelNO, personnelID)
-                            .like(SysUser::getNickname, nickname).orderByDesc(SysUser::getCreateTime));
-        } else if (enabled == null && sex != null) {
+                    userQueryWrapper.eq(SysUser::getEnabled, enabled));
+        } else if (null == enabled && null != sex) {
             userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
-                    new QueryWrapper<SysUser>().lambda()
-                            .eq(SysUser::getSex, sex)
-                            .like(SysUser::getUsername, username)
-                            .like(SysUser::getDuties, duties)
-                            .like(SysUser::getPersonnelNO, personnelID)
-                            .like(SysUser::getNickname, nickname).orderByDesc(SysUser::getCreateTime));
-        } else if (sex == null && enabled == null) {
+                    userQueryWrapper.eq(SysUser::getSex, sex));
+        } else if (null == sex && null == enabled) {
             userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
-                    new QueryWrapper<SysUser>().lambda()
-                            .like(SysUser::getUsername, username)
-                            .like(SysUser::getDuties, duties)
-                            .like(SysUser::getPersonnelNO, personnelID)
-                            .like(SysUser::getNickname, nickname).orderByDesc(SysUser::getCreateTime));
+                    userQueryWrapper);
         } else {
             userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
-                    new QueryWrapper<SysUser>().lambda()
-                            .eq(SysUser::getSex, sex)
-                            .eq(SysUser::getEnabled, enabled)
-                            .like(SysUser::getUsername, username)
-                            .like(SysUser::getDuties, duties)
-                            .like(SysUser::getPersonnelNO, personnelID)
-                            .like(SysUser::getNickname, nickname).orderByDesc(SysUser::getCreateTime));
+                    userQueryWrapper.eq(SysUser::getSex, sex).eq(SysUser::getEnabled, enabled));
         }
         return userPage;
     }
@@ -474,7 +461,9 @@ public class UserController {
     public ResultVo updateUser(@RequestBody SysUser appUser) {
         try {
             // 设置该用户所在的组织
-            if (setUserGroup(appUser)) return new ResultVo(500, "请选择有效组织", null);
+            if (setUserGroup(appUser)) {
+                return new ResultVo(500, "请选择有效组织", null);
+            }
             appUserService.updateUser(appUser);
             log.info("修改成功,id:{}", appUser.getId());
             return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
@@ -486,6 +475,7 @@ public class UserController {
 
     /**
      * 设置用户所在组织
+     *
      * @param appUser
      * @return
      */
@@ -542,7 +532,9 @@ public class UserController {
     public ResultVo saveUser(@RequestBody SysUser appUser) {
         try {
             // 设置该用户所在的组织
-            if (setUserGroup(appUser)) return new ResultVo(500, "请选择有效组织", null);
+            if (setUserGroup(appUser)) {
+                return new ResultVo(500, "请选择有效组织", null);
+            }
 
             appUser.setPassword("123456");
             appUserService.addUser(appUser);
