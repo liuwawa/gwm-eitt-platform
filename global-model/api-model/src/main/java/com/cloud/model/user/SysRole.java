@@ -27,6 +27,8 @@ public class SysRole implements Serializable {
     private Date createTime;
     @TableField("updateTime")
     private Date updateTime;
+    @TableField("roleType")
+    private String roleType;
 
     // 勾选标识
     @TableField(exist = false)

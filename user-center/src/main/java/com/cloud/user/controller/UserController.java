@@ -474,15 +474,7 @@ public class UserController {
     public ResultVo updateUser(@RequestBody SysUser appUser) {
         try {
             // 设置该用户所在的组织
-            Integer groupId = appUser.getGroupId();
-            if (groupId != null) {
-                SysGroup group = SysGroup.builder().id(groupId).build();
-                if (group.selectById() != null) {
-                    appUser.setGroupId(group.getId());
-                } else {
-                    return new ResultVo(500, "请选择有效组织", null);
-                }
-            }
+            if (setUserGroup(appUser)) return new ResultVo(500, "请选择有效组织", null);
             appUserService.updateUser(appUser);
             log.info("修改成功,id:{}", appUser.getId());
             return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
@@ -490,6 +482,24 @@ public class UserController {
             log.error("修改出现异常", e);
             return new ResultVo(500, e.getMessage(), null);
         }
+    }
+
+    /**
+     * 设置用户所在组织
+     * @param appUser
+     * @return
+     */
+    private boolean setUserGroup(@RequestBody SysUser appUser) {
+        Integer groupId = appUser.getGroupId();
+        if (groupId != null) {
+            SysGroup group = SysGroup.builder().id(groupId).build();
+            if (group.selectById() != null) {
+                appUser.setGroupId(group.getId());
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -532,15 +542,7 @@ public class UserController {
     public ResultVo saveUser(@RequestBody SysUser appUser) {
         try {
             // 设置该用户所在的组织
-            Integer groupId = appUser.getGroupId();
-            if (groupId != null) {
-                SysGroup group = SysGroup.builder().id(groupId).build();
-                if (group.selectById() != null) {
-                    appUser.setGroupId(group.getId());
-                } else {
-                    return new ResultVo(500, "请选择有效组织", null);
-                }
-            }
+            if (setUserGroup(appUser)) return new ResultVo(500, "请选择有效组织", null);
 
             appUser.setPassword("123456");
             appUserService.addUser(appUser);
