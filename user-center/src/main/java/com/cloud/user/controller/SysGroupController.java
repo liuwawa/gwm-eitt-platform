@@ -146,7 +146,7 @@ public class SysGroupController {
         firstLevelMenus.forEach(m -> setChildren(m, groupList));
         HashMap<Object, Object> reslut = new HashMap<>();
         reslut.put("code", 200);
-        reslut.put("msg", null);
+        reslut.put("msg", "操作成功！");
         reslut.put("data", firstLevelMenus);
         return reslut;
     }

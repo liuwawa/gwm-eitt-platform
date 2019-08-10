@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.cloud.common.constants.SysConstants;
 import com.cloud.common.plugins.ApiJsonObject;
 import com.cloud.common.plugins.ApiJsonProperty;
 import com.cloud.common.utils.AppUserUtil;
@@ -556,14 +557,37 @@ public class UserController {
     @PostMapping("/queryRolesByUserId")
     @ApiOperation(value = "查看用户角色")
     public ResultVo findRolesById(@ApiParam(value = "用户id", required = true) Long id) {
+        // 搜索点击的用户拥有的所有角色对象
         Set<SysRole> rolesByUserId = appUserService.findRolesByUserId(id);
-        List<SysRole> list = sysRoleService.list();
-        list.forEach(i -> {
+
+        // 查看当前用户的所有角色对象
+        LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+        Set<SysRole> sysRoles = loginAppUser.getSysRoles();
+
+        List<Long> roleIds = new ArrayList<>();
+        sysRoles.forEach(m -> {
+            roleIds.add(m.getId());
+        });
+        // 查看是否有超级管理员的权限
+        if (roleIds.contains(SysConstants.ADMIN_ROLE_ID)) {
+            List<SysRole> list = sysRoleService.list();  // 有超级管理员角色则进行全查
+            setRoleChecked(list, rolesByUserId);
+            return ResultVo.builder().code(200).msg("成功!").data(list).build();
+        } else {
+            setRoleChecked(sysRoles, rolesByUserId); // 没有，只取当前对象拥有的角色
+            return ResultVo.builder().code(200).msg("成功!").data(sysRoles).build();
+        }
+
+
+    }
+
+    // 设置该用户所拥有的角色
+    public void setRoleChecked(Collection<SysRole> collection, Set<SysRole> rolesByUserId) {
+        collection.forEach(i -> {
             if (rolesByUserId.contains(i)) {
                 i.setChecked(true);
             }
         });
-        return ResultVo.builder().code(200).msg("成功!").data(list).build();
     }
 
     /**
