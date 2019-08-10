@@ -177,8 +177,14 @@ public class SysRoleController {
     @ApiOperation(value = "获取角色的权限")
     public ResultVo queryPermissionsByRoleId(@ApiParam(value = "角色id", required = true) Long id) {
         Set<SysPermission> permissionsOfRole = sysRoleService.findPermissionsByRoleId(id);
-        List<SysPermission> list = sysPermissionService.list();
-        list.forEach(i -> {
+        LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+        Set<SysRole> sysRoles = loginAppUser.getSysRoles();
+        HashSet<SysPermission> list = new HashSet<>();
+        for (SysRole sysRole : sysRoles) {
+            list.addAll(sysRoleService.findPermissionsByRoleId(sysRole.getId()));
+        }
+//        List<SysPermission> list = sysPermissionService.list();
+        list.stream().distinct().forEach(i -> {
             if (permissionsOfRole.contains(i)) {
                 i.setChecked(true);
             }
