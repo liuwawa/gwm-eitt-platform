@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.cloud.common.exception.NullPhoneException;
 import com.netflix.client.ClientException;
 import com.netflix.zuul.exception.ZuulException;
 import org.springframework.http.HttpStatus;
@@ -88,6 +89,16 @@ public class ExceptionHandlerAdvice {
 		Map<String, Object> data = new HashMap<>();
 		data.put("errorCode", 90000);
 		data.put("message", "调用微服务失败");
+
+		return data;
+	}
+
+	@ExceptionHandler({NullPhoneException.class})
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public Map<String, Object> nullPhoneException(NullPhoneException ex) {
+		Map<String, Object> data = new HashMap<>();
+		data.put("errorCode", 80000);
+		data.put("message", "当前用户尚未注册");
 
 		return data;
 	}

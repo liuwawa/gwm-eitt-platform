@@ -1,5 +1,7 @@
 package com.cloud.gateway.config;
 
+import com.cloud.common.exception.NullPhoneException;
+import com.cloud.common.exception.ResultException;
 import com.cloud.common.utils.RedisUtils;
 import com.cloud.gateway.feign.UserClient;
 import com.cloud.model.common.Response;
@@ -42,6 +44,9 @@ public class UserInterceptor implements HandlerInterceptor {
 
         if (request.getParameter("phone") != null) {
             SysUser sysUser = userClient.findByPhone(request.getParameter("phone"));
+            if (null == sysUser) {
+                throw new NullPhoneException();
+            }
             if (redisUtils.getString(USER_CODE + sysUser.getUsername()) == null) {
                 return true;
             }
