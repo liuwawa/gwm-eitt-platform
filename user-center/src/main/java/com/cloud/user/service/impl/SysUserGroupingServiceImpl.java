@@ -85,7 +85,8 @@ public class SysUserGroupingServiceImpl extends ServiceImpl<SysUserGroupingDao, 
             SysGrouping grouping = SysGrouping.builder().build();
             List<SysGrouping> groupings = grouping.selectList(new QueryWrapper<SysGrouping>().lambda()
                     .eq(SysGrouping::getIsDel, "0"));
-            return getGroups(groupings, groupGroupings);
+            getGroups(groupings, groupGroupings);
+            return groupings;
         }
 
 
@@ -103,29 +104,31 @@ public class SysUserGroupingServiceImpl extends ServiceImpl<SysUserGroupingDao, 
         List<SysGrouping> sysGroupings = sysGrouping.selectList(new QueryWrapper<SysGrouping>().lambda()
                 .in(SysGrouping::getGroupingId, groupingIds)
                 .eq(SysGrouping::getIsDel, "0"));
-        if (sysGroupings.size() == 0 || sysGroupings == null) {
+        if (sysGroupings.size() == 0 || null == sysGroupings) {
             return null;
         }
-        return getGroups(sysGroupings, groupGroupings);
+        getGroups(sysGroupings, groupGroupings);
+        return sysGroupings;
     }
 
     // 该方法找出grouping在groupGrouping中间表中的所有的group，并给每个grouping的children赋值并返回
-    public static List<SysGrouping> getGroups(List<SysGrouping> sysGroupings, List<SysGroupGrouping> groupGroupings) {
-        for (SysGrouping grouping : sysGroupings) {
-            List<Integer> groupIds = new ArrayList<>();
+    public void getGroups(List<SysGrouping> sysGroupings, List<SysGroupGrouping> groupGroupings) {
+        List<Integer> groupIds = new ArrayList<>();
+        sysGroupings.forEach(grouping -> {
             groupGroupings.forEach(sysGroupGrouping -> {
                 if (sysGroupGrouping.getGroupingId().equals(grouping.getGroupingId())) {
                     groupIds.add(sysGroupGrouping.getGroupId());
                 }
             });
             SysGroup sysGroup = SysGroup.builder().build();
-            if (groupIds.size() != 0 && groupIds != null) {
+            if (groupIds.size() != 0 && null != groupIds) {
                 List<SysGroup> list = sysGroup.selectList(new QueryWrapper<SysGroup>().lambda()
                         .in(SysGroup::getId, groupIds)
                         .eq(SysGroup::getIsDel, "0"));
                 grouping.setChildren(list);
+            } else {
+                grouping.setChildren(null);
             }
-        }
-        return sysGroupings;
+        });
     }
 }

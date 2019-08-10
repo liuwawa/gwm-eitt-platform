@@ -55,20 +55,28 @@ public class SysGroupGroupingController {
         List<Integer> groupIds = (List<Integer>) map.get("groupIds");
         Integer groupingId = (Integer) map.get("groupingId");
         String groupingName = map.get("groupingName").toString();
+        if ("".equals(groupingName)) {
+            return new ResultVo(16630,
+                    "请输入分组名称！", null);
+        }
         String groupingRemark = map.get("groupingRemark").toString();
+        if ("".equals(groupingRemark)) {
+            return new ResultVo(16640,
+                    "请输入分组详情！", null);
+        }
         String loginAdminName = map.get("loginAdminName").toString();
         try {
             if (!sysGroupGroupingService.saveGroupToGrouping(groupIds, groupingId, groupingName, groupingRemark, loginAdminName)) {
-                log.info("添加组织到分组操作失败，添加的分组id:{}", groupingId);
+                log.info("添加（编辑）组织到分组操作失败，添加（编辑）的分组id:{}", groupingId);
                 return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.code,
                         ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.message, null);
             }
-            log.info("添加组织到分组操作成功，添加的分组id:{}", groupingId);
+            log.info("添加（编辑）组织到分组操作成功，添加（编辑）的分组id:{}", groupingId);
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code,
                     ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
-            log.error("添加组织到分组,出现异常!", e);
-            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.message, null);
+            log.error("添加（编辑）组织到分组,出现异常!", e);
+            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, e.getMessage(), null);
         }
     }
 
