@@ -98,7 +98,7 @@ public class ExceptionHandlerAdvice {
 	public Map<String, Object> nullPhoneException(NullPhoneException ex) {
 		Map<String, Object> data = new HashMap<>();
 		data.put("errorCode", 80000);
-		data.put("message", "当前用户尚未注册");
+		data.put("message", "手机号未绑定");
 
 		return data;
 	}
