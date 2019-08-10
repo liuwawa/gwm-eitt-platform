@@ -20,4 +20,6 @@ public interface SysPermissionService extends IService<SysPermission> {
 
     void delete(Long id);
 
+    void addPermissionToRole(Long roleId, Long permissionId);
+
 }

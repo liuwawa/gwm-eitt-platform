@@ -2,6 +2,7 @@ package com.cloud.user.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.cloud.common.constants.SysConstants;
 import com.cloud.common.enums.ResponseStatus;
 import com.cloud.common.plugins.ApiJsonObject;
 import com.cloud.common.plugins.ApiJsonProperty;
@@ -32,6 +33,7 @@ public class SysPermissionController {
     private SysPermissionService sysPermissionService;
 
 
+
     /**
      * 管理后台添加权限( element ui)
      *
@@ -57,6 +59,8 @@ public class SysPermissionController {
             }
             sysPermission.setCreateTime(new Date());
             sysPermissionService.save(sysPermission);
+            //给超级管理员添加新增权限
+            sysPermissionService.addPermissionToRole(SysConstants.ADMIN_ROLE_ID, sysPermission.getId());
             log.info("添加成功，权限名:{}", sysPermission.getName());
             return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
         } catch (Exception e) {

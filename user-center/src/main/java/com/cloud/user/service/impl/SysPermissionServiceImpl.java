@@ -27,6 +27,13 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionDao, SysP
         return rolePermissionDao.findPermissionsByRoleIds(roleIds);
     }
 
+    @Transactional
+    @Override
+    public void addPermissionToRole(Long roleId, Long permissionId) {
+        rolePermissionDao.saveRolePermission(roleId, permissionId);
+        log.info("给角色添加权限：{}", permissionId + "->" + roleId);
+    }
+
 
     @Transactional
     @Override
