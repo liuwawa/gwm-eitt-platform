@@ -108,7 +108,7 @@ public class SmsController {
         QueryWrapper<Sms> queryWrapper = new QueryWrapper<>();
 
         if (!"".equals(condition)) {
-            queryWrapper.eq("phone", condition);
+            queryWrapper.like("phone", condition);
         }
         IPage<Sms> smsIPage = smsService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize), queryWrapper);
         return PageResult.builder().content(smsIPage.getRecords()).
