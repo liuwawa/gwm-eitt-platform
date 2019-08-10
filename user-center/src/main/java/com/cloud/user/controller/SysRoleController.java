@@ -92,7 +92,12 @@ public class SysRoleController {
         if (StringUtils.isBlank(sysRole.getName())) {
             sysRole.setName(sysRole.getCode());
         }
-        sysRole.setCreateTime(new Date());
+        if (sysRole.getId() == null) { //新增
+            sysRole.setCreateTime(new Date());
+        } else {
+            sysRole.setUpdateTime(new Date());
+        }
+
         try {
             sysRoleService.saveOrUpdate(sysRole);
         } catch (Exception e) {
@@ -178,6 +183,7 @@ public class SysRoleController {
     public ResultVo queryPermissionsByRoleId(@ApiParam(value = "角色id", required = true) Long id) {
         Set<SysPermission> permissionsOfRole = sysRoleService.findPermissionsByRoleId(id);
         LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+        assert loginAppUser != null;
         Set<SysRole> sysRoles = loginAppUser.getSysRoles();
         HashSet<SysPermission> list = new HashSet<>();
         for (SysRole sysRole : sysRoles) {
