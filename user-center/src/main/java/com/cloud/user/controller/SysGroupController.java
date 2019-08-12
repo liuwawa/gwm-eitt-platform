@@ -14,6 +14,9 @@ import com.cloud.response.BaseEntity;
 import com.cloud.response.ObjectConversionEntityUtil;
 import com.cloud.user.service.SysGroupService;
 import com.cloud.user.service.SysUserService;
+import com.cloud.user.test.GZIPUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -137,7 +140,7 @@ public class SysGroupController {
     @GetMapping("/getAllGroup")
     @ApiOperation(value = "获取全部部门")
     public Map getAllGroup() {
-
+        ObjectMapper mapper = new ObjectMapper();
         List<SysGroup> groupList = sysGroupService.list(new QueryWrapper<SysGroup>().lambda()
                 .eq(SysGroup::getIsDel, "0")
                 .orderByAsc(SysGroup::getGroupShowOrder));
@@ -145,9 +148,18 @@ public class SysGroupController {
                 .collect(Collectors.toList());
         firstLevelMenus.forEach(m -> setChildren(m, groupList));
         HashMap<Object, Object> reslut = new HashMap<>();
+        // 转化字符串并压缩
+        String groupsInfo = null;
+        try {
+            groupsInfo = mapper.writeValueAsString(firstLevelMenus);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        // String groupsInfo = JSON.toJSON(firstLevelMenus).toString();
+        String compressGroupInfo = GZIPUtils.compress(groupsInfo);
         reslut.put("code", 200);
         reslut.put("msg", "操作成功！");
-        reslut.put("data", firstLevelMenus);
+        reslut.put("data", compressGroupInfo);
         return reslut;
     }
 

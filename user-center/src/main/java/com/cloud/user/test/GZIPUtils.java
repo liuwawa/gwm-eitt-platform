@@ -5,7 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
- 
+
 /**
  * @Auther: liangbl
  * @Date: 2018/12/21 13:06
@@ -86,7 +86,7 @@ public class GZIPUtils {
 
     public static void main(String[] args) {
         String str =
-                "1888888888888888888888884444444444444444444444444444443333333333333333332222222222222222288888888888888884444444444444444444444444443333d888888888888888866666";
+                "12345678910";
         System.out.println("原字符串：" + str);
         System.out.println("原长度：" + str.length());
         String compress = GZIPUtils.compress(str);

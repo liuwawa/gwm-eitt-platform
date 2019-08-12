@@ -110,6 +110,7 @@ public class SmsController {
         if (!"".equals(condition)) {
             queryWrapper.like("phone", condition);
         }
+        queryWrapper.orderByDesc("createTime");
         IPage<Sms> smsIPage = smsService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize), queryWrapper);
         return PageResult.builder().content(smsIPage.getRecords()).
                 pageNum(smsIPage.getCurrent()).
