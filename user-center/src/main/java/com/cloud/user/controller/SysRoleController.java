@@ -92,7 +92,7 @@ public class SysRoleController {
         if (StringUtils.isBlank(sysRole.getName())) {
             sysRole.setName(sysRole.getCode());
         }
-        if (sysRole.getId() == null) { //新增
+        if (sysRole.getId() == 0) { //新增
             sysRole.setCreateTime(new Date());
         } else {
             sysRole.setUpdateTime(new Date());

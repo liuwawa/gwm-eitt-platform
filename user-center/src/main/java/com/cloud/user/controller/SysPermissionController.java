@@ -13,9 +13,7 @@ import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.user.SysPermission;
 import com.cloud.user.service.SysPermissionService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,6 +106,10 @@ public class SysPermissionController {
     @PreAuthorize("hasAuthority('back:permission:delete')")
     @DeleteMapping("/permissions2/{id}")
     @ApiOperation(value = "删除权限标识")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")
+    }
+    )
     public ResultVo delete2(@PathVariable Long id) {
         try {
             sysPermissionService.delete(id);
