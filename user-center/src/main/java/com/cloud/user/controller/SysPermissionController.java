@@ -41,6 +41,7 @@ public class SysPermissionController {
     @PreAuthorize("hasAuthority('back:permission:save')")
     @PostMapping("/permissions2")
     @ApiOperation(value = "添加权限")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo save2(@ApiParam(value = "SysPermission对象", required = true) @RequestBody SysPermission sysPermission) {
         try {
             if (StringUtils.isBlank(sysPermission.getPermission())) {
@@ -81,6 +82,7 @@ public class SysPermissionController {
     @PreAuthorize("hasAuthority('back:permission:update')")
     @PutMapping("/permissions2")
     @ApiOperation(value = "管理后台修改权限")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo update2(@RequestBody SysPermission sysPermission) {
         try {
             if (StringUtils.isBlank(sysPermission.getName())) {
@@ -106,10 +108,7 @@ public class SysPermissionController {
     @PreAuthorize("hasAuthority('back:permission:delete')")
     @DeleteMapping("/permissions2/{id}")
     @ApiOperation(value = "删除权限标识")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")
-    }
-    )
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo delete2(@PathVariable Long id) {
         try {
             sysPermissionService.delete(id);
