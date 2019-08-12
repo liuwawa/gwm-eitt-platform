@@ -33,7 +33,6 @@ public class SysPermissionController {
     private SysPermissionService sysPermissionService;
 
 
-
     /**
      * 管理后台添加权限( element ui)
      *
@@ -54,9 +53,15 @@ public class SysPermissionController {
             }
             SysPermission permission = sysPermissionService.getOne(new QueryWrapper<SysPermission>().lambda()
                     .eq(SysPermission::getPermission, sysPermission.getPermission()));
-            if (permission != null) {
+            if (null != permission) {
                 return new ResultVo(500, "已经存在权限标识:" + permission.getPermission(), null);
             }
+            SysPermission sysPermission1 = sysPermissionService.getOne(new QueryWrapper<SysPermission>().lambda()
+                    .eq(SysPermission::getName, sysPermission.getName()));
+            if (null != sysPermission1) {
+                return new ResultVo(500, "权限名称已经存在，添加失败！", null);
+            }
+
             sysPermission.setCreateTime(new Date());
             sysPermissionService.save(sysPermission);
             //给超级管理员添加新增权限
@@ -88,7 +93,7 @@ public class SysPermissionController {
             return new ResultVo(200, ResponseStatus.RESPONSE_SUCCESS.message, null);
         } catch (Exception e) {
             log.error("编辑出现异常", e);
-            return new ResultVo(500, ResponseStatus.RESPONSE_OPERATION_ERROR.message, null);
+            return new ResultVo(500, e.getMessage(), null);
         }
 
     }
