@@ -145,6 +145,7 @@ public class MailController {
 
     @PostMapping("/batchRead")
     @ApiOperation(value ="批量阅读邮件")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo batchRead() {
         LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
         Mail mail = new Mail();
@@ -163,6 +164,7 @@ public class MailController {
 
     @PostMapping("/alreadyRead/{id}")
     @ApiOperation(value ="改变阅读状态")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo alreadyRead(@PathVariable Long id) {
         try {
             mailService.updateIsRead(id);
