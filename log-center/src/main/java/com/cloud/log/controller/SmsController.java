@@ -86,14 +86,14 @@ public class SmsController {
      */
     @PreAuthorize("hasAuthority('sms:query')")
     @GetMapping("/sms")
-    @ApiOperation(value = "查询短信发送记录")
+    @ApiOperation(value = "查询短信发送记录", response = Sms.class)
     public Page<Sms> findSms(@RequestParam Map<String, Object> params) {
         return smsService.findSms(params);
     }
 
     @PreAuthorize("hasAuthority('sms:query')")
     @PostMapping("/findSmsPage")
-    @ApiOperation(value = "分页多条件查询短信记录", notes = "参数，pageNum，pageSize，condition（手机号）")
+    @ApiOperation(value = "分页多条件查询短信记录", notes = "参数，pageNum，pageSize，condition（手机号）", response = PageResult.class)
     public PageResult findPage(
             @ApiJsonObject(name = "分页多条件查询短信记录", value = {
                     @ApiJsonProperty(key = "pageNum", example = "1", description = "pageNum"),

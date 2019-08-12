@@ -13,9 +13,7 @@ import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
 import com.cloud.model.mail.Mail;
 import com.cloud.model.user.LoginAppUser;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -87,7 +85,7 @@ public class MailController {
 
     @PreAuthorize("hasAuthority('mail:query')")
     @PostMapping("/findPage")
-    @ApiOperation(value = "分页，多条件查询邮件",notes = "参数：pageNum（必填），pageSize（必填），username,toMail")
+    @ApiOperation(value = "分页，多条件查询邮件", notes = "参数：pageNum（必填），pageSize（必填），username,toMail", response = PageResult.class)
     public PageResult findPage(
             @ApiJsonObject(name = "分页，多条件查询邮件", value = {
                     @ApiJsonProperty(key = "pageNum", example = "1", description = "pageNum"),
@@ -119,6 +117,7 @@ public class MailController {
     @PreAuthorize("hasAuthority('back:mail:delete')")
     @DeleteMapping("/delBatch/{ids}")
     @ApiOperation(value = "批量删除", notes = "以,拼接的id字符串 ")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo deleteBatchMail(@PathVariable String ids) {
         List<Integer> list = new ArrayList<>();
         try {
