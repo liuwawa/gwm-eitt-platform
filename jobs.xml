@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <code>4500000001</code>
+<!--     <source>
+        <url>jdbc:oracle:thin:@192.168.1.179:1521:XE</url>
+        <username>test</username>
+        <password>test</password>
+        <dbtype>oracle</dbtype>
+        <driver>oracle.jdbc.driver.OracleDriver</driver>
+    </source>
+    <dest>
+        <url>jdbc:sqlserver://192.168.1.191:1433;DatabaseName=test</url>
+        <username>test</username>
+        <password>test</password>
+        <dbtype>sqlserver</dbtype>
+        <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
+    </dest> -->
+
+    <source><!-- 源数据库连接方式 -->
+        <url>jdbc:mysql://10.255.30.142:3306/cloud_log2</url>
+        <username>root</username>
+        <password>123@456.Com</password>
+        <dbtype>mysql</dbtype>
+        <driver>com.mysql.jdbc.Driver</driver>
+    </source>
+    <dest> <!-- 目标数据库连接方式 -->
+        <url>jdbc:mysql://10.255.30.142:3306/cloud_log</url>
+        <username>root</username>
+        <password>123@456.Com</password>
+        <dbtype>mysql</dbtype>
+        <driver>com.mysql.jdbc.Driver</driver>
+    </dest>
+    <jobs> <!-- 数据库同步任务，可以根据实际需要添加多个job -->
+        <job>
+            <name>1</name> <!-- job的名称，每一个job的名称最好不一样 -->
+            <cron>0/10 * * * * ?</cron>  <!-- 定时调度cron表达式 -->
+            <srcSql>select * from t_log</srcSql> <!-- 源数据库的查询语句 -->
+            <destTable>t_log</destTable> <!-- 目标数据库的数据表 -->
+            <destTableFields>id, userid, username, module, ip, method, params, time, remark, flag, createTime</destTableFields><!-- 目标数据库数据表的字段，必须和源数据库中查询语句的字段保持一致 -->
+            <destTableKey>id</destTableKey> <!-- 根据此字段判断同步的数据是否在目标数据库总存在 -->
+            <destTableUpdate>userid, username, module, ip, method, params, time, remark, flag, createTime</destTableUpdate> <!-- 如果目标数据库中存在destTableKey标签字段相同的数据，则更新此字段 -->
+        </job>
+    </jobs>
+
+    <!-- 备注：
+            会存在sql注入问题：如 log 表中 remark 字段的值 是和sql相关的语句字符串  会报错
+             -->
+</root>
