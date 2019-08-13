@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.cloud.common.exception.GenericBusinessException;
 import com.cloud.common.exception.NullPhoneException;
 import com.netflix.client.ClientException;
 import com.netflix.zuul.exception.ZuulException;
@@ -99,6 +100,16 @@ public class ExceptionHandlerAdvice {
 		Map<String, Object> data = new HashMap<>();
 		data.put("errorCode", 80000);
 		data.put("message", "手机号未绑定");
+
+		return data;
+	}
+
+	@ExceptionHandler({GenericBusinessException.class})
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public Map<String, Object> genericBusinessException(GenericBusinessException ex) {
+		Map<String, Object> data = new HashMap<>();
+		data.put("errorCode", ex.getCode());
+		data.put("message", ex.getMessage());
 
 		return data;
 	}

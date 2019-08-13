@@ -1,5 +1,6 @@
 package com.cloud.gateway.controller;
 
+import com.cloud.common.exception.GenericBusinessException;
 import com.cloud.common.utils.IPUtil;
 import com.cloud.common.utils.RedisUtils;
 import com.cloud.enums.ResponseStatus;
@@ -72,10 +73,11 @@ public class TokenController {
      */
     @PostMapping("/sys/login")
     @ApiOperation(value = "根据用户名登录")
-    public Map<String, Object> login(@ApiParam(value = "用户名", required = true) String username, @ApiParam(value = "密码", required = true) String password, HttpServletRequest request, HttpServletResponse response) {
+    public Map<String, Object> login(@ApiParam(value = "用户名", required = true) String username, @ApiParam(value = "密码", required = true) String password, HttpServletRequest request, HttpServletResponse response) throws GenericBusinessException {
         getOut(username, request);
 
         LoginAppUser byUsername = userClient.findByUsername(username);
+        if (byUsername == null) throw new GenericBusinessException(99999, "请输入正确的用户名!");
         Map<String, Object> map = isEnabled(byUsername);
         if (map != null) return map;
 

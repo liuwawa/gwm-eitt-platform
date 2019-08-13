@@ -33,10 +33,7 @@ public class GenericBusinessException extends Exception {
 
     @Override
     public String toString() {
-        return "{" +
-                "\"code\":" + code + ",\"message\":\"" + getMessage() + "\"," +
-                "\"responseStatus\":" + responseStatus +
-                '}';
+        return "{" + "\"code\":" + code + ",\"message\":\"" + getMessage() + "\"," + "\"responseStatus\":" + responseStatus + '}';
     }
 
     @Override

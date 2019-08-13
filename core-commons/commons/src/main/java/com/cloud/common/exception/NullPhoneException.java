@@ -1,7 +1,9 @@
 package com.cloud.common.exception;
 
 import com.cloud.common.enums.ResultEnum;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 
 /**
@@ -11,13 +13,12 @@ import lombok.Getter;
  * @date 2019/8/10
  */
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class NullPhoneException extends RuntimeException {
 
     private Integer code;
 
-    public NullPhoneException() {
-
-    }
 
     /**
      * 统一异常处理
