@@ -70,13 +70,16 @@ public class SysGroupController {
     public ResultVo saveGroup(@RequestBody BaseEntity baseEntity) {
         SysGroup sysGroup = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroup.class);
         SysGroupExpand sysGroupExpand = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroupExpand.class);
+
+
         try {
             if (!sysGroupService.saveGroupAndGroupExpand(sysGroup, sysGroupExpand)) {
                 log.info("操作失败，添加的组织名称:{}", sysGroup.getLabel());
                 return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.code,
                         ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.message, null);
             }
-
+            // 查出数据库中的所有数据并放入redis
+            getAllGroupsFromDB();
             log.info("操作成功，添加的组织名称:{}", sysGroup.getLabel());
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code,
                     ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
@@ -110,12 +113,16 @@ public class SysGroupController {
                 return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.code,
                         ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.message, null);
             }
+            // 查出数据库中的所有数据并放入redis
+            getAllGroupsFromDB();
+            log.info("操作成功，修改的组织名称:{}", sysGroup.getLabel());
+            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code,
+                    ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
             log.error("修改组织，出现异常！", e);
-            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.message, null);
+            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, e.getMessage(), null);
         }
-        log.info("操作成功，修改的组织名称:{}", sysGroup.getLabel());
-        return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code, ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
+
     }
 
     /**
@@ -136,6 +143,8 @@ public class SysGroupController {
         String loginAdminName = (String) map.get("loginAdminName");
         try {
             sysGroupService.updateByIds(groupIds, loginAdminName);
+            // 查出数据库中的所有数据并放入redis
+            getAllGroupsFromDB();
             log.info("删除分组操作成功，删除的分组Id:{}", groupIds);
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code,
                     ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
@@ -157,23 +166,11 @@ public class SysGroupController {
         if (null != groupsFromRedis) {
             return ResultVo.builder().code(200).msg("操作成功！").data(groupsFromRedis).build();
         }
+        // 查出数据库中的所有数据并放入redis
         List<SysGroup> allGroupsFromDB = getAllGroupsFromDB();
-        // 压缩查询结果，并且存入redis
-        saveGrousToRedis(allGroupsFromDB);
         return ResultVo.builder().code(200).msg("操作成功！").data(allGroupsFromDB).build();
     }
 
-    // 从数据库拿出所有数据
-    public List<SysGroup> getAllGroupsFromDB() {
-        // 查找结果
-        List<SysGroup> groupList = sysGroupService.list(new QueryWrapper<SysGroup>().lambda()
-                .eq(SysGroup::getIsDel, "0")
-                .orderByAsc(SysGroup::getGroupShowOrder));
-        List<SysGroup> firstLevelMenus = groupList.stream().filter(m -> m.getParentid().equals(0))
-                .collect(Collectors.toList());
-        firstLevelMenus.forEach(m -> setChildren(m, groupList));
-        return firstLevelMenus;
-    }
 
     /**
      * @return 点击获取分组的详细信息
@@ -266,7 +263,7 @@ public class SysGroupController {
                     @ApiJsonProperty(key = "loginAdminName", example = "admin", description = "操作人")
             })
             @RequestBody Map map) {
-        if (map.get("parentId") == null) {
+        if (null == map.get("parentId")) {
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code,
                     ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
         }
@@ -275,6 +272,8 @@ public class SysGroupController {
         String loginAdminName = map.get("loginAdminName").toString();
         try {
             sysGroupService.changeGroup(groupIds, parentId, loginAdminName);
+            // 查出数据库中的所有数据并放入redis
+            getAllGroupsFromDB();
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code,
                     ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
@@ -285,20 +284,9 @@ public class SysGroupController {
     }
 
 
-    public void saveGrousToRedis(List<SysGroup> firstLevelMenus) {
-        // 转化字符串并压缩
-        String groupsInfo = null;
-        try {
-            groupsInfo = objectMapper.writeValueAsString(firstLevelMenus);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        String compressGroupInfo = GZIPUtils.compress(groupsInfo);
-        redisUtils.addString("allGroups", compressGroupInfo, null);
-    }
-
+    // 从redis取出数据
     public List<SysGroup> getGroupsFromRedis() {
-        // 从redis取
+
         String allGroups = redisUtils.getString("allGroups");
         // 如果redis有 则解压缩 直接返回
         String uncompress = GZIPUtils.uncompress(allGroups);
@@ -315,5 +303,27 @@ public class SysGroupController {
         }
         return allOfGroups;
     }
+
+    // 从数据库拿出所有数据并放入redis的方法
+    public List<SysGroup> getAllGroupsFromDB() {
+        // 查找结果
+        List<SysGroup> groupList = sysGroupService.list(new QueryWrapper<SysGroup>().lambda()
+                .eq(SysGroup::getIsDel, "0")
+                .orderByAsc(SysGroup::getGroupShowOrder));
+        List<SysGroup> firstLevelMenus = groupList.stream().filter(m -> m.getParentid().equals(0))
+                .collect(Collectors.toList());
+        firstLevelMenus.forEach(m -> setChildren(m, groupList));
+        // 转化字符串并压缩
+        String groupsInfo = null;
+        try {
+            groupsInfo = objectMapper.writeValueAsString(firstLevelMenus);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        String compressGroupInfo = GZIPUtils.compress(groupsInfo);
+        redisUtils.addString("allGroups", compressGroupInfo, null);
+        return firstLevelMenus;
+    }
+
 }
 

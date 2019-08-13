@@ -53,6 +53,9 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         }
         // 先添加group主表
         boolean groupSave = sysGroup.insert();
+        checkGroupLevel(sysGroup);
+
+
         // 给expand拓展表添加外键groupId
         sysGroupExpand.setGroupId(sysGroup.getId());
 
@@ -146,6 +149,14 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
 
     }
 
+    public void checkGroupLevel(SysGroup sysGroup) {
+        SysGroup group1 = sysGroup.selectOne(new QueryWrapper<SysGroup>().
+                lambda().eq(SysGroup::getId, sysGroup.getParentid()).eq(SysGroup::getIsDel, 0));
+        if (group1.getLevel() >= sysGroup.getLevel()) {
+            throw new ResultException(16670, "请输入合理的组织级别！");
+        }
+    }
+
     @Override
     @Transactional
     public boolean updateGroupAndGroupExpand(SysGroup sysGroup, SysGroupExpand sysGroupExpand) {
@@ -156,9 +167,11 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
                     ResultEnum.GROUPID_NULL.getMessage());
         }
 
+
         // 先修改group主表
         boolean groupSave = sysGroup.updateById();
-
+        SysGroup group1 = sysGroup.selectById();
+        checkGroupLevel(group1);
         // 设置gGrade
         sysGroupExpand = setGgradeByLevel(sysGroup, sysGroupExpand);
 
