@@ -11,9 +11,7 @@ import com.cloud.enums.ResponseStatus;
 import com.cloud.model.common.PageResult;
 import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,6 +35,7 @@ public class BlackIPController {
     @PreAuthorize("hasAuthority('ip:black:save')")
     @PostMapping("/saveBlackIP")
     @ApiOperation(value = "添加黑名单ip")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo saveBlackIP(@ApiParam(value = "BlackIP",required = true) @RequestBody BlackIP blackIP) {
         try {
             blackIP.setCreateTime(new Date());
@@ -62,6 +61,7 @@ public class BlackIPController {
     @PreAuthorize("hasAuthority('ip:black:delete')")
     @DeleteMapping("/deleteIp")
     @ApiOperation(value = "删除黑名单ip")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo deleteIp(@ApiParam(value = "id",required = true)@RequestParam Integer id) {
         try {
             blackIPService.delete(id);
@@ -112,6 +112,7 @@ public class BlackIPController {
     @PreAuthorize("hasAuthority('ip:black:deleteall')")
     @GetMapping("/deleteAll")
     @ApiOperation(value = "一键删除所有黑名单ip")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo deleteAllBlackIp() {
         try {
             blackIPService.deleteAll();

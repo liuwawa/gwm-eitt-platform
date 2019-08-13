@@ -19,6 +19,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -58,6 +60,7 @@ public class SysGroupController {
     @PreAuthorize("hasAuthority('back:group:save')")
     @PostMapping("/saveGroup")
     @ApiOperation(value = "添加部门")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo saveGroup(@RequestBody BaseEntity baseEntity) {
         SysGroup sysGroup = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroup.class);
         SysGroupExpand sysGroupExpand = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroupExpand.class);
@@ -86,6 +89,7 @@ public class SysGroupController {
     @PreAuthorize("hasAuthority('back:group:update')")
     @PutMapping("/updateGroup")
     @ApiOperation(value = "修改部门")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo updateGroup(@RequestBody BaseEntity baseEntity) {
         SysGroup sysGroup = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroup.class);
         SysGroupExpand sysGroupExpand = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroupExpand.class);
@@ -116,6 +120,7 @@ public class SysGroupController {
     @PreAuthorize("hasAuthority('back:group:delete')")
     @DeleteMapping("/deleteGroups")
     @ApiOperation(value = "批量删除部门", notes = "参数：（数组）groupIds，loginAdminName")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo deleteGroups(@ApiJsonObject(name = "批量删除部门", value = {
             @ApiJsonProperty(key = "groupIds", example = "[]", description = "groupIds"),
             @ApiJsonProperty(key = "loginAdminName", example = "", description = "loginAdminName")
@@ -168,6 +173,7 @@ public class SysGroupController {
      */
     @GetMapping("/getGroupInfo")
     @ApiOperation(value = "点击获取分组的详细信息")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo getGroupInfoById(Integer groupId) {
         // 根据id查询出分组
         SysGroup group = SysGroup.builder().id(groupId).build();
@@ -229,6 +235,7 @@ public class SysGroupController {
     @PreAuthorize("hasAuthority('back:group:query')")
     @GetMapping("/getAll")
     @ApiOperation(value = "按节点获取全部部门")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo<List<SysGroup>> getAll() {
         SysGroup sysGroup = SysGroup.builder().build();
         List<SysGroup> groups = sysGroup.selectAll();

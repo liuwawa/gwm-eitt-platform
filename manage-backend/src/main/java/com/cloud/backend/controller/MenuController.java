@@ -6,9 +6,7 @@ import java.util.stream.Collectors;
 import com.alibaba.fastjson.JSONArray;
 import com.cloud.common.constants.SysConstants;
 import com.cloud.common.vo.ResultVo;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -113,6 +111,7 @@ public class MenuController {
     @PreAuthorize("hasAuthority('back:menu:set2role')")
     @PostMapping("/setMenusToRole")
     @ApiOperation(value = "给角色分配菜单",notes = "参数：roleId，menuIds（数组）")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo setMenusToRole(@RequestBody Map<String, Object> params) {
         try {
             Long roleId = Long.valueOf(params.get("roleId").toString());
@@ -193,6 +192,7 @@ public class MenuController {
     @PreAuthorize("hasAuthority('back:menu:save')")
     @PostMapping("/saveOrUpdate")
     @ApiOperation(value = "添加/修改菜单")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo saveOrUpdate(@RequestBody Menu menu) {
         if (menu.getId() != null && menu.getId() != 0) {
             menuService.update(menu);

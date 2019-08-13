@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.cloud.model.user.constants.SysUserResponse;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,60 +31,70 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ApiModel(value = "SysGroup", description = "组")
 public class SysGroup extends Model<SysGroup> {
 
     /**
      * 组id
      */
     @TableId(value = "id", type = IdType.AUTO)
+    @ApiModelProperty(value = "id")
     private Integer id;
 
     /**
      * 组名称
      */
     @TableField("label")
+    @ApiModelProperty(value = "组名称")
     private String label;
 
     /**
      * 组的父组id(0为没有父级，默认为0)
      */
     @TableField("parentid")
+    @ApiModelProperty(value = "组的父级id")
     private Integer parentid;
 
     /**
      * 定义展示顺序标识
      */
     @TableField("groupShowOrder")
+    @ApiModelProperty(value = "定义展示顺序标识")
     private Integer groupShowOrder;
 
     /**
      * 组的级别(默认为一级组织)
      */
     @TableField("level")
+    @ApiModelProperty(value = "组的级别（默认一级组织）")
     private Integer level;
 
     /**
      * 子节点数(默认0)
      */
     @TableField("groupChildCount")
+    @ApiModelProperty(value = "子节点数")
     private Integer groupChildCount;
 
     /**
      * 备注
      */
     @TableField("groupRemark")
+    @ApiModelProperty(value = "备注")
     private String groupRemark;
 
     /**
      * 组所在区域
      */
     @TableField("groupAddress")
+    @ApiModelProperty(value = "组所在区域")
     private String groupAddress;
 
     /**
      * 组的联系电话
      */
     @TableField("groupTel")
+    @ApiModelProperty(value = "组的联系电话")
     private String groupTel;
 
     /**
@@ -141,12 +154,14 @@ public class SysGroup extends Model<SysGroup> {
      * 当前操作人
      */
     @TableField(exist = false)
+    @ApiModelProperty(value = "当前操作人")
     private String loginAdminName;
 
     /**
      * 子节点
      */
     @TableField(exist = false)
+    @ApiModelProperty(value = "子节点")
     private List<SysGroup> children;
 
 
@@ -154,24 +169,28 @@ public class SysGroup extends Model<SysGroup> {
      * 当前组织直接领导工号
      */
     @TableField(exist = false)
+    @ApiModelProperty(value = "当前组织直接领导工号")
     private String gDirectLeader;
 
     /**
      * 部门最高领导工号
      */
     @TableField(exist = false)
+    @ApiModelProperty(value = "部门最高领导工号")
     private String gDeptopLeader;
 
     /**
      * 单位最高领导工号
      */
     @TableField(exist = false)
+    @ApiModelProperty(value = "单位最高领导工号")
     private String gUnittopLeader;
 
     /**
      * 模块
      */
     @TableField(exist = false)
+    @ApiModelProperty(value = "模块")
     private String gModule;
 
 
@@ -179,24 +198,28 @@ public class SysGroup extends Model<SysGroup> {
      * 子模块
      */
     @TableField(exist = false)
+    @ApiModelProperty(value = "子模块")
     private String subModule;
 
     /**
      * 当前组织直接领导信息
      */
     @TableField(exist = false)
+    @ApiModelProperty(value = "当前组织直接领导信息")
     private SysUserResponse gDirectLeaderInfo;
 
     /**
      * 部门最高领导信息
      */
     @TableField(exist = false)
+    @ApiModelProperty(value = "部门最高领导信息")
     private SysUserResponse gDeptopLeaderInfo;
 
     /**
      * 单位最高领导信息
      */
     @TableField(exist = false)
+    @ApiModelProperty(value = "单位最高领导信息")
     private SysUserResponse gUnittopLeaderInfo;
 
     /**
