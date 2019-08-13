@@ -50,11 +50,14 @@ public class SysGroupGroupingServiceImpl extends ServiceImpl<SysGroupGroupingDao
         // 先校验分组是否存在
         SysGrouping selectGrouping = grouping.selectOne(new QueryWrapper<SysGrouping>().lambda()
                 .eq(SysGrouping::getGroupingName, groupingName));
-        if ("0".equals(selectGrouping.getIsDel())) {
-            throw new ResultException(16650, "已经存在该分组，修改失败！"); // 该情况为存在分组，没有被删除
-        } else {
-            selectGrouping.deleteById();  // 存在已经被删除的，从库中物理删除这条数据
+        if (null != selectGrouping) {
+            if ("0".equals(selectGrouping.getIsDel())) {
+                throw new ResultException(16650, "已经存在该分组，修改失败！"); // 该情况为存在分组，没有被删除
+            } else {
+                selectGrouping.deleteById();  // 存在已经被删除的，从库中物理删除这条数据
+            }
         }
+
         grouping.updateById();
 
         // 构建对象

@@ -53,7 +53,9 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         }
         // 先添加group主表
         boolean groupSave = sysGroup.insert();
-        checkGroupLevel(sysGroup);
+        if (sysGroup.getParentid() != 0) {
+            checkGroupLevel(sysGroup);
+        }
 
 
         // 给expand拓展表添加外键groupId
@@ -166,12 +168,14 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
             throw new ResultException(ResultEnum.GROUPID_NULL.getCode(),
                     ResultEnum.GROUPID_NULL.getMessage());
         }
-
-
         // 先修改group主表
         boolean groupSave = sysGroup.updateById();
-        SysGroup group1 = sysGroup.selectById();
-        checkGroupLevel(group1);
+
+        if (sysGroup.getParentid() != 0) {
+            SysGroup group1 = sysGroup.selectById();
+            checkGroupLevel(group1);
+        }
+
         // 设置gGrade
         sysGroupExpand = setGgradeByLevel(sysGroup, sysGroupExpand);
 
