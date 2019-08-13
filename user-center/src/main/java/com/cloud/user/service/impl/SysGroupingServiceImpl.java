@@ -66,12 +66,14 @@ public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGroup
     public boolean initGroupingSaveGroup(List<Integer> list, SysGrouping grouping) {
         SysGrouping sysGrouping = grouping.selectOne(new QueryWrapper<SysGrouping>()
                 .lambda().eq(SysGrouping::getGroupingName, grouping.getGroupingName()));
-
-        if ("0".equals(sysGrouping.getIsDel())) {
-            throw new ResultException(500, "分组名称重复！"); // 该数据存在，返回重复
-        } else {
-            sysGrouping.deleteById(); // 已经被删除，物理删除
+        if (null != sysGrouping) {
+            if ("0".equals(sysGrouping.getIsDel())) {
+                throw new ResultException(500, "分组名称重复！"); // 该数据存在，返回重复
+            } else {
+                sysGrouping.deleteById(); // 已经被删除，物理删除
+            }
         }
+
         // 添加一个分组
         grouping.insert();
         // 构建对象

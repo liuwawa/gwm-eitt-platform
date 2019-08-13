@@ -70,6 +70,8 @@ public class SysGroupController {
     public ResultVo saveGroup(@RequestBody BaseEntity baseEntity) {
         SysGroup sysGroup = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroup.class);
         SysGroupExpand sysGroupExpand = ObjectConversionEntityUtil.getBaseData(baseEntity, SysGroupExpand.class);
+
+
         try {
             if (!sysGroupService.saveGroupAndGroupExpand(sysGroup, sysGroupExpand)) {
                 log.info("操作失败，添加的组织名称:{}", sysGroup.getLabel());
@@ -118,7 +120,7 @@ public class SysGroupController {
                     ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
         } catch (Exception e) {
             log.error("修改组织，出现异常！", e);
-            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.message, null);
+            return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, e.getMessage(), null);
         }
 
     }
