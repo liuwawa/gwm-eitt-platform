@@ -3,6 +3,7 @@ package com.cloud.user.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cloud.common.plugins.ApiJsonObject;
 import com.cloud.common.plugins.ApiJsonProperty;
+import com.cloud.common.utils.RedisUtils;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
 import com.cloud.model.log.LogAnnotation;
@@ -16,6 +17,7 @@ import com.cloud.user.service.SysGroupService;
 import com.cloud.user.service.SysUserService;
 import com.cloud.user.test.GZIPUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,8 +29,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -50,6 +52,10 @@ public class SysGroupController {
     private SysGroupService sysGroupService;
     @Autowired
     private SysUserService appUserService;
+    @Autowired
+    private RedisUtils redisUtils;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     /**
      * @param baseEntity 封装组织的数据
@@ -70,6 +76,7 @@ public class SysGroupController {
                 return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.code,
                         ResponseStatus.RESPONSE_GROUP_HANDLE_FAILED.message, null);
             }
+
             log.info("操作成功，添加的组织名称:{}", sysGroup.getLabel());
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.code,
                     ResponseStatus.RESPONSE_GROUP_HANDLE_SUCCESS.message, null);
@@ -142,30 +149,30 @@ public class SysGroupController {
      * @return 获取所有组织
      */
     @PreAuthorize("hasAuthority('back:group:query')")
-    //@GetMapping("/getAllGroup") 暂时不用
+    @GetMapping("/getAllGroup") //暂时不用
     @ApiOperation(value = "获取全部部门")
-    public Map getAllGroup() {
-        ObjectMapper mapper = new ObjectMapper();
+    public ResultVo getAllGroup() {
+        // 从Redis去取
+        List<SysGroup> groupsFromRedis = getGroupsFromRedis();
+        if (null != groupsFromRedis) {
+            return ResultVo.builder().code(200).msg("操作成功！").data(groupsFromRedis).build();
+        }
+        List<SysGroup> allGroupsFromDB = getAllGroupsFromDB();
+        // 压缩查询结果，并且存入redis
+        saveGrousToRedis(allGroupsFromDB);
+        return ResultVo.builder().code(200).msg("操作成功！").data(allGroupsFromDB).build();
+    }
+
+    // 从数据库拿出所有数据
+    public List<SysGroup> getAllGroupsFromDB() {
+        // 查找结果
         List<SysGroup> groupList = sysGroupService.list(new QueryWrapper<SysGroup>().lambda()
                 .eq(SysGroup::getIsDel, "0")
                 .orderByAsc(SysGroup::getGroupShowOrder));
         List<SysGroup> firstLevelMenus = groupList.stream().filter(m -> m.getParentid().equals(0))
                 .collect(Collectors.toList());
         firstLevelMenus.forEach(m -> setChildren(m, groupList));
-        HashMap<Object, Object> reslut = new HashMap<>();
-        // 转化字符串并压缩
-        String groupsInfo = null;
-        try {
-            groupsInfo = mapper.writeValueAsString(firstLevelMenus);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        // String groupsInfo = JSON.toJSON(firstLevelMenus).toString();
-        String compressGroupInfo = GZIPUtils.compress(groupsInfo);
-        reslut.put("code", 200);
-        reslut.put("msg", "操作成功！");
-        reslut.put("data", compressGroupInfo);
-        return reslut;
+        return firstLevelMenus;
     }
 
     /**
@@ -277,34 +284,35 @@ public class SysGroupController {
     }
 
 
-    /**
-     * @return 获取所有组织(首批)
-     */
-    @PreAuthorize("hasAuthority('back:group:query')")
-    @GetMapping("/getAllGroup")
-    @ApiOperation(value = "获取前两层组织（分批）")
-    public ResultVo getBeforeGroups() {
-        SysGroup group = SysGroup.builder().build();
-        SysGroup sysGroup = group.selectOne(new QueryWrapper<SysGroup>()
-                .lambda().eq(SysGroup::getParentid, 0).eq(SysGroup::getIsDel, 0));
-        List<SysGroup> groups = group.selectList(new QueryWrapper<SysGroup>()
-                .lambda().eq(SysGroup::getParentid, sysGroup.getId()).eq(SysGroup::getIsDel, 0).orderByAsc(SysGroup::getGroupShowOrder));
-        sysGroup.setChildren(groups);
-        return ResultVo.builder().code(200).msg("查询成功！").data(sysGroup).build();
+    public void saveGrousToRedis(List<SysGroup> firstLevelMenus) {
+        // 转化字符串并压缩
+        String groupsInfo = null;
+        try {
+            groupsInfo = objectMapper.writeValueAsString(firstLevelMenus);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        String compressGroupInfo = GZIPUtils.compress(groupsInfo);
+        redisUtils.addString("allGroups", compressGroupInfo, null);
     }
 
+    public List<SysGroup> getGroupsFromRedis() {
+        // 从redis取
+        String allGroups = redisUtils.getString("allGroups");
+        // 如果redis有 则解压缩 直接返回
+        String uncompress = GZIPUtils.uncompress(allGroups);
 
-    /**
-     * @return 获取点击下的组织(点击获取)
-     */
-    @PreAuthorize("hasAuthority('back:group:query')")
-    @GetMapping("/getGroupsByParentId/{parentId}")
-    @ApiOperation(value = "获取点击之下的组织（分批）")
-    public ResultVo getGroupsByParentId(@PathVariable Integer parentId) {
-        SysGroup group = SysGroup.builder().build();
-        List<SysGroup> groups = group.selectList(new QueryWrapper<SysGroup>()
-                .lambda().eq(SysGroup::getParentid, parentId).eq(SysGroup::getIsDel, "0").orderByAsc(SysGroup::getGroupShowOrder));
-        return ResultVo.builder().code(200).msg("查询成功！").data(groups).build();
+        List<SysGroup> allOfGroups = null;
+
+        try {
+            if (null != allGroups) {
+                allOfGroups = objectMapper.readValue(uncompress, new TypeReference<List<SysGroup>>() {
+                });
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return allOfGroups;
     }
 }
 

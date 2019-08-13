@@ -220,7 +220,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         }
 
         appUser.setPassword(passwordEncoder.encode(newPassword)); // 加密密码
-
+        appUser.setUpdateTime(new Date());
         appUserDao.updateById(appUser);
         log.info("修改密码：{}", user);
     }
