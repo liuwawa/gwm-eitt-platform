@@ -142,7 +142,7 @@ public class SysGroupController {
      * @return 获取所有组织
      */
     @PreAuthorize("hasAuthority('back:group:query')")
-    @GetMapping("/getAllGroup")
+    //@GetMapping("/getAllGroup") 暂时不用
     @ApiOperation(value = "获取全部部门")
     public Map getAllGroup() {
         ObjectMapper mapper = new ObjectMapper();
@@ -275,6 +275,37 @@ public class SysGroupController {
             return new ResultVo(ResponseStatus.RESPONSE_GROUP_HANDLE_ERROR.code, e.getMessage(), null);
 
         }
+    }
+
+
+    /**
+     * @return 获取所有组织(首批)
+     */
+    @PreAuthorize("hasAuthority('back:group:query')")
+    @GetMapping("/getAllGroup")
+    @ApiOperation(value = "获取前两层组织（分批）")
+    public ResultVo getBeforeGroups() {
+        SysGroup group = SysGroup.builder().build();
+        SysGroup sysGroup = group.selectOne(new QueryWrapper<SysGroup>()
+                .lambda().eq(SysGroup::getParentid, 0).eq(SysGroup::getIsDel, 0));
+        List<SysGroup> groups = group.selectList(new QueryWrapper<SysGroup>()
+                .lambda().eq(SysGroup::getParentid, sysGroup.getId()).eq(SysGroup::getIsDel, 0).orderByAsc(SysGroup::getGroupShowOrder));
+        sysGroup.setChildren(groups);
+        return ResultVo.builder().code(200).msg("查询成功！").data(sysGroup).build();
+    }
+
+
+    /**
+     * @return 获取点击下的组织(点击获取)
+     */
+    @PreAuthorize("hasAuthority('back:group:query')")
+    @GetMapping("/getGroupsByParentId/{parentId}")
+    @ApiOperation(value = "获取点击之下的组织（分批）")
+    public ResultVo getGroupsByParentId(@PathVariable Integer parentId) {
+        SysGroup group = SysGroup.builder().build();
+        List<SysGroup> groups = group.selectList(new QueryWrapper<SysGroup>()
+                .lambda().eq(SysGroup::getParentid, parentId).eq(SysGroup::getIsDel, "0").orderByAsc(SysGroup::getGroupShowOrder));
+        return ResultVo.builder().code(200).msg("查询成功！").data(groups).build();
     }
 }
 

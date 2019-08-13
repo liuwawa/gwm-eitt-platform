@@ -118,7 +118,7 @@ public class UserController {
     public ResultVo modifyMineInfo(@ApiParam(value = "SysUser对象") @RequestBody SysUser appUser) {
         SysUser user = AppUserUtil.getLoginAppUser();
         appUser.setId(user.getId());
-
+        appUser.setUpdateTime(new Date());
         appUserService.updateAppUser(appUser);
         user.setNickname(appUser.getNickname());
         user.setHeadImgUrl(appUser.getHeadImgUrl());
