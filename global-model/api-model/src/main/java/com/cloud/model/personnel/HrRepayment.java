@@ -57,7 +57,7 @@ public class HrRepayment extends Model<HrRepayment> {
      * 付款金额
      */
     @TableField("R_Money")
-    private String rMoney;
+    private String rMoneny;
 
     /**
      * 是否已经还款（0未还，1已还）
@@ -102,7 +102,7 @@ public class HrRepayment extends Model<HrRepayment> {
     private String totalMoney;
 
     public String getTotalMoney() {
-        this.totalMoney = Double.parseDouble(this.rInterest) + Double.parseDouble(this.rMoney) + "";
+        this.totalMoney = Double.parseDouble(this.rInterest) + Double.parseDouble(this.rMoneny) + "";
         return totalMoney;
     }
 

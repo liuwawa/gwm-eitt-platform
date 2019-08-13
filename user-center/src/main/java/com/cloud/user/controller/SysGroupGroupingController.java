@@ -8,6 +8,8 @@ import com.cloud.enums.ResponseStatus;
 import com.cloud.user.service.SysGroupGroupingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,6 +45,7 @@ public class SysGroupGroupingController {
     @PreAuthorize("hasAnyAuthority('back:group:delete','back:group:save','back:group:update')")
     @PostMapping("/updateGrouping")
     @ApiOperation(value = "添加部门分组", notes = "参数名称：（数组）groupIds，groupingId，groupingName，groupingRemark，loginAdminName")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo addGroupToGrouping(
             @ApiJsonObject(name = "添加部门分组", value = {
                     @ApiJsonProperty(key = "groupingId", example = "1", description = "groupingId"),

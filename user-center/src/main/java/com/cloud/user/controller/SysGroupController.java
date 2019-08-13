@@ -258,6 +258,7 @@ public class SysGroupController {
     @PreAuthorize("hasAuthority('back:group:update')")
     @PostMapping("/changeGroup")
     @ApiOperation(value = "修改部门", notes = "参数：parentId，（数组）groupIds, loginAdminName")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo changeGroupStructure(
             @ApiJsonObject(name = "修改组织结构的接口", value = {
                     @ApiJsonProperty(key = "parentId", example = "1", description = "parentId"),

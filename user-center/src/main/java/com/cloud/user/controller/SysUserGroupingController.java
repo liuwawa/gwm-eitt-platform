@@ -9,6 +9,8 @@ import com.cloud.model.user.SysGrouping;
 import com.cloud.user.service.SysUserGroupingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +42,7 @@ public class SysUserGroupingController {
      */
     @PostMapping("/addUserCheck")
     @ApiOperation(value = "添加用户的可以查看的分组", notes = "参数：groupingIds（组织id集合）,userId")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo addUserGroupingCheck(
             @ApiJsonObject(name = "添加用户的可以查看的分组", value = {
                     @ApiJsonProperty(key = "groupingIds", example = "[]", description = "groupingIds"),
@@ -71,6 +74,7 @@ public class SysUserGroupingController {
      */
     @GetMapping("/getGroupings/{userId}")
     @ApiOperation(value = "根据userId查找该用户可以查看的分组")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo<List<SysGrouping>> getGroupingsByUserId(@PathVariable Integer userId) {
 
         List<SysGrouping> groupings = sysUserGroupingService.getGroupingsByUserId(userId);
