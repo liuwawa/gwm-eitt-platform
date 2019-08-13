@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,24 +28,28 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ApiModel(value = "SysGrouping", description = "组织分组")
 public class SysGrouping extends Model<SysGrouping> {
 
     /**
      * 分组表id主键
      */
     @TableId("groupingId")
+    @ApiModelProperty(value = "分组id")
     private Integer groupingId;
 
     /**
      * 分组名称
      */
     @TableField("groupingName")
+    @ApiModelProperty(value = "分组名称")
     private String groupingName;
 
     /**
      * 分组备注
      */
     @TableField("groupingRemark")
+    @ApiModelProperty(value = "分组备注")
     private String groupingRemark;
 
     /**
@@ -56,6 +62,7 @@ public class SysGrouping extends Model<SysGrouping> {
      * 该分组共组织数
      */
     @TableField("groupNumber")
+    @ApiModelProperty(value = "该分组共组织数")
     private Integer groupNumber;
 
     /**
@@ -97,17 +104,20 @@ public class SysGrouping extends Model<SysGrouping> {
      * 分组展示顺序
      */
     @TableField("groupingShowOrder")
+    @ApiModelProperty(value = "分组展示顺序")
     private Integer groupingShowOrder;
     /**
      * 当前操作人
      */
     @TableField(exist = false)
+    @ApiModelProperty(value = "当前操作人")
     private String loginAdminName;
 
     /**
      * 分组之下的组织
      */
     @TableField(exist = false)
+    @ApiModelProperty(value = "分组之下的组织")
     private List<SysGroup> children;
 
     /**

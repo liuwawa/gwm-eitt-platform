@@ -15,6 +15,8 @@ import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -96,6 +98,7 @@ public class FileController {
     @PreAuthorize("hasAuthority('file:del')")
     @DeleteMapping("/delBatch/{ids}")
     @ApiOperation(value = "批量删除", notes = "传入以，拼接的id字符串")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo<Object> deleteFile(@PathVariable String ids) {
         List<Integer> list = new ArrayList<>();
         String[] idList = ids.split(",");
