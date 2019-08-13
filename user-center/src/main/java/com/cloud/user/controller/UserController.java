@@ -22,9 +22,7 @@ import com.cloud.user.feign.SmsClient;
 import com.cloud.user.service.SysRoleService;
 import com.cloud.user.service.SysUserService;
 import com.cloud.user.service.UserCredentialsService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -226,6 +224,7 @@ public class UserController {
      */
     @PostMapping("/users/queryPhone")
     @ApiOperation(value = "查询手机号是否存在")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo queryPhone(@ApiParam(value = "手机号", required = true) String phone) {
         if (appUserService.findByPhone(phone) != null) {
             return ResultVo.builder().code(50003).data(null).msg("手机号已被绑定!").build();
@@ -242,6 +241,7 @@ public class UserController {
      */
     @PostMapping(value = "/users/bindPhone")
     @ApiOperation(value = "绑定手机号")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo bindPhone(@ApiParam(value = "手机号", required = true) String phone,
                               @ApiParam(value = "redis 中的key值，根据key取值去与验证码对比", required = true) String key,
                               @ApiParam(value = "验证码", required = true) String code) {
@@ -291,6 +291,7 @@ public class UserController {
      */
     @PostMapping(value = "/users/changePhone")
     @ApiOperation(value = "修改手机号")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo changePhone(@ApiParam(value = "原手机号", required = true) String oldPhone,
                                 @ApiParam(value = "新手机号", required = true) String newPhone,
                                 @ApiParam(value = "redis 中的key值，根据key取值去与验证码对比", required = true) String key,

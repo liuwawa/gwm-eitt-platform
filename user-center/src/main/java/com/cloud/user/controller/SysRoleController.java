@@ -17,9 +17,7 @@ import com.cloud.model.user.SysPermission;
 import com.cloud.model.user.SysRole;
 import com.cloud.user.service.SysPermissionService;
 import com.cloud.user.service.SysRoleService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +46,7 @@ public class SysRoleController {
     @PreAuthorize("hasAuthority('back:role:save')")
     @PostMapping("/roles2")
     @ApiOperation(value = "管理后台添加角色")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo save2(@RequestBody SysRole sysRole) {
 
         QueryWrapper<SysRole> sysRoleWrapper = new QueryWrapper<>();
@@ -116,6 +115,7 @@ public class SysRoleController {
     @PreAuthorize("hasAuthority('back:role:delete')")
     @DeleteMapping("/roles2/{id}")
     @ApiOperation(value = "管理后台删除角色")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo deleteRole2(@PathVariable Long id) {
         try {
             sysRoleService.deleteRole(id);
@@ -154,6 +154,7 @@ public class SysRoleController {
     @PreAuthorize("hasAuthority('back:role:permission:set')")
     @PostMapping("/setPermission2Role")
     @ApiOperation(value = "管理后台给角色分配权限", notes = "参数：roleId,permissions（权限id数组）")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo setPermission2Role(
             @ApiJsonObject(name = "管理后台给角色分配权限", value = {
                     @ApiJsonProperty(key = "permissions", example = "[]", description = "permissions"),
