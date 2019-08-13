@@ -15,9 +15,7 @@ import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.Sms;
 import com.cloud.model.log.VerificationCode;
 import com.cloud.model.log.constants.LogModule;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -124,6 +122,7 @@ public class SmsController {
     @PreAuthorize("hasAuthority('back:sms:delete')")
     @DeleteMapping("/delSms/{id}")
     @ApiOperation(value = "根据id删除短信信息记录")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo deleteSms(@PathVariable Long id) {
         try {
             smsService.removeById(id);
@@ -138,6 +137,7 @@ public class SmsController {
     @PreAuthorize("hasAuthority('back:sms:delete')")
     @DeleteMapping("/delAll")
     @ApiOperation(value = "删除全部短信记录")
+    @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo deleteAll() {
         try {
             smsService.delAllSms();
