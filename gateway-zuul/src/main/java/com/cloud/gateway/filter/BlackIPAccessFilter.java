@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,9 +18,7 @@ import java.util.Set;
 
 /**
  * 黑名单IP拦截<br>
- * 黑名单ip变化不会太频繁，<br>
- * 考虑到性能，我们不实时掉接口从别的服务获取了，<br>
- * 而是定时把黑名单ip列表同步到网关层,
+ * 定时把黑名单ip列表同步到网关层,
  *
  * @author lz
  */
@@ -41,7 +40,7 @@ public class BlackIPAccessFilter extends ZuulFilter {
 
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
-        String ip = IPUtil.getIpAddress(request);
+        String ip = IPUtil.getIpAddr(request);
 // 判断ip是否在黑名单列表里
         return blackIPs.contains(ip);
     }
@@ -69,7 +68,7 @@ public class BlackIPAccessFilter extends ZuulFilter {
     /**
      * 定时同步黑名单IP
      */
-//    @Scheduled(cron = "0/5 * * * * ?")
+    @Scheduled(cron = "0/5 * * * * ?")
     @Async
     public void syncBlackIPList() {
         try {

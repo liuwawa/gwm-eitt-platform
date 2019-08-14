@@ -7,6 +7,9 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.cloud.backend.model.BlackIP;
 
+import java.util.List;
+import java.util.Map;
+
 @Mapper
 public interface BlackIPDao extends BaseMapper<BlackIP> {
 
@@ -21,4 +24,8 @@ public interface BlackIPDao extends BaseMapper<BlackIP> {
 
 	@Delete("delete from black_ip")
 	int deleteAll();
+
+	int count(Map<String, Object> params);
+
+	List<BlackIP> findData(Map<String, Object> params);
 }
