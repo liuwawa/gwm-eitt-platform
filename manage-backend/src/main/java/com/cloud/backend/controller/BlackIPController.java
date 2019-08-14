@@ -40,7 +40,7 @@ public class BlackIPController {
     @PostMapping("/saveBlackIP")
     @ApiOperation(value = "添加黑名单ip")
     @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
-    public ResultVo saveBlackIP(@ApiParam(value = "BlackIP",required = true) @RequestBody BlackIP blackIP) {
+    public ResultVo saveBlackIP(@ApiParam(value = "BlackIP", required = true) @RequestBody BlackIP blackIP) {
         try {
             blackIP.setCreateTime(new Date());
             BlackIP blackIP1 = blackIPService.getOne(new QueryWrapper<BlackIP>().lambda()
@@ -66,7 +66,7 @@ public class BlackIPController {
     @DeleteMapping("/deleteIp")
     @ApiOperation(value = "删除黑名单ip")
     @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
-    public ResultVo deleteIp(@ApiParam(value = "id",required = true)@RequestParam Integer id) {
+    public ResultVo deleteIp(@ApiParam(value = "id", required = true) @RequestParam Integer id) {
         try {
             blackIPService.delete(id);
             log.info("删除成功,id:{}", id);
@@ -85,7 +85,7 @@ public class BlackIPController {
      */
     @PreAuthorize("hasAuthority('ip:black:query')")
     @PostMapping("/findPage")
-    @ApiOperation(value = "分页，多条件查询黑名单",notes = "参数：pageNum（必填），pageSize（必填），ip(对象)")
+    @ApiOperation(value = "分页，多条件查询黑名单", notes = "参数：pageNum（必填），pageSize（必填），ip(对象)")
     public PageResult findBlackIPsByPage(
             @ApiJsonObject(name = "分页，多条件查询黑名单", value = {
                     @ApiJsonProperty(key = "pageNum", example = "1", description = "pageNum"),
@@ -95,7 +95,8 @@ public class BlackIPController {
         Long pageIndex = Long.valueOf(params.get("pageNum").toString());
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
         String ipAddress = String.valueOf(params.get("ip").toString());
-        IPage<BlackIP> blackIPage = blackIPService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
+        IPage<BlackIP> blackIPage = blackIPService.page(
+                new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
                 new QueryWrapper<BlackIP>()
                         .like("ip", ipAddress));
         return PageResult.builder().content(blackIPage.getRecords()).
@@ -120,7 +121,6 @@ public class BlackIPController {
         }
         return Collections.emptySet();
     }
-
 
 
     /**
