@@ -12,7 +12,7 @@ import java.util.List;
 import com.cloud.common.db.sync.provider.JobTask;
 import com.cloud.common.db.sync.provider.entity.DBInfo;
 import com.cloud.common.db.sync.provider.entity.JobInfo;
-import com.sun.istack.internal.logging.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.quartz.CronTrigger;
@@ -26,14 +26,14 @@ import org.quartz.impl.StdSchedulerFactory;
  * @author wangpan
  *
  */
+@Slf4j
 public class DBSyncBuilder {
 	
 	private DBInfo srcDb;
 	private DBInfo destDb;
 	private List<JobInfo> jobList;
 	private String code;
-	private static Logger logger = Logger.getLogger(DBSyncBuilder.class);
-	
+
 	private DBSyncBuilder() {
 	}
 	
@@ -107,14 +107,14 @@ public class DBSyncBuilder {
 				job.getJobDataMap().put("destDb", destDb);
 				job.getJobDataMap().put("jobInfo", jobInfo);
 				job.getJobDataMap().put("logTitle", logTitle);
-				logger.info(jobInfo.getCron());
+				log.info(jobInfo.getCron());
 				CronTrigger trigger = newTrigger().withIdentity("trigger-" + jobInfo.getName(), code)
 						.withSchedule(cronSchedule(jobInfo.getCron())).build();
 				sched.scheduleJob(job, trigger);
 				sched.start();
 			} catch (Exception e) {
-				logger.info(logTitle + e.getMessage());
-				logger.info(logTitle + " run failed");
+				log.info(logTitle + e.getMessage());
+				log.info(logTitle + " run failed");
 				continue;
 			}
 		}
