@@ -9,9 +9,11 @@ import com.cloud.model.user.SysGrouping;
 import com.cloud.user.dao.SysGroupGroupingDao;
 import com.cloud.user.service.SysGroupGroupingService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +29,8 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class SysGroupGroupingServiceImpl extends ServiceImpl<SysGroupGroupingDao, SysGroupGrouping> implements SysGroupGroupingService {
+    @Autowired
+    private SysGroupGroupingDao sysGroupGroupingDao;
 
     @Override
     @Transactional
@@ -72,13 +76,15 @@ public class SysGroupGroupingServiceImpl extends ServiceImpl<SysGroupGroupingDao
         if (groupIds.size() == 0 || groupIds == null) {
             return true;
         }
-        // 进行添加
-        for (Integer groupId : groupIds) {
-            sysGroupGrouping.setGroupId(groupId);
-            if (!sysGroupGrouping.insert()) {
-                return false;
-            }
-        }
+        List<SysGroupGrouping> groupGroupings = new ArrayList<>();
+        groupIds.forEach(groupId -> {
+            SysGroupGrouping groupGrouping = SysGroupGrouping.builder().build();
+            groupGrouping.setGroupingId(sysGroupGrouping.getGroupingId());
+            groupGrouping.setGroupId(groupId);
+            groupGroupings.add(groupGrouping);
+        });
+        // 添加到中间表
+        sysGroupGroupingDao.insertList(groupGroupings);
         return true;
     }
 

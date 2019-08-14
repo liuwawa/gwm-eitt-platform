@@ -2,7 +2,10 @@ package com.cloud.user.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cloud.model.user.SysGroupGrouping;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,5 +17,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SysGroupGroupingDao extends BaseMapper<SysGroupGrouping> {
-
+    boolean insertList(List<SysGroupGrouping> sysGroupGroupingList);
 }

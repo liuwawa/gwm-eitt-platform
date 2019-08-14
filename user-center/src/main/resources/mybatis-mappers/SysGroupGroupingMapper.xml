@@ -4,8 +4,19 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.cloud.model.user.SysGroupGrouping">
-        <result column="groupId" property="groupId" />
-        <result column="groupingId" property="groupingId" />
+        <result column="groupId" property="groupId"/>
+        <result column="groupingId" property="groupingId"/>
     </resultMap>
+    <insert id="insertList" parameterType="java.util.List">
+        INSERT INTO sys_group_grouping
+        (groupId,groupingId)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.groupId},
+            #{item.groupingId}
+            )
+        </foreach>
+    </insert>
 
 </mapper>

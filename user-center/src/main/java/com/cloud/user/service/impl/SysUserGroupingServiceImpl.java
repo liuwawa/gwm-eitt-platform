@@ -7,7 +7,6 @@ import com.cloud.common.enums.ResultEnum;
 import com.cloud.common.exception.ResultException;
 import com.cloud.model.user.*;
 import com.cloud.user.dao.SysUserGroupingDao;
-import com.cloud.user.service.SysRoleService;
 import com.cloud.user.service.SysUserGroupingService;
 import com.cloud.user.service.SysUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +31,6 @@ import java.util.Set;
 public class SysUserGroupingServiceImpl extends ServiceImpl<SysUserGroupingDao, SysUserGrouping> implements SysUserGroupingService {
     @Autowired
     private SysUserService userService;
-    @Autowired
-    private SysRoleService roleService;
 
     @Override
     @Transactional
@@ -112,9 +109,9 @@ public class SysUserGroupingServiceImpl extends ServiceImpl<SysUserGroupingDao, 
     }
 
     // 该方法找出grouping在groupGrouping中间表中的所有的group，并给每个grouping的children赋值并返回
-    public void getGroups(List<SysGrouping> sysGroupings, List<SysGroupGrouping> groupGroupings) {
-        List<Integer> groupIds = new ArrayList<>();
+    public static void getGroups(List<SysGrouping> sysGroupings, List<SysGroupGrouping> groupGroupings) {
         sysGroupings.forEach(grouping -> {
+            List<Integer> groupIds = new ArrayList<>();
             groupGroupings.forEach(sysGroupGrouping -> {
                 if (sysGroupGrouping.getGroupingId().equals(grouping.getGroupingId())) {
                     groupIds.add(sysGroupGrouping.getGroupId());

@@ -7,12 +7,15 @@ import com.cloud.common.exception.ResultException;
 import com.cloud.model.user.SysGroupGrouping;
 import com.cloud.model.user.SysGrouping;
 import com.cloud.model.user.SysUserGrouping;
+import com.cloud.user.dao.SysGroupGroupingDao;
 import com.cloud.user.dao.SysGroupingDao;
 import com.cloud.user.service.SysGroupingService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +30,8 @@ import java.util.List;
 @Service
 @Slf4j
 public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGrouping> implements SysGroupingService {
-
+    @Autowired
+    private SysGroupGroupingDao sysGroupGroupingDao;
 
     @Override
     @Transactional
@@ -81,14 +85,20 @@ public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGroup
         grouping.insert();
         // 构建对象
         SysGroupGrouping sysGroupGrouping = SysGroupGrouping.builder().groupingId(grouping.getGroupingId()).build();
+        // 先删除存在的，避免插入失败
+        sysGroupGrouping.delete(new QueryWrapper<SysGroupGrouping>()
+                .lambda().eq(SysGroupGrouping::getGroupingId, sysGroupGrouping.getGroupingId()));
 
+        List<SysGroupGrouping> groupGroupings = new ArrayList<>();
+        list.forEach(groupId -> {
+            SysGroupGrouping groupGrouping = SysGroupGrouping.builder().build();
+            groupGrouping.setGroupingId(sysGroupGrouping.getGroupingId());
+            groupGrouping.setGroupId(groupId);
+            groupGroupings.add(groupGrouping);
+        });
         // 添加到中间表
-        for (Integer groupId : list) {
-            sysGroupGrouping.setGroupId(groupId);
-            if (!sysGroupGrouping.insert()) {
-                return false;
-            }
-        }
+        sysGroupGroupingDao.insertList(groupGroupings);
+
 
         return true;
     }
