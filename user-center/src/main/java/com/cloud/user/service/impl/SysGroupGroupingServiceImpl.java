@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -48,15 +49,18 @@ public class SysGroupGroupingServiceImpl extends ServiceImpl<SysGroupGroupingDao
                 .builder().groupingId(groupingId).groupingName(groupingName).groupingRemark(groupingRemark).
                         updateBy(loginAdminName).updateTime(new Date()).build();
         // 先校验分组是否存在
-        SysGrouping selectGrouping = grouping.selectOne(new QueryWrapper<SysGrouping>().lambda()
+        List<SysGrouping> sysGroupings = grouping.selectList(new QueryWrapper<SysGrouping>().lambda()
                 .eq(SysGrouping::getGroupingName, groupingName));
-        if (null != selectGrouping) {
-            if ("0".equals(selectGrouping.getIsDel())) {
+        List<SysGrouping> groupings = sysGroupings.stream().filter(grouping1 -> !(grouping1.getGroupingId().equals(groupingId)))
+                .collect(Collectors.toList()); // 过滤掉传来的对象
+        if (null != groupings && groupings.size() != 0) {
+            if ("0".equals(groupings.get(0).getIsDel())) {
                 throw new ResultException(16650, "已经存在该分组，修改失败！"); // 该情况为存在分组，没有被删除
             } else {
-                selectGrouping.deleteById();  // 存在已经被删除的，从库中物理删除这条数据
+                groupings.get(0).deleteById();  // 存在已经被删除的，从库中物理删除这条数据
             }
         }
+
 
         grouping.updateById();
 

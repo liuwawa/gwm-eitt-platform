@@ -46,6 +46,9 @@ public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGroup
         if (null != userGroupings && userGroupings.size() != 0) {
             throw new ResultException(500, "用户使用分组中，请先解除关系！");
         }
+        // 删除中间表的数据
+        SysGroupGrouping sysGroupGrouping = SysGroupGrouping.builder().build();
+        sysGroupGrouping.delete(new QueryWrapper<SysGroupGrouping>().lambda().in(SysGroupGrouping::getGroupingId, groupingIds));
         // 构建对象
         SysGrouping sysGrouping = SysGrouping.builder().isDel("1")
                 .deleteBy(loginAdminName).deleteTime(new Date()).build();
@@ -78,6 +81,7 @@ public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGroup
         grouping.insert();
         // 构建对象
         SysGroupGrouping sysGroupGrouping = SysGroupGrouping.builder().groupingId(grouping.getGroupingId()).build();
+
         // 添加到中间表
         for (Integer groupId : list) {
             sysGroupGrouping.setGroupId(groupId);
@@ -85,6 +89,7 @@ public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGroup
                 return false;
             }
         }
+
         return true;
     }
 }

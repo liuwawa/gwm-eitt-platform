@@ -158,7 +158,7 @@ public class SysGroupController {
      * @return 获取所有组织
      */
     @PreAuthorize("hasAuthority('back:group:query')")
-    @GetMapping("/getAllGroup") //暂时不用
+    @GetMapping("/getAllGroup")
     @ApiOperation(value = "获取全部部门")
     public ResultVo getAllGroup() {
         // 从Redis去取

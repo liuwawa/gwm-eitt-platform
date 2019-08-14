@@ -110,7 +110,7 @@ public class SysGroupingController {
                 .groupingRemark(groupingRemark)
                 .createBy(loginAdminName)
                 .createTime(new Date()).build();
-        if (gorupingName == null) {
+        if (null == gorupingName) {
             return ResultVo.builder().code(ResponseStatus.RESPONSE_GROUPING_HANDLE_ERROR.code).msg("分组名不能为空").data(null).build();
         }
         try {
