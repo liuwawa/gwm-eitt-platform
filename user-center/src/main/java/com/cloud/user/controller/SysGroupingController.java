@@ -2,14 +2,18 @@ package com.cloud.user.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.cloud.common.constants.SysConstants;
 import com.cloud.common.plugins.ApiJsonObject;
 import com.cloud.common.plugins.ApiJsonProperty;
+import com.cloud.common.utils.AppUserUtil;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.enums.ResponseStatus;
-import com.cloud.model.common.Page;
 import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
+import com.cloud.model.user.LoginAppUser;
 import com.cloud.model.user.SysGrouping;
+import com.cloud.model.user.SysRole;
+import com.cloud.model.user.SysUserGrouping;
 import com.cloud.user.service.SysGroupingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -45,12 +51,11 @@ public class SysGroupingController {
     @PreAuthorize("hasAuthority('back:group:query')")
     @GetMapping(value = "/allGrouping")
     @ApiOperation(value = "分页获取全部分组")
-    public Page<SysGrouping> selectAllGrouping() {
-        int count = sysGroupingService.count();
-        log.info("总条数:{}", count);
-        return new Page<SysGrouping>(count, sysGroupingService.list(new QueryWrapper<SysGrouping>().lambda()
-                .eq(SysGrouping::getIsDel, 0)
-                .orderByAsc(SysGrouping::getGroupingShowOrder)));
+    public ResultVo selectAllGrouping() {
+        ResultVo resultVo = ResultVo.builder().code(200).msg("操作成功！").build();
+        List<SysGrouping> allCheckedGrouping = sysGroupingService.findAllCheckedGrouping();
+        resultVo.setData(allCheckedGrouping);
+        return resultVo;
     }
 
 

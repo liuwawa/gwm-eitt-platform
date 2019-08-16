@@ -301,7 +301,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         }
 
         UserCredential userCredential = userCredentialsDao.findByUsername(appUser.getUsername());
-        if (userCredential != null) {
+        if (null != userCredential) {
             throw new IllegalArgumentException("用户名已存在");
         }
 
@@ -310,7 +310,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         appUser.setPassword(passwordEncoder.encode(md5DigestAsHex)); // 加密密码
         appUser.setEnabled(Boolean.TRUE);
         appUser.setCreateTime(new Date());
-        appUser.setUpdateTime(appUser.getCreateTime());
 
         // 自动生成下一个工号
         String personnelNO = appUserDao.selectMaxPersonnelNO();
@@ -358,12 +357,25 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         return str;
     }
 
+    //  验证是否含有中文
+
     @Transactional
     @Override
     public void updateUser(SysUser appUser) {
         if (isContainsChinese(appUser.getUsername())) {
             throw new ResultException(500, "用户名不能含有中文字符");
         }
+        List<SysUser> userList = appUserDao.selectList(
+                new QueryWrapper<SysUser>().lambda().eq(SysUser::getUsername, appUser.getUsername()));
+        // 过滤传来的对象，避免修改失误
+        List<SysUser> sysUsers = userList.stream().filter(user ->
+                !(appUser.getId().equals(user.getId()))
+        ).collect(Collectors.toList());
+
+        if (sysUsers.size() != 0 && null != sysUsers) {
+            throw new ResultException(17770, "已经存在用户名，修改失败！"); // 如果过滤之后还有对象，则修改失败
+        }
+        appUser.setUpdateTime(new Date());
         appUserDao.updateById(appUser);
         QueryWrapper<UserCredential> deleteWrapper = new QueryWrapper<>();
         deleteWrapper.eq("userId", appUser.getId())
@@ -389,7 +401,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         log.info("修改用户：{}", appUser);
     }
 
-    //  验证是否含有中文
     public static boolean isContainsChinese(String str) {
         Pattern pat = Pattern.compile("[\u4e00-\u9fa5]");
         Matcher matcher = pat.matcher(str);

@@ -20,4 +20,5 @@ public interface SysGroupingService extends IService<SysGrouping> {
 
     boolean initGroupingSaveGroup(List<Integer> list, SysGrouping grouping);
 
+    List<SysGrouping> findAllCheckedGrouping();
 }

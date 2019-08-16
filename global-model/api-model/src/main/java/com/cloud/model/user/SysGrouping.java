@@ -1,15 +1,12 @@
 package com.cloud.model.user;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -28,6 +25,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode
 @ApiModel(value = "SysGrouping", description = "组织分组")
 public class SysGrouping extends Model<SysGrouping> {
 
@@ -119,6 +117,13 @@ public class SysGrouping extends Model<SysGrouping> {
     @TableField(exist = false)
     @ApiModelProperty(value = "分组之下的组织")
     private List<SysGroup> children;
+
+    /**
+     * 用户是否可以操作该分组的标识
+     */
+    @TableField(exist = false)
+    @ApiModelProperty(value = "分组检查可用性")
+    private Boolean checked;
 
     /**
      * 指定主键

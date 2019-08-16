@@ -77,7 +77,7 @@ public class LogController {
     }
 
     @LogAnnotation(module = LogModule.DELETE_ROLE)
-    @PreAuthorize("hasAuthority('back:sms:delete')")
+    @PreAuthorize("hasAuthority('back:log:delete')")
     @DeleteMapping("/delLogsAll")
     @ApiOperation(value = "删除全部日志")
     @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})

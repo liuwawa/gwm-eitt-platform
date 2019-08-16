@@ -79,8 +79,10 @@ public class SysUserGroupingController {
 
         List<SysGrouping> groupings = sysUserGroupingService.getGroupingsByUserId(userId);
         // 筛选有group的分组
-        groupings = groupings.stream().filter(m -> m.getChildren() != null)
-                .collect(Collectors.toList());
+        if (null != groupings && groupings.size() != 0) {
+            groupings = groupings.stream().filter(m -> m.getChildren() != null)
+                    .collect(Collectors.toList());
+        }
 
         log.info("根据userId查找可以查看的所有grouping,用户的id:{}", userId);
         return new ResultVo<List<SysGrouping>>(ResponseStatus.RESPONSE_GROUPING_HANDLE_SUCCESS.code,

@@ -170,9 +170,9 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         }
         // 先修改group主表
         boolean groupSave = sysGroup.updateById();
-
-        if (sysGroup.getParentid() != 0) {
-            SysGroup group1 = sysGroup.selectById();
+        // 从表中查出
+        SysGroup group1 = sysGroup.selectById();
+        if (group1.getParentid() != 0) {
             checkGroupLevel(group1);
         }
 

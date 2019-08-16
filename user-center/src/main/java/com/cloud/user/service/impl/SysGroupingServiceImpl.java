@@ -2,11 +2,11 @@ package com.cloud.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cloud.common.constants.SysConstants;
 import com.cloud.common.enums.ResultEnum;
 import com.cloud.common.exception.ResultException;
-import com.cloud.model.user.SysGroupGrouping;
-import com.cloud.model.user.SysGrouping;
-import com.cloud.model.user.SysUserGrouping;
+import com.cloud.common.utils.AppUserUtil;
+import com.cloud.model.user.*;
 import com.cloud.user.dao.SysGroupGroupingDao;
 import com.cloud.user.dao.SysGroupingDao;
 import com.cloud.user.service.SysGroupingService;
@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -71,6 +73,7 @@ public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGroup
     @Override
     @Transactional
     public boolean initGroupingSaveGroup(List<Integer> list, SysGrouping grouping) {
+        // 查重
         SysGrouping sysGrouping = grouping.selectOne(new QueryWrapper<SysGrouping>()
                 .lambda().eq(SysGrouping::getGroupingName, grouping.getGroupingName()));
         if (null != sysGrouping) {
@@ -99,7 +102,40 @@ public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGroup
         // 添加到中间表
         sysGroupGroupingDao.insertList(groupGroupings);
 
+        // 获取当前用户的权限，如果不是超级管理员，直接放入自己可以管理的分组
+        LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+        Set<SysRole> sysRoles = loginAppUser.getSysRoles();
+        List<Long> roleIds = sysRoles.stream().map(SysRole::getId).collect(Collectors.toList());
+        if (!(roleIds.contains(SysConstants.ADMIN_ROLE_ID))) {
+            Long id = loginAppUser.getId();
+            SysUserGrouping userGrouping = SysUserGrouping.builder().userId(id.intValue()).groupingId(grouping.getGroupingId()).build();
+            userGrouping.insert();
+        }
 
         return true;
+    }
+
+    @Override
+    public List<SysGrouping> findAllCheckedGrouping() {
+
+        LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+        Set<SysRole> sysRoles = loginAppUser.getSysRoles();
+        List<Long> list = sysRoles.stream().map(SysRole::getId).collect(Collectors.toList());
+        List<SysGrouping> groupings = new ArrayList<>();
+        // 找出所有的分组
+        SysGrouping grouping = SysGrouping.builder().build();
+        List<SysGrouping> allGroupings = grouping.selectList(new QueryWrapper<SysGrouping>().lambda().eq(SysGrouping::getIsDel, 0));
+        if (!(list.contains(SysConstants.ADMIN_ROLE_ID))) {
+            SysUserGrouping userGrouping = SysUserGrouping.builder().build();
+            List<SysUserGrouping> sysUserGroupings = userGrouping.selectList(
+                    new QueryWrapper<SysUserGrouping>().lambda().eq(SysUserGrouping::getUserId, loginAppUser.getId().intValue()));
+            List<Integer> collect = sysUserGroupings.stream().map(SysUserGrouping::getGroupingId).collect(Collectors.toList());
+            SysGrouping sysGrouping = SysGrouping.builder().build();
+            groupings = sysGrouping.selectList(
+                    new QueryWrapper<SysGrouping>().lambda().in(SysGrouping::getGroupingId, collect).eq(SysGrouping::getIsDel, 0)
+                            .orderByAsc(SysGrouping::getGroupingShowOrder));
+            return groupings;
+        }
+        return allGroupings;
     }
 }

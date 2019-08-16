@@ -32,6 +32,7 @@ import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -384,9 +385,9 @@ public class UserController {
         }
         IPage<SysUser> userPage = getPage(username, nickname, sex, enabled, personnelNO, duties, pageIndex, pageSize);
         List<SysUser> sysUsers = userPage.getRecords();
+
         SysGroup sysGroup = SysGroup.builder().build();
         initUserGrouping(sysUsers, sysGroup);
-
 
         // 封装结果
         return PageResult.builder().content(sysUsers).
@@ -403,7 +404,14 @@ public class UserController {
      * @param sysGroup
      */
     private void initUserGrouping(List<SysUser> sysUsers, SysGroup sysGroup) {
+        // 获取当前对象的角色是否含有超级管理员
+        LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+        Set<SysRole> sysRoles = loginAppUser.getSysRoles();
+        List<Long> list = sysRoles.stream().map(SysRole::getId).collect(Collectors.toList());
+        boolean contains = list.contains(SysConstants.ADMIN_ROLE_ID);
         SysUserGrouping userGrouping = SysUserGrouping.builder().build();
+        List<SysUserGrouping> userSysGroupings = userGrouping.selectList(new QueryWrapper<SysUserGrouping>().lambda()
+                .eq(SysUserGrouping::getUserId, loginAppUser.getId()));
         SysGrouping grouping = SysGrouping.builder().build();
         sysUsers.forEach(i -> {
             SysGroup group = sysGroup.selectOne(new QueryWrapper<SysGroup>().lambda()
@@ -411,10 +419,19 @@ public class UserController {
             i.setGroup(group);
             List<SysUserGrouping> userGroupings = userGrouping.selectList(new QueryWrapper<SysUserGrouping>().lambda()
                     .eq(SysUserGrouping::getUserId, i.getId()));
+            List<SysUserGrouping> list1 = new ArrayList<>();
             List<Integer> groupingIds = new ArrayList<>();
-            for (SysUserGrouping sysUserGrouping : userGroupings) {
-                groupingIds.add(sysUserGrouping.getGroupingId());
+            //  没有超级管理员的权限，只找出当前登录用户管理的分组，并返回
+            if (!contains) {
+                userGroupings.forEach(sysUserGrouping -> {
+                    if (userSysGroupings.contains(sysUserGrouping)) {
+                        list1.add(sysUserGrouping);
+                    }
+                });
+                groupingIds = list1.stream().map(SysUserGrouping::getGroupingId).collect(Collectors.toList());
             }
+            // 否则所有一起返回
+            groupingIds = userGroupings.stream().map(SysUserGrouping::getGroupingId).collect(Collectors.toList());
             i.setGroupingIds(groupingIds);
 
             if (groupingIds.size() != 0 && groupingIds != null) {
@@ -429,12 +446,38 @@ public class UserController {
     // 获取分页的结果
     public IPage<SysUser> getPage(String username, String nickname, String sex, String enabled, String personnelNO, String duties, Long
             pageIndex, Long pageSize) {
+        // 找出当前对象管理的所有的分组下的组织，并找出这些组织中的用户
+        LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+        Set<SysRole> sysRoles = loginAppUser.getSysRoles();
+        List<Long> list = sysRoles.stream().map(SysRole::getId).collect(Collectors.toList());
+        boolean contains = list.contains(SysConstants.ADMIN_ROLE_ID);
+        LambdaQueryWrapper<SysUser> userQueryWrapper = new LambdaQueryWrapper<>();
         IPage<SysUser> userPage = null;
-        LambdaQueryWrapper<SysUser> userQueryWrapper = new QueryWrapper<SysUser>().lambda()
-                .like(SysUser::getUsername, username)
-                .like(SysUser::getDuties, duties)
-                .like(SysUser::getPersonnelNO, personnelNO)
-                .like(SysUser::getNickname, nickname).orderByDesc(SysUser::getCreateTime);
+        if (!contains) {
+            Long id = loginAppUser.getId();
+            // 先取出该用户管理的所有分组
+            SysUserGrouping userGrouping = SysUserGrouping.builder().build();
+            List<SysUserGrouping> sysUserGroupings = userGrouping.selectList(
+                    new QueryWrapper<SysUserGrouping>().lambda().eq(SysUserGrouping::getUserId, id));
+            List<Integer> groupingIds = sysUserGroupings.stream().map(SysUserGrouping::getGroupingId).collect(Collectors.toList());
+            SysGroupGrouping groupGrouping = SysGroupGrouping.builder().build();
+            List<SysGroupGrouping> groupGroupings = groupGrouping.selectList(
+                    new QueryWrapper<SysGroupGrouping>().lambda().in(SysGroupGrouping::getGroupingId, groupingIds));
+            List<Integer> groupIds = groupGroupings.stream().map(SysGroupGrouping::getGroupId).collect(Collectors.toList());
+            userQueryWrapper = new QueryWrapper<SysUser>().lambda()
+                    .in(SysUser::getGroupId, groupIds)
+                    .like(SysUser::getUsername, username)
+                    .like(SysUser::getDuties, duties)
+                    .like(SysUser::getPersonnelNO, personnelNO)
+                    .like(SysUser::getNickname, nickname).orderByDesc(SysUser::getCreateTime);
+        } else {
+            userQueryWrapper = new QueryWrapper<SysUser>().lambda()
+                    .like(SysUser::getUsername, username)
+                    .like(SysUser::getDuties, duties)
+                    .like(SysUser::getPersonnelNO, personnelNO)
+                    .like(SysUser::getNickname, nickname).orderByDesc(SysUser::getCreateTime);
+        }
+
         if (null == sex && null != enabled) {
             userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
                     userQueryWrapper.eq(SysUser::getEnabled, enabled));

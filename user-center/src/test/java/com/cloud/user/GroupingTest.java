@@ -3,9 +3,11 @@ package com.cloud.user;
 import com.cloud.common.vo.ResultVo;
 import com.cloud.model.common.Page;
 import com.cloud.model.user.SysGroup;
+import com.cloud.model.user.SysGroupGrouping;
 import com.cloud.model.user.SysGrouping;
 import com.cloud.user.controller.SysGroupingController;
 import com.cloud.user.controller.SysUserGroupingController;
+import com.cloud.user.dao.SysGroupGroupingDao;
 import com.cloud.user.service.SysGroupService;
 import com.cloud.user.service.SysGroupingService;
 import org.junit.Test;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -21,6 +24,9 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = UserCenterApplication.class)
 public class GroupingTest {
+    @Autowired
+    private SysGroupGroupingDao sysGroupGroupingDao;
+
     @Autowired
     private SysGroupingController sysGroupingController;
 
@@ -62,14 +68,6 @@ public class GroupingTest {
 
 
     @Test
-    public void testSelectAllGrouping(){
-        Page<SysGrouping> sysGroupingPage = sysGroupingController.selectAllGrouping();
-        System.out.println(sysGroupingPage);
-        List<SysGrouping> data = sysGroupingPage.getData();
-        data.forEach(System.out::println);
-    }
-
-    @Test
     public void testDeleteGroupings(){
         List<Integer> groupingIds = Arrays.asList(2,3,4,5,6,7);
         //ResultVo admin = sysGroupingController.deleteGroupings(groupingIds, "admin");
@@ -80,5 +78,21 @@ public class GroupingTest {
     public void testDelete(){
         SysGrouping sysGrouping = SysGrouping.builder().groupingId(4564).groupingRemark("123").build();
         System.out.println(sysGrouping.updateById());
+    }
+
+    @Test
+    public void testInsertList(){
+        List<SysGroupGrouping> list = new ArrayList<>();
+        SysGroupGrouping sysGroupGrouping = new SysGroupGrouping();
+
+        sysGroupGrouping.setGroupId(1);
+        sysGroupGrouping.setGroupingId(1);
+        list.add(sysGroupGrouping);
+        SysGroupGrouping sysGroupGrouping1 = new SysGroupGrouping();
+        sysGroupGrouping1.setGroupId(1);
+        sysGroupGrouping1.setGroupingId(2);
+        list.add(sysGroupGrouping1);
+        System.out.println(list);
+        sysGroupGroupingDao.insertList(list);
     }
 }
