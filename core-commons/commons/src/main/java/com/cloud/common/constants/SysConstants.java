@@ -17,8 +17,20 @@ public interface SysConstants {
 	 */
 	Long ADMIN_USER_ID = 2L;
 
+	/**
+	 * 超级管理员Code
+	 */
 	String ADMIN_CODE = "SUPER_ADMIN";
 
+	/**
+	 * 角色类型 1 超级管理员 2 普通管理员  3 普通用户
+	 */
+	String SUPER_ADMIN_ROLE_TYPE = "1";
+	String COMMON_ADMIN_ROLE_TYPE = "2";
+	String COMMON_USER_ROLE_TYPE = "3";
+
 	public static final String PAST = "PAST|";
+
+
 	
 }

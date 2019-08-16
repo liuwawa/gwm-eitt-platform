@@ -110,7 +110,7 @@ public class MenuController {
     @LogAnnotation(module = LogModule.SET_MENU_ROLE)
     @PreAuthorize("hasAuthority('back:menu:set2role')")
     @PostMapping("/setMenusToRole")
-    @ApiOperation(value = "给角色分配菜单",notes = "参数：roleId，menuIds（数组）")
+    @ApiOperation(value = "给角色分配菜单", notes = "参数：roleId，menuIds（数组）")
     @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo setMenusToRole(@RequestBody Map<String, Object> params) {
         try {
@@ -118,7 +118,7 @@ public class MenuController {
             HashSet<Long> menuIds = new HashSet<>(JSONArray.parseArray(params.get("menuIds").toString(), Long.class));
             menuService.setMenuToRole(roleId, menuIds);
             return ResultVo.builder().code(200).build();
-        }catch (Exception e){
+        } catch (Exception e) {
             log.info(e + "");
             return ResultVo.builder().code(5000).msg("请联系管理员!").build();
         }

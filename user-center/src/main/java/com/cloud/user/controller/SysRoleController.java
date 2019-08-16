@@ -48,6 +48,15 @@ public class SysRoleController {
     @ApiOperation(value = "管理后台添加角色")
     @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo save2(@RequestBody SysRole sysRole) {
+        if ("超级管理员".equals(sysRole.getRoleType())) {
+            sysRole.setRoleType(SysConstants.SUPER_ADMIN_ROLE_TYPE);
+        }
+        if ("普通管理员".equals(sysRole.getRoleType())) {
+            sysRole.setRoleType(SysConstants.COMMON_ADMIN_ROLE_TYPE);
+        }
+        if ("普通用户".equals(sysRole.getRoleType())) {
+            sysRole.setRoleType(SysConstants.COMMON_USER_ROLE_TYPE);
+        }
 
         QueryWrapper<SysRole> sysRoleWrapper = new QueryWrapper<>();
         sysRoleWrapper.eq("code", sysRole.getCode())
@@ -234,33 +243,68 @@ public class SysRoleController {
         Long pageIndex = Long.valueOf(params.get("pageNum").toString());
         Long pageSize = Long.valueOf(params.get("pageSize").toString());
         String condition = String.valueOf(params.get("condition").toString());
+
         IPage<SysRole> roleIPage = sysRoleService.
                 page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
                         new QueryWrapper<SysRole>().like("name", condition).orderByDesc("createTime"));
+
+
         LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
         assert loginAppUser != null;
         Set<SysRole> roles = loginAppUser.getSysRoles();
+        ArrayList<Long> ids = new ArrayList<>();
+        for (SysRole role : roles) {
+            ids.add(role.getId());
+        }
+        //判断当前用户有无超级管理员角色，如果有  展示所有角色，如果没有 则展示当前用户已有角色以及已有角色的下级角色
+        boolean isSuperAdmin = judgeRoleType(roles, SysConstants.SUPER_ADMIN_ROLE_TYPE);
+        if (isSuperAdmin) {
+            return PageResult.builder().content(roleIPage.getRecords()).
+                    pageNum(roleIPage.getCurrent()).
+                    pageSize(roleIPage.getSize()).
+                    totalPages(roleIPage.getPages()).
+                    totalSize(roleIPage.getTotal()).build();
+        }
+        //判断当前用户有无普通管理员角色
+        boolean isCommonAdmin = judgeRoleType(roles, SysConstants.COMMON_ADMIN_ROLE_TYPE);
+        if (isCommonAdmin) {
+            List<SysRole> commonUserRoles = sysRoleService.list(new QueryWrapper<SysRole>().eq("roleType", SysConstants.COMMON_USER_ROLE_TYPE));
+            commonUserRoles.forEach(s -> ids.add(s.getId()));
+            IPage<SysRole> roleIPage2 = sysRoleService.
+                    page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
+                            new QueryWrapper<SysRole>().like("name", condition)
+                                    .in("roleType", SysConstants.COMMON_USER_ROLE_TYPE, SysConstants.COMMON_ADMIN_ROLE_TYPE)
+                                    .and(i -> i.in("id", ids))
+                                    .orderByDesc("createTime"));
+            return PageResult.builder().content(roleIPage2.getRecords()).
+                    pageNum(roleIPage2.getCurrent()).
+                    pageSize(roleIPage2.getSize()).
+                    totalPages(roleIPage2.getPages()).
+                    totalSize(roleIPage2.getTotal()).build();
+        }
+        return PageResult.builder().content(null).
+                pageNum(pageIndex).
+                pageSize(pageSize).
+                totalPages(0).
+                totalSize(0).build();
+    }
+
+    /**
+     * 判断当前用户拥有的角色 是什么类型
+     * @param roles 当前用户拥有的角色
+     * @param roleType 角色类型
+     * @return
+     */
+    private boolean judgeRoleType(Set<SysRole> roles, String roleType) {
         QueryWrapper<SysRole> roleWrapper = new QueryWrapper<>();
-        roleWrapper.eq("code", SysConstants.ADMIN_CODE);
-        SysRole superAdminRole = sysRoleService.getOne(roleWrapper);
-        //判断当前用户有无超级管理员角色,如果没有，则剔除超级管理员角色数据
-        if (!roles.contains(superAdminRole)) roleIPage.getRecords().remove(superAdminRole);
-//        for (SysRole role : roles) {
-//            if (SysConstants.ADMIN_CODE.equals(role.getCode())) {
-//               break;
-//            }
-//            List<SysRole> records = roleIPage.getRecords();
-//            for (int i = 0; i < records.size(); i++) {
-//                if (SysConstants.ADMIN_CODE.equals(records.get(i).getCode())) {
-//                    records.remove(i);
-//                }
-//            }
-//        }
-        return PageResult.builder().content(roleIPage.getRecords()).
-                pageNum(roleIPage.getCurrent()).
-                pageSize(roleIPage.getSize()).
-                totalPages(roleIPage.getPages()).
-                totalSize(roleIPage.getTotal()).build();
+        roleWrapper.eq("roleType", roleType);
+        List<SysRole> list = sysRoleService.list(roleWrapper);
+        for (SysRole sysRole : list) {
+            if (roles.contains(sysRole)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
