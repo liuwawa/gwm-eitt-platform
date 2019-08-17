@@ -594,7 +594,7 @@ public class UserController {
     }
 
     /**
-     * 获取用户的角色
+     * 获取用户的角色（element ui）
      *
      * @param id 用户id
      */

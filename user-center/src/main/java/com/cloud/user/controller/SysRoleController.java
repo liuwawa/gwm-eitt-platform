@@ -187,7 +187,7 @@ public class SysRoleController {
      *
      * @param id
      */
-    @PreAuthorize("hasAnyAuthority('back:role:permission:set','role:permission:byroleid')")
+    @PreAuthorize("hasAnyAuthority('back:role:permission:set')")
     @PostMapping("/queryPermissionsByRoleId")
     @ApiOperation(value = "获取角色的权限")
     public ResultVo queryPermissionsByRoleId(@ApiParam(value = "角色id", required = true) Long id) {

@@ -178,7 +178,7 @@ public class MenuController {
     @PreAuthorize("hasAnyAuthority('back:menu:set2role','menu:byroleid')")
     @PostMapping("findMenusByRoleId")
     @ApiOperation(value = "获取角色的菜单")
-    public List<Menu> findMenusByRoleId(@ApiParam(value = "roleId",required = true) @RequestParam("roleId") Long roleId) {
+    public List<Menu> findMenusByRoleId(@ApiParam(value = "roleId", required = true) @RequestParam("roleId") Long roleId) {
         List<Menu> menusByRoleId = menuService.findMenusByRoleId(roleId);
         return menusByRoleId.parallelStream().distinct().collect(Collectors.toList());
     }
