@@ -26,9 +26,6 @@ public class GlobalExceptionHandler {
         Response response = new Response();
         if (e instanceof AccessDeniedException) {
             throw new ResultException(HASNOPERMISSION_ERROR.code, HASNOPERMISSION_ERROR.message);
-            /*response.setErrorMsg(HASNOPERMISSION_ERROR.message);
-            response.setErrorCode(HASNOPERMISSION_ERROR.code);
-            return response;*/
         }
 
         response.setErrorMsg(RESPONSE_INTERNAL_ERROR.message);
