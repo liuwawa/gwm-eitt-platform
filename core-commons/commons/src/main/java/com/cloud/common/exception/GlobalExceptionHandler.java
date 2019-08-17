@@ -33,15 +33,6 @@ public class GlobalExceptionHandler {
         return response;
     }
 
-    /*@ResponseBody
-    @ExceptionHandler(AccessDeniedException.class)
-    public Response hasNoPermissionException(AccessDeniedException e) {
-        Response response = new Response();
-        response.setErrorMsg(HASNOPERMISSION_ERROR.message);
-        response.setErrorCode(HASNOPERMISSION_ERROR.code);
-        return response;
-    }*/
-
     @ResponseBody
     @ExceptionHandler(GenericBusinessException.class)
     public Response myErrorHandler(GenericBusinessException ex) {
