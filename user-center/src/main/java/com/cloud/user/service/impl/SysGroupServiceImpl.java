@@ -230,7 +230,7 @@ public class SysGroupServiceImpl extends ServiceImpl<SysGroupDao, SysGroup> impl
         }
 
         // 判断该组织是否有用户占用
-        List<SysUser> userList = sysUserDao.selectList(new QueryWrapper<>());
+        List<SysUser> userList = sysUserDao.selectList(new QueryWrapper<SysUser>().lambda().eq(SysUser::getEnabled, 1));
         for (SysUser sysUser : userList) {
             if (groupIds.contains(sysUser.getGroupId())) {
                 throw new ResultException(500, "删除的组织中有用户占用，删除失败！");

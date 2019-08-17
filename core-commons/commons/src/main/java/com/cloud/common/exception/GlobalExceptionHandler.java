@@ -3,13 +3,16 @@ package com.cloud.common.exception;
 import com.cloud.common.vo.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import static com.cloud.common.enums.ResponseStatus.*;
 
 /**
  * 全局异常处理
+ *
  * @author lz
  * @date 2018/8/14
  */
@@ -21,10 +24,26 @@ public class GlobalExceptionHandler {
     public Response handleException(Exception e) {
         log.error(ExceptionUtils.getFullStackTrace(e));  // 记录错误信息
         Response response = new Response();
+        if (e instanceof AccessDeniedException) {
+            throw new ResultException(HASNOPERMISSION_ERROR.code, HASNOPERMISSION_ERROR.message);
+            /*response.setErrorMsg(HASNOPERMISSION_ERROR.message);
+            response.setErrorCode(HASNOPERMISSION_ERROR.code);
+            return response;*/
+        }
+
         response.setErrorMsg(RESPONSE_INTERNAL_ERROR.message);
         response.setErrorCode(RESPONSE_INTERNAL_ERROR.code);
         return response;
     }
+
+    /*@ResponseBody
+    @ExceptionHandler(AccessDeniedException.class)
+    public Response hasNoPermissionException(AccessDeniedException e) {
+        Response response = new Response();
+        response.setErrorMsg(HASNOPERMISSION_ERROR.message);
+        response.setErrorCode(HASNOPERMISSION_ERROR.code);
+        return response;
+    }*/
 
     @ResponseBody
     @ExceptionHandler(GenericBusinessException.class)

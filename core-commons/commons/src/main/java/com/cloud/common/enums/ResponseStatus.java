@@ -21,8 +21,8 @@ public enum ResponseStatus {
     RESPONSE_PHP_ERROR(8899, "未知错误!"),
     RESPONSE_INTERNAL_ERROR(9999, "服务器超时"),
     RESPONSE_STORE_SUCCEED(10000, "成功!"),
-    RESPONSE_STORE_ERROR(44444, "失败!");
-
+    RESPONSE_STORE_ERROR(44444, "失败!"),
+    HASNOPERMISSION_ERROR(70000, "没有权限！");
     public final int code;
     public final String message;
 

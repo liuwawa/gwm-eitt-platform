@@ -207,7 +207,7 @@ public class UserController {
      *
      * @param id 用户id
      */
-    @PreAuthorize("hasAnyAuthority('back:user:role:set','user:role:byuid')")
+    @PreAuthorize("hasAnyAuthority('back:user:role:set')")
     @GetMapping("/users/{id}/roles")
     @ApiOperation(value = "根据用户id查询用户角色")
     public Set<SysRole> findRolesByUserId(@PathVariable Long id) {
@@ -429,9 +429,10 @@ public class UserController {
                     }
                 });
                 groupingIds = list1.stream().map(SysUserGrouping::getGroupingId).collect(Collectors.toList());
+            } else {
+                // 否则所有一起返回
+                groupingIds = userGroupings.stream().map(SysUserGrouping::getGroupingId).collect(Collectors.toList());
             }
-            // 否则所有一起返回
-            groupingIds = userGroupings.stream().map(SysUserGrouping::getGroupingId).collect(Collectors.toList());
             i.setGroupingIds(groupingIds);
 
             if (groupingIds.size() != 0 && groupingIds != null) {

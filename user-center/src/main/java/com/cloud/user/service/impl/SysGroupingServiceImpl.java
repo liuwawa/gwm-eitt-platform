@@ -9,6 +9,7 @@ import com.cloud.common.utils.AppUserUtil;
 import com.cloud.model.user.*;
 import com.cloud.user.dao.SysGroupGroupingDao;
 import com.cloud.user.dao.SysGroupingDao;
+import com.cloud.user.dao.SysUserDao;
 import com.cloud.user.service.SysGroupingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ import java.util.stream.Collectors;
 public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGrouping> implements SysGroupingService {
     @Autowired
     private SysGroupGroupingDao sysGroupGroupingDao;
+    @Autowired
+    private SysUserDao sysUserDao;
 
     @Override
     @Transactional
@@ -50,7 +53,13 @@ public class SysGroupingServiceImpl extends ServiceImpl<SysGroupingDao, SysGroup
         List<SysUserGrouping> userGroupings = userGrouping.selectList(new QueryWrapper<SysUserGrouping>().lambda()
                 .in(SysUserGrouping::getGroupingId, groupingIds));
         if (null != userGroupings && userGroupings.size() != 0) {
-            throw new ResultException(500, "用户使用分组中，请先解除关系！");
+            // 验证拥有分组的用户是是否有被禁用的用户
+            List<Integer> userIds = userGroupings.stream().map(SysUserGrouping::getUserId).collect(Collectors.toList());
+            List<SysUser> userList = sysUserDao.selectList(
+                    new QueryWrapper<SysUser>().lambda().in(SysUser::getId, userIds).eq(SysUser::getEnabled, 1));
+            if (null != userList && userList.size() != 0) {
+                throw new ResultException(500, "用户使用分组中，请先解除关系！");
+            }
         }
         // 删除中间表的数据
         SysGroupGrouping sysGroupGrouping = SysGroupGrouping.builder().build();
