@@ -312,11 +312,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         appUser.setCreateTime(new Date());
 
         // 自动生成下一个工号
-        String personnelNO = appUserDao.selectMaxPersonnelNO();
+        Integer personnelNO = appUserDao.selectMaxPersonnelNO();
         if (personnelNO != null) {
-            Integer personelno = Integer.valueOf(personnelNO.substring(2, 10));
-            personelno = personelno + 1;
-            String zeroForNum = addZeroForNum(personelno.toString(), 8);
+            // Integer personelno = Integer.valueOf(personnelNO.substring(2, 10));
+            personnelNO = personnelNO + 1;
+            String zeroForNum = addZeroForNum(String.valueOf(personnelNO), 8);
             appUser.setPersonnelNO("GW" + zeroForNum);
         } else {
             appUser.setPersonnelNO("GW00000001");

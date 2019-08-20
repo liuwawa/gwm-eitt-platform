@@ -3,10 +3,12 @@ package com.cloud.user.test;
 import com.alibaba.fastjson.JSON;
 import com.cloud.model.user.SysDept;
 import com.cloud.model.user.SysGroup;
+import com.cloud.model.user.SysUser;
 import com.cloud.user.UserCenterApplication;
 import com.cloud.user.controller.UserController;
 import com.cloud.user.dao.SysDeptDao;
 import com.cloud.user.service.SysGroupService;
+import com.cloud.user.service.SysUserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,10 +26,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = UserCenterApplication.class)
@@ -35,6 +34,8 @@ import java.util.Map;
 @WebAppConfiguration
 public class UserControllerTest {
     private MockMvc mockMvc;
+    @Autowired
+    private SysUserService appUserService;
 
 
     @Autowired
@@ -132,8 +133,16 @@ public class UserControllerTest {
 
     @Test
     public void testRestTemplate() {
-        String uri = "http://wthrcdn.etouch.cn/weather_mini?city=";
-
+        //String uri = "http://wthrcdn.etouch.cn/weather_mini?city=";
+        SysUser sysUser = new SysUser();
+        sysUser.setUsername("superadmin");
+        sysUser.setPassword("123456");
+        sysUser.setCreateTime(new Date());
+        sysUser.setSex(2);
+        sysUser.setNickname("ZXue");
+        List<Integer> list = Arrays.asList(1,2,3);
+        sysUser.setGroupingIds(list);
+        appUserService.addUser(sysUser);
     }
 
 

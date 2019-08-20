@@ -1,14 +1,14 @@
 package com.cloud.user.dao;
 
-import java.util.List;
-import java.util.Map;
-
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cloud.model.user.SysUser;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface SysUserDao extends BaseMapper<SysUser> {
@@ -32,6 +32,6 @@ public interface SysUserDao extends BaseMapper<SysUser> {
 
     List<SysUser> findData(Map<String, Object> params);
 
-    @Select("select max(PersonnelNO) from sys_user")
-    String selectMaxPersonnelNO();
+    @Select("select max((substring(personnelNO, 3))+0) from sys_user")
+    Integer selectMaxPersonnelNO();
 }
