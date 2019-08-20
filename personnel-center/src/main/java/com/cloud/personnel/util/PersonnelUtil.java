@@ -1,6 +1,7 @@
 package com.cloud.personnel.util;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.cloud.common.exception.ResultException;
 import com.cloud.common.utils.AppUserUtil;
 import com.cloud.model.personnel.HrPersonnel;
 import com.cloud.model.user.LoginAppUser;
@@ -17,6 +18,9 @@ public class PersonnelUtil {
         HrPersonnel hrPersonnel = personnel.selectOne(new QueryWrapper<HrPersonnel>()
                 .lambda().eq(HrPersonnel::getPPersonnelno, personnelNO)
                 .eq(HrPersonnel::getPStatus, "1"));
+        if (null == hrPersonnel) {
+            throw new ResultException(17760, "没有找到该员工的相关信息！");
+        }
         return hrPersonnel;
     }
 }
