@@ -8,13 +8,12 @@ import com.cloud.common.plugins.ApiJsonObject;
 import com.cloud.common.plugins.ApiJsonProperty;
 import com.cloud.common.utils.AppUserUtil;
 import com.cloud.common.vo.ResultVo;
+import com.cloud.enums.ResponseStatus;
 import com.cloud.model.common.Page;
 import com.cloud.model.common.PageResult;
 import com.cloud.model.log.LogAnnotation;
 import com.cloud.model.log.constants.LogModule;
-import com.cloud.model.user.LoginAppUser;
-import com.cloud.model.user.SysPermission;
-import com.cloud.model.user.SysRole;
+import com.cloud.model.user.*;
 import com.cloud.user.service.SysPermissionService;
 import com.cloud.user.service.SysRoleService;
 import io.swagger.annotations.*;
@@ -25,6 +24,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -72,6 +72,20 @@ public class SysRoleController {
             return ResultVo.builder().data(sysRole).code(40001).msg("角色名已存在，不能重复.").build();
         }
 
+        if (sysRole.getId() != 0) {
+            //修改之前要先判断一下（不能修改本级）
+            // 登录用户的角色类型
+            LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+            Set<SysRole> sysRoles = loginAppUser.getSysRoles();
+            List<String> list = sysRoles.stream().map(SysRole::getRoleType).collect(Collectors.toList());
+            //被修改角色的角色类型
+            SysRole updateRole = sysRoleService.findById(sysRole.getId());
+            //如果被修改角色的角色类型==登录用户的角色类型，则不能修改
+            if (list.get(0).equals(updateRole.getRoleType()) && !list.get(0).equals("1")) {
+                return ResultVo.builder().msg("没有权限").data(null).code(500).build();
+                //throw new IllegalArgumentException("没有权限");
+            }
+        }
         saveRole(sysRole);
         return ResultVo.builder().data(sysRole).code(200).msg("添加成功!").build();
     }
@@ -103,6 +117,7 @@ public class SysRoleController {
         if (sysRole.getId() == 0) { //新增
             sysRole.setCreateTime(new Date());
         } else {
+
             sysRole.setUpdateTime(new Date());
         }
 
@@ -127,6 +142,18 @@ public class SysRoleController {
     @ApiResponses({@ApiResponse(code = 200, message = "响应成功"), @ApiResponse(code = 500, message = "操作错误")})
     public ResultVo deleteRole2(@PathVariable Long id) {
         try {
+            //删除之前要先判断一下（不能删除本级）
+            // 登录用户的角色类型
+            LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+            Set<SysRole> sysRoles = loginAppUser.getSysRoles();
+            List<String> list = sysRoles.stream().map(SysRole::getRoleType).collect(Collectors.toList());
+            //被删除角色的角色类型
+            SysRole delRole = sysRoleService.findById(id);
+            //如果被删除角色的角色类型==登录用户的角色类型，则不能删除
+            if (list.get(0).equals(delRole.getRoleType()) && !list.get(0).equals("1")) {
+                return ResultVo.builder().msg("没有权限").data(null).code(500).build();
+            }
+
             sysRoleService.deleteRole(id);
             return ResultVo.builder().msg("删除成功").data(null).code(200).build();
         } catch (Exception e) {
@@ -291,7 +318,8 @@ public class SysRoleController {
 
     /**
      * 判断当前用户拥有的角色 是什么类型
-     * @param roles 当前用户拥有的角色
+     *
+     * @param roles    当前用户拥有的角色
      * @param roleType 角色类型
      * @return
      */
@@ -305,6 +333,40 @@ public class SysRoleController {
             }
         }
         return false;
+    }
+
+
+    /**
+     * @return 总个数和结果
+     * 查询所有的角色类型
+     * <p>
+     * localhost:8080/api-user/allRoleType
+     */
+    //@PreAuthorize("hasAuthority('back:role:query')")
+    @GetMapping(value = "/allRoleType")
+    @ApiOperation(value = "获取全部角色类型")
+    public ResultVo selectAllRoleType() {
+        ResultVo resultVo = ResultVo.builder().code(200).msg("操作成功！").build();
+        //获取登录用户的角色类型
+        LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+        Set<SysRole> sysRoles = loginAppUser.getSysRoles();
+        List<String> list = sysRoles.stream().map(SysRole::getRoleType).collect(Collectors.toList());
+        Map<String, String> map = new HashMap<String, String>();
+        System.out.println("list.get(0)" + list.get(0));
+        if (list.get(0).equals("1")) {
+            map.put("1", "超级管理员");
+            map.put("2", "普通管理员");
+            map.put("3", "普通用户");
+        }
+        if (list.get(0).equals("2")) {
+            map.put("2", "普通管理员");
+            map.put("3", "普通用户");
+        }
+        if (list.get(0).equals("3")) {
+            map.put("3", "普通用户");
+        }
+        resultVo.setData(map);
+        return resultVo;
     }
 
 }

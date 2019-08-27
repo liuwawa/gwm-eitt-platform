@@ -5,6 +5,7 @@ import com.cloud.model.common.Page;
 import com.cloud.model.user.SysPermission;
 import com.cloud.model.user.SysRole;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,4 +24,7 @@ public interface SysRoleService extends IService<SysRole> {
     Page<SysRole> findRoles(Map<String, Object> params);
 
     Set<SysPermission> findPermissionsByRoleId(Long roleId);
+
+
+    SysRole findByUserId(Long userId);
 }

@@ -32,4 +32,50 @@
 		order by t.id desc
 		limit #{start}, #{length}
 	</select>
+
+	<update id="updateGroupIdById">
+		update sys_user set groupId=#{groupId} where id=#{id}
+	</update>
+
+	<select id="selectPageExt" resultType="SysUser">
+		select u.* from sys_user u
+        left join sys_role_user ru on u.id=ru.userId
+        left join sys_role r on r.id=ru.roleId
+        <where>
+			<if test="user.username != null and user.username != ''">
+				<bind name="_username" value="'%' + user.username + '%'"/>
+				and u.username like #{_username}
+			</if>
+			<if test="user.nickname != null and user.nickname != ''">
+				<bind name="_nickname" value="'%' + user.nickname + '%'"/>
+				and u.nickname like #{_nickname}
+			</if>
+			<if test="user.personnelNO != null and user.personnelNO != ''">
+				<bind name="_personnelNO" value="'%' + user.personnelNO + '%'"/>
+				and u.personnelNO like #{_personnelNO}
+			</if>
+			<if test="user.duties != null and user.duties != ''">
+				<bind name="_duties" value="'%' + user.duties + '%'"/>
+				and u.duties like #{_duties}
+			</if>
+			<if test="user.enabled != null and user.enabled != ''">
+				and u.enabled = #{user.enabled}
+			</if>
+			<if test="user.sex != null">
+				and u.sex = #{user.sex}
+			</if>
+			<if test="groupIds != null and groupIds.size()>0">
+				and u.groupId in
+				<foreach collection="groupIds" item="groupId" open="(" separator="," close=")">
+					#{groupId}
+				</foreach>
+			</if>
+			<if test="roleType != null and roleType.size()>0">
+				and r.roleType in
+				<foreach collection="roleType" item="type" open="(" separator="," close=")">
+					#{type}
+				</foreach>
+			</if>
+		</where>
+	</select>
 </mapper>

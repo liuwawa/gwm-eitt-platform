@@ -119,4 +119,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRole> impleme
     public Set<SysPermission> findPermissionsByRoleId(Long roleId) {
         return rolePermissionDao.findPermissionsByRoleIds(Sets.newHashSet(roleId));
     }
+
+    @Override
+    public SysRole findByUserId(Long userId) {
+        return sysRoleDao.findByUserId(userId);
+    }
 }

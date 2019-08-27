@@ -32,5 +32,6 @@ public interface SysRoleDao extends BaseMapper<SysRole> {
 	int count(Map<String, Object> params);
 
 	List<SysRole> findData(Map<String, Object> params);
-
+	@Select("select * from sys_role r left join sys_role_user ru on r.id=ru.roleId where ru.userId=#{userId}")
+    SysRole findByUserId(Long userId);
 }

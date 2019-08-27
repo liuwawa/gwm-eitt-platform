@@ -8,6 +8,7 @@ import java.util.stream.Stream;
  * 响应状态信息枚举
  */
 public enum ResponseStatus {
+    RESPONSE_NO_PERMISSION(12330, "没有权限"),
     RESPONSE_SUCCESS(10000, "成功"),
     RESPONSE_VALIDATE_ERROR(10003, "校验失败"),
     RESPONSE_OPERATION_ERROR(10004, "操作错误"),

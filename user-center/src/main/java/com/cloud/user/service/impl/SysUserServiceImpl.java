@@ -1,12 +1,18 @@
 package com.cloud.user.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cloud.common.constants.SysConstants;
 import com.cloud.common.exception.ResultException;
+import com.cloud.common.utils.AppUserUtil;
 import com.cloud.common.utils.PageUtil;
 import com.cloud.common.utils.PhoneUtil;
 import com.cloud.enums.ResponseStatus;
-import com.cloud.model.common.Page;
+
+
 import com.cloud.model.user.*;
 import com.cloud.model.user.constants.CredentialType;
 import com.cloud.model.user.constants.SysUserResponse;
@@ -225,17 +231,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
         log.info("修改密码：{}", user);
     }
 
-    @Override
-    public Page<SysUser> findUsers(Map<String, Object> params) {
-        int total = appUserDao.count(params);
-        List<SysUser> list = Collections.emptyList();
-        if (total > 0) {
-            PageUtil.pageParamConver(params, true);
-
-            list = appUserDao.findData(params);
-        }
-        return new Page<>(total, list);
-    }
+//    @Override
+//    public Page<SysUser> findUsers(Map<String, Object> params) {
+//        int total = appUserDao.count(params);
+//        List<SysUser> list = Collections.emptyList();
+//        if (total > 0) {
+//            PageUtil.pageParamConver(params, true);
+//
+//            list = appUserDao.findData(params);
+//        }
+//        return new Page<>(total, list);
+//    }
 
     @Override
     public Set<SysRole> findRolesByUserId(Long userId) {
@@ -414,7 +420,21 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
     @Transactional
     @Override
     public void deleteUser(SysUser appUser) {
-
+        //启用（enabled=true）时判断该用户是否有组织分组，含有id
+        if (appUser.getEnabled() == true) {
+            //查询分组信息
+            SysUser user = appUserDao.findById(appUser.getId());
+            if (null != user.getGroupId()) {
+                // 有---抓取组织管理中信息，是否含有该用户的组织信息，没有则清空该用户的组织信息
+                SysGroup group = SysGroup.builder().id(user.getGroupId()).build();
+                SysGroup sysGroup = group.selectOne(new QueryWrapper<SysGroup>().lambda().eq(SysGroup::getId, user.getGroupId()).eq(SysGroup::getIsDel, "0"));
+                if (null == sysGroup) {
+                    //清空该用户的组织信息
+                    appUserDao.updateGroupIdById(appUser.getId(), appUser.getGroupId());
+                    //appUser.setGroupId(null);
+                }
+            }
+        }
         appUserDao.updateById(appUser);
 
         log.info("用户id：{}", appUser.getId());
@@ -447,5 +467,83 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUser> impleme
 
         return userResponse;
 
+    }
+
+    @Override
+    public IPage<SysUser> getPage(SysUser user, int pageIndex, int pageSize) throws RuntimeException {
+        try {
+            //IPage<SysUser> userPage = null;
+            Page<SysUser> p = new Page<SysUser>(pageIndex, pageSize);
+
+            //判断角色类型
+
+            // 找出当前对象管理的所有的分组下的组织，并找出这些组织中的用户
+            LoginAppUser loginAppUser = AppUserUtil.getLoginAppUser();
+            Set<SysRole> sysRoles = loginAppUser.getSysRoles();
+            //登录用户的角色类型
+            List<String> list = sysRoles.stream().map(SysRole::getRoleType).collect(Collectors.toList());
+            //是否包含超级管理员
+            boolean superAdmin = list.contains(SysConstants.SUPER_ADMIN_ROLE_TYPE);
+            List<Integer> groupIds = new ArrayList<>();
+            List<String> roleType = new ArrayList<>();
+            //List<SysUser> users = new ArrayList<>();
+            if (!superAdmin) {
+                //不是超级管理员
+                //用户ID
+                Long id = loginAppUser.getId();
+                // 先取出该用户管理的所有分组
+                SysUserGrouping userGrouping = SysUserGrouping.builder().build();
+                //根据用户ID查询分组
+                List<SysUserGrouping> sysUserGroupings = userGrouping.selectList(
+                        new QueryWrapper<SysUserGrouping>().lambda().eq(SysUserGrouping::getUserId, id));
+                List<Integer> groupingIds = sysUserGroupings.stream().map(SysUserGrouping::getGroupingId).collect(Collectors.toList());
+                SysGroupGrouping groupGrouping = SysGroupGrouping.builder().build();
+                //根据分组ID查询组织信息
+                List<SysGroupGrouping> groupGroupings = groupGrouping.selectList(
+                        new QueryWrapper<SysGroupGrouping>().lambda().in(SysGroupGrouping::getGroupingId, groupingIds));
+               groupIds = groupGroupings.stream().map(SysGroupGrouping::getGroupId).collect(Collectors.toList());
+
+//            userQueryWrapper = new QueryWrapper<SysUser>().lambda()
+//                    .in(SysUser::getGroupId, groupIds)
+//                    .like(SysUser::getUsername, username)
+//                    .like(SysUser::getDuties, duties)
+//                    .like(SysUser::getPersonnelNO, personnelNO)
+//                    .like(SysUser::getNickname, nickname).orderByDesc(SysUser::getCreateTime);
+                //是否包含普通管理员
+                boolean commonAdmin = list.contains(SysConstants.COMMON_ADMIN_ROLE_TYPE);
+                if (commonAdmin) {
+                    roleType.add(SysConstants.COMMON_ADMIN_ROLE_TYPE);
+                    roleType.add(SysConstants.COMMON_USER_ROLE_TYPE);
+                }
+                //是否包含普通用户
+                boolean commonUser = list.contains(SysConstants.COMMON_USER_ROLE_TYPE);
+                if (commonUser) {
+                    roleType.add(SysConstants.COMMON_USER_ROLE_TYPE);
+                }
+                //users = appUserDao.selectPageExt(p, groupIds, roleType, user);
+
+            }
+            List<SysUser> users = appUserDao.selectPageExt(p, groupIds, roleType, user);
+
+//        if (null == sex && null != enabled) {
+//            userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
+//                    userQueryWrapper.eq(SysUser::getEnabled, enabled));
+//        } else if (null == enabled && null != sex) {
+//            userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
+//                    userQueryWrapper.eq(SysUser::getSex, sex));
+//        } else if (null == sex && null == enabled) {
+//            userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
+//                    userQueryWrapper);
+//        } else {
+//            userPage = appUserService.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageIndex, pageSize),
+//                    userQueryWrapper.eq(SysUser::getSex, sex).eq(SysUser::getEnabled, enabled));
+//        }
+
+
+            p.setRecords(users);
+            return p;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.cloud.user.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cloud.model.common.Page;
 import com.cloud.model.user.LoginAppUser;
@@ -31,7 +32,7 @@ public interface SysUserService extends IService<SysUser> {
     void updatePassword(Long id, String oldPassword, String newPassword);
     void updatePassword2(SysUser user, String oldPassword, String newPassword);
 
-    Page<SysUser> findUsers(Map<String, Object> params);
+    //Page<SysUser> findUsers(Map<String, Object> params);
 
     Set<SysRole> findRolesByUserId(Long userId);
 
@@ -40,4 +41,6 @@ public interface SysUserService extends IService<SysUser> {
     void deleteUser(SysUser user);
 
     SysUserResponse getUsers(String personnelID);
+
+    IPage<SysUser> getPage(SysUser user, int pageIndex, int pageSize);
 }

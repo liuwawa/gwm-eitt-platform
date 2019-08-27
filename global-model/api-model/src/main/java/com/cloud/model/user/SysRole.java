@@ -9,13 +9,19 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 角色
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName(value = "sys_role")
+@Builder
 @ApiModel(value = "SysRole", description = "角色")
 public class SysRole implements Serializable {
 

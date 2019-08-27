@@ -1,11 +1,9 @@
 package com.cloud.user.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cloud.model.user.SysUser;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 import java.util.Map;
@@ -34,4 +32,8 @@ public interface SysUserDao extends BaseMapper<SysUser> {
 
     @Select("select max((substring(personnelNO, 3))+0) from sys_user")
     Integer selectMaxPersonnelNO();
+
+    Integer updateGroupIdById(@Param("id") Long id, @Param("groupId") Integer groupId);
+
+    List<SysUser> selectPageExt(@Param("p") Page<SysUser> p, @Param("groupIds") List<Integer> groupIds, @Param("roleType") List<String> roleType, @Param("user") SysUser user);
 }

@@ -41,6 +41,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.cloud.common.constants.SysConstants.PAST;
 import static com.cloud.gateway.config.UserInterceptor.USER_CODE;
+
 /**
  * 登陆、刷新token、退出
  *
@@ -160,6 +161,13 @@ public class TokenController {
 
         SysUser appUser = userClient.findByPhone(phone);
 
+        if (null == appUser.getPhone()) {
+            HashMap<String, Object> mapPhone = new HashMap<>();
+            mapPhone.put("errorCode", 8779);
+            mapPhone.put("message", "手机号不能为空!");
+            return mapPhone;
+        }
+
         Map<String, Object> map = isEnabled(appUser);
         if (map != null) return map;
 
@@ -183,6 +191,7 @@ public class TokenController {
 
     /**
      * 判断用户是否被冻结
+     *
      * @param appUser
      * @return
      */
@@ -260,7 +269,7 @@ public class TokenController {
      */
     @GetMapping("/sys/refresh_token")
     @ApiOperation(value = "系统刷新refresh_token")
-    public Map<String, Object> refresh_token(@ApiParam(value = "refresh_token", required = true)String refresh_token) {
+    public Map<String, Object> refresh_token(@ApiParam(value = "refresh_token", required = true) String refresh_token) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(OAuth2Utils.GRANT_TYPE, "refresh_token");
         parameters.put(OAuth2Utils.CLIENT_ID, SystemClientInfo.CLIENT_ID);
