@@ -149,7 +149,7 @@ public class SysRoleController {
             List<String> list = sysRoles.stream().map(SysRole::getRoleType).collect(Collectors.toList());
             //被删除角色的角色类型
             SysRole delRole = sysRoleService.findById(id);
-            //如果被删除角色的角色类型==登录用户的角色类型，则不能删除
+            //如果被删除角色的角色类型==登录用户的角色类型且不是超级管理员，则不能删除
             if (list.get(0).equals(delRole.getRoleType()) && !list.get(0).equals("1")) {
                 return ResultVo.builder().msg("没有权限").data(null).code(500).build();
             }

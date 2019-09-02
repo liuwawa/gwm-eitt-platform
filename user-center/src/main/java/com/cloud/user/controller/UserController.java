@@ -398,14 +398,18 @@ public class UserController {
         if (StringUtils.isNoneBlank(duties)) {
             user.setDuties(duties);
         }
-
-
-
-
-
         if (sex != null && !"".equals(sex)) {
             user.setSex(Integer.parseInt(sex));
         }
+        if (enabled != null && !"".equals(enabled)) {
+            if (enabled.equals("1")) {
+                user.setEnabled(true);
+            } else {
+                user.setEnabled(false);
+            }
+
+        }
+
         IPage<SysUser> userPage = appUserService.getPage(user, pageIndex, pageSize);
         List<SysUser> sysUsers = userPage.getRecords();
 

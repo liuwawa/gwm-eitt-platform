@@ -58,7 +58,7 @@
 				<bind name="_duties" value="'%' + user.duties + '%'"/>
 				and u.duties like #{_duties}
 			</if>
-			<if test="user.enabled != null and user.enabled != ''">
+			<if test="user.enabled != null">
 				and u.enabled = #{user.enabled}
 			</if>
 			<if test="user.sex != null">
@@ -77,5 +77,6 @@
 				</foreach>
 			</if>
 		</where>
+		order by u.createTime desc
 	</select>
 </mapper>
