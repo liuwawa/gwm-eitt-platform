@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>com.baomidou</groupId>
 			<artifactId>mybatis-plus-annotation</artifactId>
-			<version>RELEASE</version>
+			<version>${bomidou.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
