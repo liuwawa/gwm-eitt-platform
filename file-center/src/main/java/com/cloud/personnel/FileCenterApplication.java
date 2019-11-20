@@ -1,6 +1,6 @@
-package com.cloud.personnel;
+package com.gwm.one.personnel;
 
-import com.cloud.config.SwaggerConfig;
+import com.gwm.one.config.SwaggerConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Import;
  *
  */
 @EnableDiscoveryClient
-@ComponentScan("com.cloud.*")
+@ComponentScan("com.gwm.one.*")
 @SpringBootApplication
 @Import(value = {SwaggerConfig.class})
 public class FileCenterApplication {

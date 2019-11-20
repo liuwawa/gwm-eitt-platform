@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.cloud</groupId>
+    <groupId>com.gwm.one</groupId>
     <artifactId>global-configs</artifactId>
     <packaging>jar</packaging>
 
@@ -11,7 +11,7 @@
     <description>Demo project for Spring Boot</description>
 
     <parent>
-        <groupId>com.cloud</groupId>
+        <groupId>com.gwm.one</groupId>
         <artifactId>core-commons</artifactId>
         <version>2.0</version>
     </parent>

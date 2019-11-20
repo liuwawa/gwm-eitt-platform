@@ -1,6 +1,6 @@
-package com.cloud.personnel.utils;
+package com.gwm.one.personnel.utils;
 
-import com.cloud.personnel.model.FileInfo;
+import com.gwm.one.personnel.model.FileInfo;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 

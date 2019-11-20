@@ -1,4 +1,4 @@
-package com.cloud.personnel.service.impl;
+package com.gwm.one.personnel.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.aliyun.oss.OSSClient;
-import com.cloud.personnel.dao.FileDao;
-import com.cloud.personnel.model.FileInfo;
-import com.cloud.personnel.model.FileSource;
+import com.gwm.one.personnel.dao.FileDao;
+import com.gwm.one.personnel.model.FileInfo;
+import com.gwm.one.personnel.model.FileSource;
 
 /**
  * 阿里云存储文件

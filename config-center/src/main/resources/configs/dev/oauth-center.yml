@@ -49,7 +49,7 @@ access_token:
 logging:
   level:
     root: info
-    com.cloud: debug
+    com.gwm.one: debug
   file: logs/${spring.application.name}.log
 ribbon:
   eager-load:

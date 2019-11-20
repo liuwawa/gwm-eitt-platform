@@ -1,7 +1,7 @@
 logging:
   level:
     root: info
-    com.cloud: debug
+    com.gwm.one: debug
   file: logs/${spring.application.name}.log
 spring:
   datasource:
@@ -58,14 +58,14 @@ eureka:
     lease-renewal-interval-in-seconds: 5
     prefer-ip-address: true
 mybatis:
-  type-aliases-package: com.cloud.model.log
+  type-aliases-package: com.gwm.one.model.log
   mapper-locations: classpath:/mybatis-mappers/*
   configuration:
     mapUnderscoreToCamelCase: true
 mybatis-plus:
   mapperLocations: classpath:/mybatis-mappers/*
   #实体扫描，多个package用逗号或者分号分隔
-  typeAliasesPackage: com.cloud.model.log
+  typeAliasesPackage: com.gwm.one.model.log
   #typeEnumsPackage: com.baomidou.springboot.entity.enums
   global-config:
     # 数据库相关配置

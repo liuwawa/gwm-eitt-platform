@@ -1,4 +1,4 @@
-package com.cloud.personnel.model;
+package com.gwm.one.personnel.model;
 
 import java.io.Serializable;
 import java.util.Date;

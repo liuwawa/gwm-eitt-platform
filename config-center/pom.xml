@@ -5,8 +5,8 @@
 	<packaging>jar</packaging>
 
 	<parent>
-		<groupId>com.cloud</groupId>
-		<artifactId>cloud-service</artifactId>
+		<groupId>com.gwm.one</groupId>
+		<artifactId>hrplatform</artifactId>
 		<version>2.0</version>
 	</parent>
 
@@ -21,7 +21,7 @@
 			<artifactId>mybatis-plus</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.cloud</groupId>
+			<groupId>com.gwm.one</groupId>
 			<artifactId>api-model</artifactId>
 			<version>2.0</version>
 		</dependency>

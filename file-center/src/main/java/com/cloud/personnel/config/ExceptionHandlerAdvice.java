@@ -1,4 +1,4 @@
-package com.cloud.personnel.config;
+package com.gwm.one.personnel.config;
 
 import java.util.HashMap;
 import java.util.Map;

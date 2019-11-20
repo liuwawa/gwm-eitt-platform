@@ -1,4 +1,4 @@
-package com.cloud.personnel.model;
+package com.gwm.one.personnel.model;
 
 /**
  * 文件存储方式

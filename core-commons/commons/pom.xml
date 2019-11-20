@@ -4,7 +4,7 @@
 	<artifactId>commons</artifactId>
 	<packaging>jar</packaging>
 	<parent>
-		<groupId>com.cloud</groupId>
+		<groupId>com.gwm.one</groupId>
 		<artifactId>core-commons</artifactId>
 		<version>2.0</version>
 	</parent>
@@ -36,7 +36,7 @@
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.cloud</groupId>
+			<groupId>com.gwm.one</groupId>
 			<artifactId>api-model</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -71,7 +71,7 @@
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.cloud</groupId>
+            <groupId>com.gwm.one</groupId>
             <artifactId>global-configs</artifactId>
             <version>2.0</version>
         </dependency>

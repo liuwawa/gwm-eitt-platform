@@ -1,7 +1,7 @@
 logging:
   level:
     root: info
-    com.cloud: debug
+    com.gwm.one: debug
   file: logs/${spring.application.name}.log
 spring:
   datasource:
@@ -46,7 +46,7 @@ eureka:
 mybatis-plus:
   mapperLocations: classpath:/mybatis-mappers/*
   #实体扫描，多个package用逗号或者分号分隔
-  typeAliasesPackage: com.cloud.personnel.model
+  typeAliasesPackage: com.gwm.one.personnel.model
   #typeEnumsPackage: com.baomidou.springboot.entity.enums
   global-config:
     # 数据库相关配置

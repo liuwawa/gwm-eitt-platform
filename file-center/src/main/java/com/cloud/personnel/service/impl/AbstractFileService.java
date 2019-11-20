@@ -1,13 +1,13 @@
-package com.cloud.personnel.service.impl;
+package com.gwm.one.personnel.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cloud.personnel.dao.FileDao;
-import com.cloud.personnel.model.FileInfo;
-import com.cloud.personnel.model.FileSource;
-import com.cloud.personnel.service.FileService;
-import com.cloud.personnel.utils.FileUtil;
+import com.gwm.one.personnel.dao.FileDao;
+import com.gwm.one.personnel.model.FileInfo;
+import com.gwm.one.personnel.model.FileSource;
+import com.gwm.one.personnel.service.FileService;
+import com.gwm.one.personnel.utils.FileUtil;
 
 import lombok.extern.slf4j.Slf4j;
 

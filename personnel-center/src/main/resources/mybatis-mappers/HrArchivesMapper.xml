@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cloud.personnel.dao.HrArchivesDao">
+<mapper namespace="com.gwm.one.hr.personnel.dao.HrArchivesDao">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.cloud.model.personnel.HrArchives">
+    <resultMap id="BaseResultMap" type="com.gwm.one.model.hr.personnel.HrArchives">
         <id column="id" property="id" />
         <result column="P_PersonnelID" property="pPersonnelid" />
         <result column="P_GroupID" property="pGroupid" />

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cloud.personnel.dao.HrInterestDao">
+<mapper namespace="com.gwm.one.hr.personnel.dao.HrInterestDao">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.cloud.model.personnel.HrInterest">
+    <resultMap id="BaseResultMap" type="com.gwm.one.model.hr.personnel.HrInterest">
         <id column="id" property="id" />
         <result column="L_Date" property="lDate" />
         <result column="L_InterestRateLimit" property="lInterestratelimit" />

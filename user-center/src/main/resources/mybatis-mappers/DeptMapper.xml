@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cloud.user.dao.SysDeptDao">
+<mapper namespace="com.gwm.one.hr.user.dao.SysDeptDao">
 
-    <select id="findData" parameterType="SysDept" resultType="com.cloud.model.user.SysDept">
+    <select id="findData" parameterType="SysDept" resultType="com.gwm.one.model.hr.user.SysDept">
         SELECT * FROM sys_dept
         where 1=1
         <if test="parentId!=null">

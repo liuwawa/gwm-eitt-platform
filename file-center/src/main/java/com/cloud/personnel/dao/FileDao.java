@@ -1,11 +1,11 @@
-package com.cloud.personnel.dao;
+package com.gwm.one.personnel.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
-import com.cloud.personnel.model.FileInfo;
+import com.gwm.one.personnel.model.FileInfo;
 
 @Mapper
 public interface FileDao extends BaseMapper<FileInfo> {

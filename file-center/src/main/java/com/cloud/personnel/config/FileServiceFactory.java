@@ -1,4 +1,4 @@
-package com.cloud.personnel.config;
+package com.gwm.one.personnel.config;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,8 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
-import com.cloud.personnel.model.FileSource;
-import com.cloud.personnel.service.FileService;
+import com.gwm.one.personnel.model.FileSource;
+import com.gwm.one.personnel.service.FileService;
 
 /**
  * FileService工厂<br>

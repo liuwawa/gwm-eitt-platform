@@ -1,13 +1,13 @@
-package com.cloud.personnel.controller;
+package com.gwm.one.personnel.controller;
 
 import java.util.*;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.cloud.common.plugins.ApiJsonObject;
-import com.cloud.common.plugins.ApiJsonProperty;
-import com.cloud.common.vo.ResultVo;
-import com.cloud.model.common.PageResult;
+import com.gwm.one.common.plugins.ApiJsonObject;
+import com.gwm.one.common.plugins.ApiJsonProperty;
+import com.gwm.one.common.vo.ResultVo;
+import com.gwm.one.model.common.PageResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +15,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cloud.personnel.config.FileServiceFactory;
-import com.cloud.personnel.dao.FileDao;
-import com.cloud.personnel.model.FileInfo;
-import com.cloud.personnel.service.FileService;
-import com.cloud.model.log.LogAnnotation;
-import com.cloud.model.log.constants.LogModule;
+import com.gwm.one.personnel.config.FileServiceFactory;
+import com.gwm.one.personnel.dao.FileDao;
+import com.gwm.one.personnel.model.FileInfo;
+import com.gwm.one.personnel.service.FileService;
+import com.gwm.one.model.log.LogAnnotation;
+import com.gwm.one.model.log.constants.LogModule;
 
 import javax.annotation.Resource;
 

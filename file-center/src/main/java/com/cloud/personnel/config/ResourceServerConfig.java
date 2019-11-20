@@ -1,4 +1,4 @@
-package com.cloud.personnel.config;
+package com.gwm.one.personnel.config;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 
-import com.cloud.common.constants.PermitAllUrl;
+import com.gwm.one.common.constants.PermitAllUrl;
 
 /**
  * 资源服务配置

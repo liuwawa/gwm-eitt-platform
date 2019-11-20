@@ -1,9 +1,9 @@
-package com.cloud.personnel.service;
+package com.gwm.one.personnel.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cloud.personnel.model.FileInfo;
+import com.gwm.one.personnel.model.FileInfo;
 
 public interface FileService extends IService<FileInfo> {
 

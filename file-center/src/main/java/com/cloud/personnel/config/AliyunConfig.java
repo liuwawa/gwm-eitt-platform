@@ -1,4 +1,4 @@
-package com.cloud.personnel.config;
+package com.gwm.one.personnel.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
