@@ -1,0 +1,4 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Tue Nov 19 10:47:20 CST 2019
+build-helper-maven-plugin-3.0.0.jar>nexus-releases=
+build-helper-maven-plugin-3.0.0.pom>nexus-releases=
